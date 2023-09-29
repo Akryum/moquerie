@@ -1,0 +1,25 @@
+{
+  "name": "playground",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run codegen && pnpm run build && pnpm run start",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "codegen": "graphql-codegen --config codegen.ts"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^10.0.0",
+    "graphql": "^16.8.1",
+    "graphql-yoga": "^4.0.4"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "5.0.0",
+    "@types/node": "^20.7.1",
+    "typescript": "^5.2.2",
+    "@graphql-codegen/typescript-resolvers": "4.0.1",
+    "@graphql-codegen/typescript": "4.0.1",
+    "@graphql-codegen/introspection": "4.0.0"
+  }
+}
