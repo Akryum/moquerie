@@ -1,8 +1,8 @@
 {
   "name": "playground",
+  "type": "module",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "pnpm run codegen && pnpm run build && pnpm run start",
     "build": "tsc",
@@ -17,10 +17,11 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.0",
-    "@types/node": "^20.7.1",
-    "typescript": "^5.2.2",
-    "@graphql-codegen/typescript-resolvers": "4.0.1",
+    "@graphql-codegen/introspection": "4.0.0",
     "@graphql-codegen/typescript": "4.0.1",
-    "@graphql-codegen/introspection": "4.0.0"
+    "@graphql-codegen/typescript-resolvers": "4.0.1",
+    "@types/node": "^20.7.1",
+    "moquerie": "workspace:*",
+    "typescript": "^5.2.2"
   }
 }

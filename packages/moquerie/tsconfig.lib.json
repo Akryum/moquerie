@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "declaration": true,
+    "noEmit": false,
+    "outDir": "./dist"
+  },
+  "include": [
+    "lib",
+    "types"
+  ],
+  "exclude": [
+    "node_modules",
+    "generated/**/*",
+    "dist/**/*",
+    "lib/**/*.spec.ts"
+  ]
+}

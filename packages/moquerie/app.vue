@@ -1,5 +1,6 @@
 <template>
-  <div>
-    <NuxtWelcome />
+  <div class="h-screen flex">
+    <AppNav />
+    <NuxtPage class="w-full h-full" />
   </div>
 </template>

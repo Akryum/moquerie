@@ -1,6 +1,14 @@
 {
   "name": "moquerie-mono-repo",
+  "type": "module",
   "version": "0.0.0",
+  "private": true,
   "description": "",
-  "private": true
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.1.1",
+    "eslint": "^8.54.0"
+  }
 }

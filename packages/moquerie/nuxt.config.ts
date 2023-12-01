@@ -4,7 +4,14 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
+  ssr: false,
+
   modules: [
     '@nuxt/ui',
+    '@vueuse/nuxt',
   ],
+
+  ui: {
+    icons: ['ph', 'mdi'],
+  },
 })

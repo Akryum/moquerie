@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
     "target": "ES2022",
+    "module": "NodeNext",
+    "types": [
+      "node"
+    ],
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
-    "skipLibCheck": true,
-    "types": [
-      "node",
-    ],
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*",
-  ],
+    "src/**/*"
+  ]
 }

@@ -1,10 +1,11 @@
 export interface Config {
   /**
-   * JSON file containing the schema introspection result.
+   * Enable GraphQL support
    */
-  graphqlSchema?: string
-}
-
-export function defineConfig(config: Config): Config {
-  return config
+  graphql?: {
+    /**
+     * File exporting the graphql schema. You can add a `#name` suffix to import a named export. By default it will try to import the default export.
+     */
+    schema?: string
+  }
 }
