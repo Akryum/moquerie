@@ -1,9 +1,19 @@
 <script lang="ts" setup>
-defineProps<{
+const props = defineProps<{
   to: any
   icon: string
   title: string
+  activeRoute: string
 }>()
+
+const route = useRoute()
+
+const isActive = computed(() => {
+  if (props.activeRoute === '/') {
+    return route.path === '/'
+  }
+  return route.path.startsWith(props.activeRoute)
+})
 </script>
 
 <template>
@@ -16,7 +26,9 @@ defineProps<{
     <NuxtLink
       :to="to"
       class="leading-[0] p-2.5 rounded-md"
-      active-class="bg-rose-800 text-rose-100"
+      :class="{
+        'bg-rose-800 text-rose-100': isActive,
+      }"
     >
       <UIcon :name="icon" class="w-5 h-5" />
     </NuxtLink>

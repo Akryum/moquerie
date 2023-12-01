@@ -19,11 +19,14 @@ onWindowFocus(refresh)
         },
       ]"
       :ui="{
-        wrapper: 'h-full flex flex-col pt-2',
+        wrapper: 'h-full flex flex-col pt-2 bg-gray-800',
         container: 'h-full',
         base: 'h-full',
         list: {
-          base: 'w-max mx-auto',
+          base: 'w-max mx-auto h-10 border border-gray-900',
+          tab: {
+            height: 'h-full',
+          },
         },
       }"
     >

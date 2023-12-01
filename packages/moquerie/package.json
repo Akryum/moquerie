@@ -31,6 +31,7 @@
     "dev:lib": "tsc --project tsconfig.lib.json --watch"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.3.1",
     "c12": "^1.5.1",
     "fast-glob": "^3.3.2",
     "jiti": "^1.21.0",

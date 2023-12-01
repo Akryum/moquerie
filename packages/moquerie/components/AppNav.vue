@@ -8,13 +8,22 @@ onConfigChange(hasGraphQL.refresh)
   <nav class="flex flex-col items-center p-0.5">
     <AppNavItem
       to="/"
+      active-route="/"
       icon="i-ph-house"
       title="Home"
     />
 
     <AppNavItem
+      to="/db/resources"
+      active-route="/db"
+      icon="i-ph-database"
+      title="Database"
+    />
+
+    <AppNavItem
       v-if="hasGraphQL.data.value"
       to="/graphql/schema"
+      active-route="/graphql"
       icon="i-mdi-graphql"
       title="GraphQL"
     />
@@ -23,6 +32,7 @@ onConfigChange(hasGraphQL.refresh)
 
     <AppNavItem
       to="/config/inspect"
+      active-route="/config"
       icon="i-ph-sliders"
       title="Config"
     />

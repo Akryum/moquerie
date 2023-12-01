@@ -7,8 +7,13 @@
           to: './schema',
           icon: 'i-ph-tree-structure',
         },
+        {
+          label: 'Playground',
+          to: './playground',
+          icon: 'i-ph-play',
+        },
       ]"
-      class="m-1 min-w-[160px]"
+      class="my-1 mr-1 min-w-[160px]"
     />
     <NuxtPage class="w-full h-full" />
   </div>
