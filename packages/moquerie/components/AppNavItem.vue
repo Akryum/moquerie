@@ -1,14 +1,20 @@
 <script lang="ts" setup>
+import { NuxtLink } from '#components'
+
 const props = defineProps<{
-  to: any
+  to?: any
   icon: string
   title: string
-  activeRoute: string
+  activeRoute?: string
 }>()
 
 const route = useRoute()
 
 const isActive = computed(() => {
+  if (!props.activeRoute) {
+    return false
+  }
+
   if (props.activeRoute === '/') {
     return route.path === '/'
   }
@@ -23,7 +29,8 @@ const isActive = computed(() => {
       placement: 'right',
     }"
   >
-    <NuxtLink
+    <component
+      :is="to ? NuxtLink : 'button'"
       :to="to"
       class="leading-[0] p-2.5 rounded-md"
       :class="{
@@ -31,6 +38,6 @@ const isActive = computed(() => {
       }"
     >
       <UIcon :name="icon" class="w-5 h-5" />
-    </NuxtLink>
+    </component>
   </UTooltip>
 </template>

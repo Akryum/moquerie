@@ -1,7 +1,19 @@
 <script lang="ts" setup>
-const hasGraphQL = await useFetch('/api/graphql/hasGraphql')
-onWindowFocus(hasGraphQL.refresh)
-onConfigChange(hasGraphQL.refresh)
+const hasGraphQL = await useHasGraphql()
+
+const commandPaletteStore = useCommandPaletteStore()
+const { metaSymbol } = useShortcuts()
+
+const router = useRouter()
+
+defineShortcuts({
+  'meta_,': {
+    usingInput: true,
+    handler: () => {
+      router.push('/config/inspect')
+    },
+  },
+})
 </script>
 
 <template>
@@ -14,6 +26,17 @@ onConfigChange(hasGraphQL.refresh)
     />
 
     <AppNavItem
+      icon="i-ph-magnifying-glass"
+      title="Search & commands"
+      :shortcuts="[metaSymbol, 'K']"
+      @click="commandPaletteStore.isOpen = true"
+    />
+
+    <div class="w-full">
+      <div class="h-px bg-gray-600 mx-2 my-1" />
+    </div>
+
+    <AppNavItem
       to="/db/resources"
       active-route="/db"
       icon="i-ph-database"
@@ -21,7 +44,7 @@ onConfigChange(hasGraphQL.refresh)
     />
 
     <AppNavItem
-      v-if="hasGraphQL.data.value"
+      v-if="hasGraphQL"
       to="/graphql/schema"
       active-route="/graphql"
       icon="i-mdi-graphql"
@@ -30,11 +53,16 @@ onConfigChange(hasGraphQL.refresh)
 
     <div class="flex-1 w-0" />
 
+    <div class="w-full">
+      <div class="h-px bg-gray-600 mx-2 my-1" />
+    </div>
+
     <AppNavItem
       to="/config/inspect"
       active-route="/config"
       icon="i-ph-sliders"
       title="Config"
+      :shortcuts="[metaSymbol, ',']"
     />
   </nav>
 </template>
