@@ -2,6 +2,8 @@
 const commandPaletteStore = useCommandPaletteStore()
 const hasGraphQL = await useHasGraphql()
 
+const { metaSymbol } = useShortcuts()
+
 const routes = computed(() => [
   {
     id: '_route.home',
@@ -14,24 +16,28 @@ const routes = computed(() => [
     to: '/db/resources',
     icon: 'i-ph-table',
     label: 'Database > Resources',
+    shortcuts: [metaSymbol.value, 'Shift', 'R'],
   },
   {
     id: '_route.db.factories',
     to: '/db/factories',
     icon: 'i-ph-factory',
     label: 'Database > Factories',
+    shortcuts: [metaSymbol.value, 'Shift', 'F'],
   },
   {
     id: '_route.db.snapshots',
     to: '/db/snapshots',
     icon: 'i-ph-camera',
     label: 'Database > Snapshots',
+    shortcuts: [metaSymbol.value, 'Shift', 'S'],
   },
   {
     id: '_route.db.history',
     to: '/db/history',
     icon: 'i-ph-clock-clockwise',
     label: 'Database > History',
+    shortcuts: [metaSymbol.value, 'Shift', 'H'],
   },
   ...hasGraphQL.value
     ? [
@@ -54,6 +60,7 @@ const routes = computed(() => [
     to: '/config/inspect',
     icon: 'i-ph-sliders',
     label: 'Config',
+    shortcuts: [metaSymbol.value, ','],
   },
 ])
 

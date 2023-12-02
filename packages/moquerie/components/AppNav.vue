@@ -13,6 +13,30 @@ defineShortcuts({
       router.push('/config/inspect')
     },
   },
+  'meta_shift_r': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/resources')
+    },
+  },
+  'meta_shift_f': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/factories')
+    },
+  },
+  'meta_shift_s': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/snapshots')
+    },
+  },
+  'meta_shift_h': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/history')
+    },
+  },
 })
 </script>
 
