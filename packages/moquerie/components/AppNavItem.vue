@@ -35,7 +35,7 @@ const isActive = computed(() => {
       class="leading-[0] p-2.5 rounded-md"
       :class="[
         isActive
-          ? 'bg-rose-200 text-rose-600 dark:bg-rose-700 dark:text-rose-100'
+          ? 'bg-primary-200 text-primary-600 dark:bg-primary-900 dark:text-primary-100'
           : 'text-gray-500 dark:text-gray-300',
       ]"
     >

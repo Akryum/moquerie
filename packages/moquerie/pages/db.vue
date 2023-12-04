@@ -1,25 +1,25 @@
 <template>
-  <div class="flex divide-x divide-gray-700">
+  <div class="flex divide-x divide-gray-300 dark:divide-gray-700">
     <UVerticalNavigation
       :links="[
         {
           label: 'Resources',
-          to: './resources',
+          to: '/db/resources',
           icon: 'i-ph-table',
         },
         {
           label: 'Factories',
-          to: './factories',
+          to: '/db/factories',
           icon: 'i-ph-factory',
         },
         {
           label: 'Snapshots',
-          to: './snapshots',
+          to: '/db/snapshots',
           icon: 'i-ph-camera',
         },
         {
           label: 'History',
-          to: './history',
+          to: '/db/history',
           icon: 'i-ph-clock-clockwise',
         },
       ]"

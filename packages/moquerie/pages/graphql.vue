@@ -4,12 +4,12 @@
       :links="[
         {
           label: 'Schema',
-          to: './schema',
+          to: '/graphql/schema',
           icon: 'i-ph-tree-structure',
         },
         {
           label: 'Playground',
-          to: './playground',
+          to: '/graphql/playground',
           icon: 'i-ph-play',
         },
       ]"

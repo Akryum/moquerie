@@ -10,6 +10,13 @@ export const schema = makeExecutableSchema({
       name: String!
       email: String!
       avatarUrl: String
+      messages: [Message!]!
+    }
+
+    type Message {
+      id: ID!
+      content: String!
+      user: User!
     }
 
     type Query {
