@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { ResourceSchemaType } from '~/types/resource.js'
 
+const props = defineProps<{
+  routeName: string
+}>()
+
 const { data, refresh } = await useFetch('/api/resources')
 onWindowFocus(refresh)
 
@@ -41,9 +45,9 @@ function openResource(resource: ResourceSchemaType | undefined) {
     return
   }
   router.push({
-    name: 'db-resources-name',
+    name: props.routeName,
     params: {
-      name: resource.name,
+      resourceName: resource.name,
     },
   })
 }
@@ -90,6 +94,7 @@ function openResource(resource: ResourceSchemaType | undefined) {
         v-for="(resource, index) of displayedTypes"
         :key="resource.name"
         :resource-type="resource"
+        :route-name="routeName"
         :hover="(showKeyboardNavigationHints || isHover) && hoverIndex === index"
         @mouseenter="hoverIndex = index"
       />

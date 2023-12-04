@@ -1,5 +1,27 @@
+<script lang="ts" setup>
+useSaveRoute({
+  key: 'db.factories.lastRoute',
+  defaultRoute: {
+    name: 'db-factories-resourceName',
+  },
+})
+</script>
+
 <template>
-  <div class="flex">
-    <UIcon name="i-ph-traffic-cone" class="w-12 h-12 m-auto opacity-30" />
-  </div>
+  <SplitPane
+    save-id="db.factories"
+    :min="8"
+    :max="40"
+    :default-split="12"
+  >
+    <template #first>
+      <ResourceList
+        route-name="db-factories-resourceName"
+      />
+    </template>
+
+    <template #last>
+      <NuxtPage class="w-full h-full" />
+    </template>
+  </SplitPane>
 </template>

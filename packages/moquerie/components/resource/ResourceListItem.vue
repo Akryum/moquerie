@@ -3,6 +3,7 @@ import type { ResourceSchemaType } from '~/types'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
+  routeName: string
   hover?: boolean
 }>()
 
@@ -35,9 +36,9 @@ watch(() => props.hover, (val) => {
   <div ref="el">
     <NuxtLink
       :to="{
-        name: 'db-resources-name',
+        name: routeName,
         params: {
-          name: resourceType.name,
+          resourceName: resourceType.name,
         },
       }"
       class="flex items-center gap-2 p-2"

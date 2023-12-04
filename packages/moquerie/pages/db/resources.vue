@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-useSaveRoute('db.resources.lastRoute')
+useSaveRoute({
+  key: 'db.resources.lastRoute',
+  defaultRoute: {
+    name: 'db-resources-resourceName',
+  },
+})
 </script>
 
 <template>
@@ -10,7 +15,9 @@ useSaveRoute('db.resources.lastRoute')
     :default-split="12"
   >
     <template #first>
-      <ResourceList />
+      <ResourceList
+        route-name="db-resources-resourceName"
+      />
     </template>
 
     <template #last>
