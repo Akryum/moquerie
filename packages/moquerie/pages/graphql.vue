@@ -1,5 +1,5 @@
 <template>
-  <div class="flex divide-x divide-gray-700">
+  <div class="flex divide-x divide-gray-300 dark:divide-gray-700">
     <UVerticalNavigation
       :links="[
         {

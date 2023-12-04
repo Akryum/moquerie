@@ -38,6 +38,8 @@ defineShortcuts({
     },
   },
 })
+
+const colorMode = useColorMode()
 </script>
 
 <template>
@@ -57,7 +59,7 @@ defineShortcuts({
     />
 
     <div class="w-full">
-      <div class="h-px bg-gray-600 mx-2 my-1" />
+      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
     </div>
 
     <AppNavItem
@@ -78,8 +80,15 @@ defineShortcuts({
     <div class="flex-1 w-0" />
 
     <div class="w-full">
-      <div class="h-px bg-gray-600 mx-2 my-1" />
+      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
     </div>
+
+    <!-- Theme toggle -->
+    <AppNavItem
+      :icon="colorMode.preference === 'dark' ? 'i-ph-moon' : colorMode.preference === 'system' ? 'i-ph-circle-half-tilt' : 'i-ph-sun'"
+      :title="colorMode.preference === 'dark' ? 'Switch to System theme' : colorMode.preference === 'system' ? 'Switch to Light theme' : 'Switch to Dark theme'"
+      @click="colorMode.preference = colorMode.preference === 'dark' ? 'system' : colorMode.preference === 'system' ? 'light' : 'dark'"
+    />
 
     <AppNavItem
       to="/config/inspect"

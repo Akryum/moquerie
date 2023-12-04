@@ -29,7 +29,7 @@ self.MonacoEnvironment = {
 
 // Theme
 
-monaco.editor.defineTheme('custom-theme', {
+monaco.editor.defineTheme('custom-dark-theme', {
   base: 'vs-dark',
   inherit: true,
   rules: [],
@@ -41,7 +41,13 @@ monaco.editor.defineTheme('custom-theme', {
     'scrollbarSlider.hoverBackground': '#9f1239',
   },
 })
-monaco.editor.setTheme('custom-theme')
+
+const colorMode = useColorMode()
+monaco.editor.setTheme(colorMode.value === 'dark' ? 'custom-dark-theme' : 'vs-light')
+
+watch(() => colorMode.value, (val) => {
+  monaco.editor.setTheme(val === 'dark' ? 'custom-dark-theme' : 'vs-light')
+})
 
 // Types
 

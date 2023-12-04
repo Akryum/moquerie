@@ -33,9 +33,11 @@ const isActive = computed(() => {
       :is="to ? NuxtLink : 'button'"
       :to="to"
       class="leading-[0] p-2.5 rounded-md"
-      :class="{
-        'bg-rose-800 text-rose-100': isActive,
-      }"
+      :class="[
+        isActive
+          ? 'bg-rose-200 text-rose-600 dark:bg-rose-700 dark:text-rose-100'
+          : 'text-gray-500 dark:text-gray-300',
+      ]"
     >
       <UIcon :name="icon" class="w-5 h-5" />
     </component>
