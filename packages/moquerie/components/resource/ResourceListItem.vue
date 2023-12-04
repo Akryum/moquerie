@@ -5,6 +5,7 @@ const props = defineProps<{
   resourceType: ResourceSchemaType
   routeName: string
   hover?: boolean
+  showShortcut?: boolean
 }>()
 
 const icon = computed(() => {
@@ -41,21 +42,23 @@ watch(() => props.hover, (val) => {
           resourceName: resourceType.name,
         },
       }"
-      class="flex items-center gap-2 p-2"
+      class="flex items-center gap-2 px-2 py-1.5 mx-1 my-0.5 rounded"
       :class="{
         'text-primary-500 bg-primary-50 dark:bg-primary-950': hover,
       }"
       active-class="!bg-primary-100 dark:!bg-primary-900"
     >
-      <UIcon :name="icon" class="flex-none w-6 h-6 opacity-80" />
-      <div>
+      <UIcon :name="icon" class="flex-none w-4 h-4 opacity-80" />
+
+      <div class="flex-1">
         <div class="text-sm">
           {{ resourceType.name }}
         </div>
-        <div class="text-xs">
-          {{ resourceType.description ?? '' }}
-        </div>
       </div>
+
+      <UKbd v-if="showShortcut">
+        ↵
+      </UKbd>
     </NuxtLink>
   </div>
 </template>

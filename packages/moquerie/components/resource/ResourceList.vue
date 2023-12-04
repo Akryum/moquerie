@@ -19,8 +19,10 @@ const displayedTypes = computed(() => {
   if (!filter.value) {
     return list
   }
+  const filterValue = filter.value.toLowerCase()
   return list.filter((type) => {
-    return type.name.toLowerCase().includes(filter.value.toLowerCase())
+    return type.name.toLowerCase().includes(filterValue)
+      || type.tags.some(tag => tag.toLowerCase().includes(filterValue))
   })
 })
 
@@ -63,7 +65,7 @@ function openResource(resource: ResourceSchemaType | undefined) {
       <UInput
         v-model="filter"
         size="xs"
-        placeholder="Filter"
+        placeholder="Filter resources by name, tag..."
         icon="i-ph-magnifying-glass"
         class="w-full"
         autocomplete="off"
@@ -96,6 +98,7 @@ function openResource(resource: ResourceSchemaType | undefined) {
         :resource-type="resource"
         :route-name="routeName"
         :hover="(showKeyboardNavigationHints || isHover) && hoverIndex === index"
+        :show-shortcut="showKeyboardNavigationHints && hoverIndex === index"
         @mouseenter="hoverIndex = index"
       />
     </div>

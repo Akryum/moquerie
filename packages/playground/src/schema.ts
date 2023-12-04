@@ -13,10 +13,14 @@ export const schema = makeExecutableSchema({
       messages: [Message!]!
     }
 
+    "Message sent between users"
     type Message {
       id: ID!
       content: String!
-      user: User!
+      "The user who sent the message"
+      from: User!
+      "The user who received the message"
+      to: User!
     }
 
     type Query {

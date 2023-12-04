@@ -12,6 +12,12 @@ export async function getResourceSchema(ctx: Context) {
   const mutationName = gqlIntrospection.__schema.mutationType?.name ?? 'Mutation'
   const subscriptionName = gqlIntrospection.__schema.subscriptionType?.name ?? 'Subscription'
 
+  const rootTypes = [
+    queryName,
+    mutationName,
+    subscriptionName,
+  ]
+
   for (const gqlType of gqlIntrospection.__schema.types) {
     if (gqlType.name.startsWith('__')) {
       continue
@@ -95,12 +101,19 @@ export async function getResourceSchema(ctx: Context) {
         fields[resField.name] = resField
       }
 
+      const isRootType = rootTypes.includes(gqlType.name)
+
+      const tags = ['graphql', 'object']
+      if (isRootType) {
+        tags.push('root')
+      }
+
       const resType = {
         name: gqlType.name,
-        tags: ['graphql', 'object'],
+        tags,
         description: gqlType.description ?? undefined,
         hasAction: false,
-        array: gqlType.name !== queryName && gqlType.name !== mutationName && gqlType.name !== subscriptionName,
+        array: !isRootType,
         type: 'object',
         fields,
         nonNull: false,
@@ -114,12 +127,6 @@ export async function getResourceSchema(ctx: Context) {
   // Sort
 
   const types: Record<string, ResourceSchemaType> = {}
-
-  const rootTypes = [
-    queryName,
-    mutationName,
-    subscriptionName,
-  ]
 
   typesListTemp = [
     ...rootTypes.map(n => typesTemp[n]).filter(Boolean),
