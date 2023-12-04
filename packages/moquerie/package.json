@@ -27,8 +27,9 @@
     "build": "pnpm run \"/^build:/\"",
     "build:lib": "rm -rf ./dist && tsc --project tsconfig.lib.json",
     "build:nuxt": "nuxt prepare && nuxt build",
-    "dev": "nuxt prepare && nuxt dev",
-    "dev:lib": "tsc --project tsconfig.lib.json --watch"
+    "dev": "pnpm run \"/^dev:/\"",
+    "dev:lib": "tsc --project tsconfig.lib.json --watch",
+    "dev:nuxt": "nuxt prepare && nuxt dev"
   },
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
