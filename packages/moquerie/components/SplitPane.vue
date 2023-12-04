@@ -118,6 +118,11 @@ let startSplit = 0
 const el = ref<HTMLElement | null>(null)
 
 function dragStart(e: MouseEvent) {
+  if (e.shiftKey) {
+    currentSplit.value = props.defaultSplit
+    return
+  }
+
   dragging.value = true
   startPosition = props.orientation === 'landscape' ? e.pageX : e.pageY
   startSplit = boundSplit.value
