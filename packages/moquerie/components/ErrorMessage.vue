@@ -25,7 +25,7 @@ function onStackClick(event: MouseEvent) {
 
 <template>
   <div class="flex h-full p-12 overflow-auto">
-    <div class="bg-rose-900/30 text-rose-500 border border-rose-900/20 rounded-2xl p-6 flex flex-col gap-4 max-w-full m-auto">
+    <div class="bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-500 border border-rose-200/30 dark:border-rose-900/20 rounded-2xl p-6 flex flex-col gap-4 max-w-full m-auto">
       <UIcon name="i-ph-seal-warning-duotone" class="w-8 h-8 flex-none" />
       <div class="w-full break-all font-mono pb-4 border-b border-rose-500/50">
         {{ error.data?.message ?? error.message }}
