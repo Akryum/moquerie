@@ -33,26 +33,30 @@ const fakerLocaleOptions = computed(() => {
 const { data: resourceType, refresh } = await useFetch(`/api/resources/${props.resourceName}`)
 onWindowFocus(refresh)
 
-function getStateInitialValues(): FactoryData {
+function getStateInitialValues(factory = props.factory): FactoryData {
   return {
-    name: props.factory?.name ?? `${props.resourceName} factory`,
-    location: props.factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
-    description: props.factory?.description ?? '',
-    tags: props.factory?.tags ?? [],
+    name: factory?.name ?? `${props.resourceName} factory`,
+    location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
+    description: factory?.description ?? '',
+    tags: factory?.tags ?? [],
     resourceName: props.resourceName,
-    createPrompts: props.factory?.createPrompts ?? [],
-    createValue: props.factory?.createValue ?? {
+    createPrompts: factory?.createPrompts ?? [],
+    createValue: factory?.createValue ?? {
       generateType: 'static',
       children: {},
     },
-    fakerSeed: props.factory?.fakerSeed ?? '',
-    fakerLocale: props.factory?.fakerLocale,
-    applyTags: props.factory?.applyTags ?? [],
-    applyComment: props.factory?.applyComment ?? '',
+    fakerSeed: factory?.fakerSeed ?? '',
+    fakerLocale: factory?.fakerLocale,
+    applyTags: factory?.applyTags ?? [],
+    applyComment: factory?.applyComment ?? '',
   }
 }
 
 const state = ref<FactoryData>(getStateInitialValues())
+
+watch(() => props.factory, (value) => {
+  state.value = getStateInitialValues(value)
+})
 
 async function setDefaultValueFactory() {
   const data = await $fetch('/api/factories/defaultValueFactory', {
@@ -121,6 +125,8 @@ async function onSubmit() {
   }
 
   emit('complete', factory)
+
+  state.value = getStateInitialValues(factory)
 }
 
 // Cancel
@@ -132,6 +138,19 @@ function onCancel() {
     state.value = getStateInitialValues()
   }
 }
+
+// Shortcuts
+
+defineShortcuts({
+  meta_enter: {
+    usingInput: true,
+    handler: () => {
+      onSubmit()
+    },
+  },
+})
+
+const { metaSymbol } = useShortcuts()
 </script>
 
 <template>
@@ -279,6 +298,9 @@ function onCancel() {
 
             <UButton type="submit">
               {{ factory ? 'Update factory' : 'Create factory' }}
+
+              <UKbd>{{ metaSymbol }}</UKbd>
+              <UKbd>↵</UKbd>
             </UButton>
 
             <div class="flex-1" />

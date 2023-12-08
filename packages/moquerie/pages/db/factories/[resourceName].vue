@@ -3,6 +3,24 @@ const route = useRoute()
 
 const { data, refresh } = await useFetch(`/api/resources/${route.params.resourceName}`)
 onWindowFocus(refresh)
+
+// New factory
+
+const router = useRouter()
+
+defineShortcuts({
+  n: () => {
+    router.push({
+      name: 'db-factories-resourceName-create',
+      params: {
+        ...route.params,
+      },
+      query: {
+        ...route.query,
+      },
+    })
+  },
+})
 </script>
 
 <template>
@@ -28,6 +46,7 @@ onWindowFocus(refresh)
         icon="i-ph-plus"
       >
         New factory
+        <UKbd>N</UKbd>
       </UButton>
     </div>
     <div class="flex-1 h-0 flex items-stretch">

@@ -14,5 +14,6 @@ const { data: factory } = await useFetch(`/api/factories/${route.params.factoryI
     v-if="factory"
     :resource-name="$route.params.resourceName as string"
     :factory="factory"
+    @complete="factory = $event"
   />
 </template>
