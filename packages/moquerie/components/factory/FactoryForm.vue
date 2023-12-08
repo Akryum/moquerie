@@ -89,8 +89,11 @@ async function onSubmit() {
   if (props.factory) {
     // Update factory
     factory = await $fetch(`/api/factories/update`, {
-      method: 'PUT',
-      body: state.value,
+      method: 'PATCH',
+      body: {
+        id: props.factory.id,
+        ...state.value,
+      },
     })
     toast.add({
       id: 'factory-updated',
@@ -121,8 +124,16 @@ async function onSubmit() {
   <div class="flex items-stretch">
     <div class="w-1/2 h-full overflow-y-auto p-4">
       <div class="space-y-4">
-        <h1>
-          {{ factory ? `Update factory ${factory.name}` : 'Create new factory' }}
+        <h1 class="flex items-center gap-1">
+          <UIcon name="i-ph-factory" class="text-primary-500 w-6 h-6" />
+
+          <template v-if="factory">
+            Update factory
+            <span class="border border-gray-500/50 rounded-lg px-1.5 font-bold text-primary">{{ factory.name }}</span>
+          </template>
+          <template v-else>
+            Create new factory
+          </template>
         </h1>
 
         <UForm

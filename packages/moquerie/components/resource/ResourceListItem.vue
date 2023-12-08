@@ -30,7 +30,7 @@ const icon = computed(() => {
     }"
     :icon="icon"
   >
-    <div class="text-sm">
+    <div class="text-sm truncate">
       {{ resourceType.name }}
     </div>
   </LinkListItem>

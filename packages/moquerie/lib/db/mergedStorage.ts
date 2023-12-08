@@ -69,4 +69,4 @@ export async function useMergedStorage<TData extends { id: string }>(options: Us
   }
 }
 
-export type MergedStorage<TData extends { id: string }> = ReturnType<typeof useMergedStorage<TData>>
+export type MergedStorage<TData extends { id: string }> = Awaited<ReturnType<typeof useMergedStorage<TData>>>

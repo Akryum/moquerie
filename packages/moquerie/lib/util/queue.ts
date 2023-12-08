@@ -42,5 +42,8 @@ export function useQueue(options: UseQueueOptions) {
 
   return {
     queue,
+    get size() {
+      return queued.size
+    },
   }
 }

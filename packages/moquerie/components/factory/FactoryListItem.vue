@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink
+  <LinkListItem
     :to="{
       name: 'db-factories-resourceName-view-factoryId',
       params: {
@@ -18,9 +18,9 @@ defineProps<{
         ...$route.query,
       },
     }"
-    class="flex items-center gap-2 px-2 py-1.5 mx-1 my-0.5 rounded"
-    active-class="!bg-primary-100 dark:!bg-primary-900"
   >
-    {{ factory.name }}
-  </NuxtLink>
+    <div class="truncate">
+      {{ factory.name }}
+    </div>
+  </LinkListItem>
 </template>

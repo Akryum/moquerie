@@ -1,10 +1,22 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
 import { useRouteQuery } from '@vueuse/router'
+import LinkList from '../LinkList.vue'
 import type { DBLocation } from '~/types/db.js'
 import type { ResourceFactory } from '~/types/factory.js'
 
+// Location
+
 const location = useRouteQuery<DBLocation>('factoryLocation', 'local')
+
+const linkList = ref<InstanceType<typeof LinkList> | null>(null)
+
+function onClickOnLocationButton() {
+  linkList.value?.focusFilterInput()
+}
+
+// Factories
+
 const route = useRoute()
 
 const resourceName = computed(() => route.params.resourceName)
@@ -20,23 +32,40 @@ onWindowFocus(refresh)
 
 // Filter
 
-const filter = ref('')
+function filter(item: ResourceFactory, filterValue: string) {
+  return item.name.toLowerCase().includes(filterValue)
+    || item.tags.some(tag => tag.toLowerCase().includes(filterValue))
+}
 
-const filteredFactories = computed(() => {
-  const list = factories.value ?? []
-  if (!filter.value) {
-    return list
-  }
-  const reg = new RegExp(filter.value, 'i')
-  return list.filter((factory) => {
-    return reg.test(factory.name) || reg.test(factory.tags.join(' '))
+// Open
+
+const router = useRouter()
+
+function onOpen(factory: ResourceFactory) {
+  router.push({
+    name: 'db-factories-resourceName-view-factoryId',
+    params: {
+      ...route.params,
+      factoryId: factory.id,
+    },
+    query: {
+      ...route.query,
+    },
   })
-})
+}
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div class="p-1.5 flex flex-col gap-1">
+  <LinkList
+    v-if="factories"
+    id="factory-list"
+    ref="linkList"
+    :items="factories"
+    :filter="filter"
+    :selected-item="(factory, route) => factory.id === route.params.factoryId"
+    @open="onOpen"
+  >
+    <template #toolbar>
       <RadioButtonGroup
         v-model="location"
         :button-attrs="{
@@ -54,37 +83,15 @@ const filteredFactories = computed(() => {
             label: 'Repository',
           },
         ]"
+        @update:model-value="onClickOnLocationButton()"
       />
+    </template>
 
-      <UInput
-        v-model="filter"
-        size="xs"
-        placeholder="Filter factories by name, tag..."
-        icon="i-ph-magnifying-glass"
-        class="w-full"
-        autocomplete="off"
-        :ui="{ icon: { trailing: { pointer: '' } } }"
-      >
-        <template #trailing>
-          <UButton
-            v-show="filter"
-            icon="i-ph-backspace"
-            color="gray"
-            variant="link"
-            size="xs"
-            :padded="false"
-            @click="filter = ''"
-          />
-        </template>
-      </UInput>
-    </div>
-
-    <div class="flex-1 overflow-y-auto">
+    <template #default="{ item, ...props }">
       <FactoryListItem
-        v-for="factory in filteredFactories"
-        :key="factory.id"
-        :factory="factory"
+        :factory="item"
+        v-bind="props"
       />
-    </div>
-  </div>
+    </template>
+  </LinkList>
 </template>

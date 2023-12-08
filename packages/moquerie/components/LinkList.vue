@@ -50,6 +50,18 @@ function openItem(item: TItem | undefined) {
   }
   emit('open', item)
 }
+
+// Focus
+
+const filterInput = ref<any | null>(null)
+
+function focusFilterInput() {
+  filterInput.value?.input.focus()
+}
+
+defineExpose({
+  focusFilterInput,
+})
 </script>
 
 <template>
@@ -58,8 +70,11 @@ function openItem(item: TItem | undefined) {
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
-    <div class="p-1.5">
+    <div class="p-1.5 flex flex-col gap-1">
+      <slot name="toolbar" />
+
       <UInput
+        ref="filterInput"
         v-model="filter"
         size="xs"
         :placeholder="filterPlaceholder ?? 'Filter...'"

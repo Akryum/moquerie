@@ -49,7 +49,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     return manifestResult
   }
 
-  const manifest = await readManifest()
+  let manifest = await readManifest()
 
   const data: TData[] = []
 
@@ -77,6 +77,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   }
 
   async function load() {
+    data.length = 0
     for (const id in manifest.files) {
       const file = manifest.files[id]
       const item = await readFile(id, file)
@@ -134,6 +135,17 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     pendingRemovalFiles.add(file)
     queueRemoveFiles()
   }
+
+  // Refresh reads
+
+  // @TODO better system for reloading files
+
+  setInterval(async () => {
+    if (!writeQueue.size) {
+      manifest = await readManifest()
+      await load()
+    }
+  }, 5000)
 
   // Data access
 
@@ -193,4 +205,4 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   }
 }
 
-export type Storage<TData extends { id: string }> = ReturnType<typeof useStorage<TData>>
+export type Storage<TData extends { id: string }> = Awaited<ReturnType<typeof useStorage<TData>>>
