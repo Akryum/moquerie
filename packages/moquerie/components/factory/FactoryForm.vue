@@ -33,22 +33,26 @@ const fakerLocaleOptions = computed(() => {
 const { data: resourceType, refresh } = await useFetch(`/api/resources/${props.resourceName}`)
 onWindowFocus(refresh)
 
-const state = ref<FactoryData>({
-  name: props.factory?.name ?? `${props.resourceName} factory`,
-  location: props.factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
-  description: props.factory?.description ?? '',
-  tags: props.factory?.tags ?? [],
-  resourceName: props.resourceName,
-  createPrompts: props.factory?.createPrompts ?? [],
-  createValue: props.factory?.createValue ?? {
-    generateType: 'static',
-    children: {},
-  },
-  fakerSeed: props.factory?.fakerSeed ?? '',
-  fakerLocale: props.factory?.fakerLocale,
-  applyTags: props.factory?.applyTags ?? [],
-  applyComment: props.factory?.applyComment ?? '',
-})
+function getStateInitialValues(): FactoryData {
+  return {
+    name: props.factory?.name ?? `${props.resourceName} factory`,
+    location: props.factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
+    description: props.factory?.description ?? '',
+    tags: props.factory?.tags ?? [],
+    resourceName: props.resourceName,
+    createPrompts: props.factory?.createPrompts ?? [],
+    createValue: props.factory?.createValue ?? {
+      generateType: 'static',
+      children: {},
+    },
+    fakerSeed: props.factory?.fakerSeed ?? '',
+    fakerLocale: props.factory?.fakerLocale,
+    applyTags: props.factory?.applyTags ?? [],
+    applyComment: props.factory?.applyComment ?? '',
+  }
+}
+
+const state = ref<FactoryData>(getStateInitialValues())
 
 async function setDefaultValueFactory() {
   const data = await $fetch('/api/factories/defaultValueFactory', {
@@ -117,6 +121,16 @@ async function onSubmit() {
   }
 
   emit('complete', factory)
+}
+
+// Cancel
+
+function onCancel() {
+  emit('cancel')
+
+  if (props.factory) {
+    state.value = getStateInitialValues()
+  }
 }
 </script>
 
@@ -258,7 +272,7 @@ async function onSubmit() {
           <div class="flex items-center gap-4 sticky -bottom-4 bg-white dark:bg-gray-950 py-2">
             <UButton
               color="gray"
-              @click="$emit('cancel')"
+              @click="onCancel()"
             >
               Cancel
             </UButton>
