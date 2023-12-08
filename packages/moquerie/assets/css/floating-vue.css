@@ -1,0 +1,20 @@
+.v-popper__popper.no-overflow {
+  .v-popper__wrapper,
+  .v-popper__inner {
+    overflow: visible;
+  }
+}
+
+.dark .v-popper__popper.v-popper--theme-dropdown {
+  .v-popper__inner {
+    @apply bg-black text-white border-gray-800;
+  }
+
+  .v-popper__arrow-inner {
+    @apply border-black;
+  }
+
+  .v-popper__arrow-outer {
+    @apply border-gray-800;
+  }
+}

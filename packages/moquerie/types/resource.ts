@@ -2,7 +2,6 @@ export interface ResourceSchemaCommon {
   name: string
   tags: readonly string[]
   description?: string
-  hasAction: boolean
   array: boolean
   nonNull: boolean
   deprecationReason?: string
@@ -38,16 +37,22 @@ export type ResourceSchemaField = ResourceSchemaCommon & (
     type: 'any'
   } | {
     type: 'resource'
-    resource: ResourceSchemaType
+    resourceName: string
   }
 )
 
 export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSchemaType> {
   id: string
-  type: TType
-  value: TType['array'] extends true
-    ? Array<ResourceInstanceValue<TType>>
-    : ResourceInstanceValue<TType>
+  typeName: TType['name']
+  value: ResourceInstanceValue<TType>
+  createdAt: Date
+  updatedAt: Date | null
+  /**
+   * Inactive instances are ignored.
+   */
+  active: boolean
+  tags: string[]
+  comment: string | null
 }
 
 export type ResourceInstanceValue<TType extends ResourceSchemaType> =
@@ -86,8 +91,13 @@ export type ResourceInstanceFieldValue<TField extends ResourceSchemaField> =
           : TField['type'] extends 'any'
             ? any
             : TField extends Extract<ResourceSchemaField, { type: 'resource' }>
-              ? ResourceInstance<TField['resource']>
+              ? ResourceInstanceReference
               : never
+
+export interface ResourceInstanceReference {
+  __resourceType: string
+  __id: string
+}
 
 // function create<TType extends ResourceSchemaType>(type: TType, value: ResourceInstance<TType>['value']): ResourceInstance<TType> {
 //   return {

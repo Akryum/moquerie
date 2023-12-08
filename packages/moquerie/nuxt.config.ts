@@ -15,4 +15,9 @@ export default defineNuxtConfig({
   ui: {
     icons: ['ph', 'mdi'],
   },
+
+  css: [
+    'floating-vue/dist/style.css',
+    '~/assets/css/floating-vue.css',
+  ],
 })

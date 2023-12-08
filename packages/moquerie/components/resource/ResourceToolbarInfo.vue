@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { VTooltip as vTooltip } from 'floating-vue'
 import type { ResourceSchemaType } from '~/types/resource.js'
 
 defineProps<{
@@ -11,6 +12,15 @@ defineProps<{
   <div v-if="type.description" class="text-xs text-gray-500 dark:text-gray-400 flex-shrink truncate">
     {{ type.description }}
   </div>
+  <UBadge
+    v-if="!type.array"
+    v-tooltip="'This resource can only have one active instance at a time'"
+    color="blue"
+    variant="subtle"
+  >
+    <UIcon name="i-ph-crown-simple" class="w-4 h-4 flex-none mr-1" />
+    Singleton
+  </UBadge>
   <div v-if="type.tags.length" class="flex gap-1">
     <UBadge
       v-for="tag in type.tags"

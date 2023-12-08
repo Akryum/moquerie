@@ -8,44 +8,24 @@ const props = defineProps<{
 const { data, refresh } = await useFetch('/api/resources')
 onWindowFocus(refresh)
 
-const filter = useLocalStorage('db.resources.filter', '')
-
-const displayedTypes = computed(() => {
+const list = computed(() => {
   if (!data.value) {
     return []
   }
 
-  const list = Object.values(data.value.types)
-  if (!filter.value) {
-    return list
-  }
-  const filterValue = filter.value.toLowerCase()
-  return list.filter((type) => {
-    return type.name.toLowerCase().includes(filterValue)
-      || type.tags.some(tag => tag.toLowerCase().includes(filterValue))
-  })
+  return Object.values(data.value.types)
 })
 
-// Keyboard navigation
+function filter(type: ResourceSchemaType, filterValue: string) {
+  return type.name.toLowerCase().includes(filterValue)
+    || type.tags.some(tag => tag.toLowerCase().includes(filterValue))
+}
 
-const isHover = ref(false)
-const showKeyboardNavigationHints = ref(false)
-
-const route = useRoute()
-
-const hoverIndex = ref(displayedTypes.value.findIndex(type => type.name === route.params.name))
-
-watch(displayedTypes, () => {
-  const index = displayedTypes.value.findIndex(type => type.name === route.params.name)
-  hoverIndex.value = index === -1 ? 0 : index
-})
+// type.name === route.params.name
 
 const router = useRouter()
 
-function openResource(resource: ResourceSchemaType | undefined) {
-  if (!resource) {
-    return
-  }
+function openResource(resource: ResourceSchemaType) {
   router.push({
     name: props.routeName,
     params: {
@@ -56,51 +36,20 @@ function openResource(resource: ResourceSchemaType | undefined) {
 </script>
 
 <template>
-  <div
-    class="flex flex-col h-full"
-    @mouseenter="isHover = true"
-    @mouseleave="isHover = false"
+  <LinkList
+    id="resource-list"
+    :items="list"
+    :filter="filter"
+    :selected-item="(type, route) => type.name === route.params.resourceName"
+    filter-placeholder="Filter resources by name, tags..."
+    @open="openResource"
   >
-    <div class="p-1.5">
-      <UInput
-        v-model="filter"
-        size="xs"
-        placeholder="Filter resources by name, tag..."
-        icon="i-ph-magnifying-glass"
-        class="w-full"
-        autocomplete="off"
-        autofocus
-        :ui="{ icon: { trailing: { pointer: '' } } }"
-        @keydown.up="hoverIndex = Math.max(hoverIndex - 1, 0)"
-        @keydown.down="hoverIndex = Math.min(hoverIndex + 1, displayedTypes.length - 1)"
-        @keydown.enter="openResource(displayedTypes[hoverIndex])"
-        @focus="showKeyboardNavigationHints = true"
-        @blur="showKeyboardNavigationHints = false"
-      >
-        <template #trailing>
-          <UButton
-            v-show="filter"
-            icon="i-ph-backspace"
-            color="gray"
-            variant="link"
-            size="xs"
-            :padded="false"
-            @click="filter = ''"
-          />
-        </template>
-      </UInput>
-    </div>
-
-    <div class="flex-1 overflow-y-auto">
+    <template #default="{ item, ...props }">
       <ResourceListItem
-        v-for="(resource, index) of displayedTypes"
-        :key="resource.name"
-        :resource-type="resource"
+        :resource-type="item"
         :route-name="routeName"
-        :hover="(showKeyboardNavigationHints || isHover) && hoverIndex === index"
-        :show-shortcut="showKeyboardNavigationHints && hoverIndex === index"
-        @mouseenter="hoverIndex = index"
+        v-bind="props"
       />
-    </div>
-  </div>
+    </template>
+  </LinkList>
 </template>

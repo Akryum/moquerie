@@ -1,6 +1,6 @@
 import { loadConfig } from 'c12'
 import type { Config } from '../types/config.js'
-import { getCwd } from './env.js'
+import { getCwd } from './util/env.js'
 
 export function defineConfig(config: Config): Config {
   return config

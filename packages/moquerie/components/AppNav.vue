@@ -64,10 +64,35 @@ const colorMode = useColorMode()
 
     <AppNavItem
       to="/db/resources"
-      active-route="/db"
       icon="i-ph-database"
-      title="Database"
+      title="Resources"
+      :shortcuts="[metaSymbol, '⇧', 'R']"
     />
+
+    <AppNavItem
+      to="/db/factories"
+      icon="i-ph-factory"
+      title="Factories"
+      :shortcuts="[metaSymbol, '⇧', 'F']"
+    />
+
+    <AppNavItem
+      to="/db/snapshots"
+      icon="i-ph-camera"
+      title="Snapshots"
+      :shortcuts="[metaSymbol, '⇧', 'S']"
+    />
+
+    <AppNavItem
+      to="/db/history"
+      icon="i-ph-clock-clockwise"
+      title="History"
+      :shortcuts="[metaSymbol, '⇧', 'H']"
+    />
+
+    <div class="w-full">
+      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
+    </div>
 
     <AppNavItem
       v-if="hasGraphQL"

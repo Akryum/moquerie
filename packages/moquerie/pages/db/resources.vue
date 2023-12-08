@@ -5,6 +5,10 @@ useSaveRoute({
     name: 'db-resources-resourceName',
   },
 })
+
+useHead({
+  title: 'Resources',
+})
 </script>
 
 <template>

@@ -34,17 +34,25 @@
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
     "c12": "^1.5.1",
+    "env-paths": "^3.0.0",
+    "envinfo": "^7.11.0",
     "fast-glob": "^3.3.2",
     "jiti": "^1.21.0",
     "jscodeshift": "^0.15.1",
-    "pathe": "^1.1.1"
+    "nanoid": "^5.0.4",
+    "pathe": "^1.1.1",
+    "scule": "^1.1.1",
+    "superjson": "^2.2.1"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.150",
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "^2.8.1",
     "@pinia/nuxt": "^0.5.1",
+    "@types/envinfo": "^7.8.3",
     "@vueuse/nuxt": "^10.6.1",
+    "@vueuse/router": "^10.7.0",
+    "floating-vue": "2.0.0-beta.24",
     "graphql": "^16.8.1",
     "launch-editor": "^2.6.1",
     "monaco-editor": "^0.44.0",

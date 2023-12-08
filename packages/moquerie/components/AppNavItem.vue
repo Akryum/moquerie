@@ -11,14 +11,20 @@ const props = defineProps<{
 const route = useRoute()
 
 const isActive = computed(() => {
-  if (!props.activeRoute) {
+  let activeRoute = props.activeRoute
+
+  if (!activeRoute && typeof props.to === 'string') {
+    activeRoute = props.to
+  }
+
+  if (!activeRoute) {
     return false
   }
 
-  if (props.activeRoute === '/') {
+  if (activeRoute === '/') {
     return route.path === '/'
   }
-  return route.path.startsWith(props.activeRoute)
+  return route.path.startsWith(activeRoute)
 })
 </script>
 

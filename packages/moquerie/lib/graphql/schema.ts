@@ -1,6 +1,6 @@
 import createJITI from 'jiti'
 import type { Context } from '../context.js'
-import { getCwd } from '../env.js'
+import { getCwd } from '../util/env.js'
 
 export async function resolveGraphQLSchema(ctx: Context) {
   if (!ctx.config.graphql?.schema) {

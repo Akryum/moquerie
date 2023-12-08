@@ -5,6 +5,10 @@ useSaveRoute({
     name: 'db-factories-resourceName',
   },
 })
+
+useHead({
+  title: 'Factories',
+})
 </script>
 
 <template>

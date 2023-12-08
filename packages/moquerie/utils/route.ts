@@ -1,4 +1,5 @@
 import type { LocationQuery, RouteParams, RouteRecordName } from '#vue-router'
+import type { DBLocation } from '~/types/db.js'
 
 interface SavedRoute {
   name: RouteRecordName
@@ -46,7 +47,7 @@ export function useSaveRoute(options: UseSaveRouteOptions) {
     if (!lastRoute) {
       lastRoute = s
     }
-    if (options.defaultRoute) {
+    if (options.defaultRoute && !route.matched.some(m => m.name === options.defaultRoute!.name)) {
       try {
         router.replace({
           name: options.defaultRoute.name,
@@ -72,4 +73,16 @@ export function useSaveRoute(options: UseSaveRouteOptions) {
     }
     savedRoutes.set(options.key, lastRoute)
   })
+}
+
+const validDbLocations = ['local', 'repository']
+
+export function getDbLocationFromRouteQuery(key: string) {
+  const route = useRoute()
+  const rawValue = route.query[key]
+  const value = Array.isArray(rawValue) ? rawValue[0] : rawValue
+  if (value && validDbLocations.includes(value)) {
+    return value as DBLocation
+  }
+  return null
 }

@@ -1,5 +1,9 @@
 <template>
   <div class="flex divide-x divide-gray-300 dark:divide-gray-700">
+    <Head>
+      <Title>GraphQL</Title>
+    </Head>
+
     <UVerticalNavigation
       :links="[
         {

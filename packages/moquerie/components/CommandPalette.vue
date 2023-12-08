@@ -16,28 +16,28 @@ const routes = computed(() => [
     to: '/db/resources',
     icon: 'i-ph-table',
     label: 'Database > Resources',
-    shortcuts: [metaSymbol.value, 'Shift', 'R'],
+    shortcuts: [metaSymbol.value, '⇧', 'R'],
   },
   {
     id: '_route.db.factories',
     to: '/db/factories',
     icon: 'i-ph-factory',
     label: 'Database > Factories',
-    shortcuts: [metaSymbol.value, 'Shift', 'F'],
+    shortcuts: [metaSymbol.value, '⇧', 'F'],
   },
   {
     id: '_route.db.snapshots',
     to: '/db/snapshots',
     icon: 'i-ph-camera',
     label: 'Database > Snapshots',
-    shortcuts: [metaSymbol.value, 'Shift', 'S'],
+    shortcuts: [metaSymbol.value, '⇧', 'S'],
   },
   {
     id: '_route.db.history',
     to: '/db/history',
     icon: 'i-ph-clock-clockwise',
     label: 'Database > History',
-    shortcuts: [metaSymbol.value, 'Shift', 'H'],
+    shortcuts: [metaSymbol.value, '⇧', 'H'],
   },
   ...hasGraphQL.value
     ? [
@@ -61,6 +61,12 @@ const routes = computed(() => [
     icon: 'i-ph-sliders',
     label: 'Config',
     shortcuts: [metaSymbol.value, ','],
+  },
+  {
+    id: '_route.debug',
+    to: '/debug',
+    icon: 'i-ph-bug',
+    label: 'Debug',
   },
 ])
 

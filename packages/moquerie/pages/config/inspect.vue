@@ -39,6 +39,10 @@ function openFile() {
 </script>
 
 <template>
+  <Head>
+    <Title>Config - Inspect</Title>
+  </Head>
+
   <div class="overflow-hidden flex items-stretch divide-x divide-gray-300 dark:divide-gray-600 dark:bg-gray-800">
     <div class="flex-1 flex flex-col">
       <ULink

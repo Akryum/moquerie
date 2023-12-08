@@ -25,6 +25,7 @@ export const schema = makeExecutableSchema({
 
     type Query {
       hello: String
+      manyHellos: [String!]!
       currentUser: User
     }
   `,

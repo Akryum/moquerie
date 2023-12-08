@@ -7,7 +7,7 @@ onWindowFocus(refresh)
 
 <template>
   <div v-if="data" class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700">
-    <div class="px-2 py-1 flex items-center gap-2">
+    <div class="px-2 h-10 flex items-center gap-2">
       <ResourceToolbarInfo
         :type="data"
       />
@@ -15,12 +15,22 @@ onWindowFocus(refresh)
       <div class="flex-1" />
 
       <UButton
+        v-if="$route.name !== 'db-factories-resourceName-create'"
+        :to="{
+          name: 'db-factories-resourceName-create',
+          params: {
+            ...$route.params,
+          },
+          query: {
+            ...$route.query,
+          },
+        }"
         icon="i-ph-plus"
       >
         New factory
       </UButton>
     </div>
-    <div class="flex-1 flex items-stretch">
+    <div class="flex-1 h-0 flex items-stretch">
       <SplitPane
         save-id="db.factories.factory.mainPane"
         :min="8"
@@ -29,11 +39,13 @@ onWindowFocus(refresh)
         class="w-full h-full"
       >
         <template #first>
-          <FactoryList />
+          <FactoryList
+            class="h-full"
+          />
         </template>
 
         <template #last>
-          <div class="flex-1 overflow-y-auto">
+          <div class="flex-1 overflow-y-auto h-full">
             <NuxtPage class="w-full h-full" />
           </div>
         </template>

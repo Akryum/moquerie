@@ -1,7 +1,7 @@
 import createJITI from 'jiti'
 import path from 'pathe'
 import { resolveConfig } from '~/lib/config.js'
-import { getCwd } from '~/lib/env.js'
+import { getCwd } from '~/lib/util/env.js'
 
 async function resolveConfigFile() {
   const jiti = createJITI(getCwd())

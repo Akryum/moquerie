@@ -77,7 +77,7 @@ export async function getResourceSchema(ctx: Context) {
         else if (gqlFieldType.kind === 'OBJECT') {
           type = {
             type: 'resource',
-            resource: undefined,
+            resourceName: gqlFieldType.name,
           }
         }
 
@@ -92,7 +92,6 @@ export async function getResourceSchema(ctx: Context) {
           name: field.name,
           tags,
           description: field.description ?? undefined,
-          hasAction: false,
           array,
           nonNull,
           deprecationReason: field.deprecationReason ?? undefined,
@@ -112,7 +111,6 @@ export async function getResourceSchema(ctx: Context) {
         name: gqlType.name,
         tags,
         description: gqlType.description ?? undefined,
-        hasAction: false,
         array: !isRootType,
         type: 'object',
         fields,
