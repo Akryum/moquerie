@@ -38,7 +38,7 @@ watch(() => props.hover, (val) => {
       >
         <UIcon v-if="icon" :name="icon" class="flex-none w-4 h-4 opacity-80" />
 
-        <div class="flex-1 w-full">
+        <div class="flex-1 w-0">
           <slot />
         </div>
 

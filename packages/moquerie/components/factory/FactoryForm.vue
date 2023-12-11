@@ -3,7 +3,6 @@ import { Dropdown } from 'floating-vue'
 import type { FactoryData } from './formTypes.js'
 import type { ResourceFactory } from '~/types/factory.js'
 import { useTagModel } from '~/utils/form.js'
-import type { DBLocation } from '~/types/db.js'
 
 const props = defineProps<{
   resourceName: string
@@ -92,6 +91,8 @@ function validate(state: FactoryData) {
   return errors
 }
 
+const factoryStore = useFactoryStore()
+
 const toast = useToast()
 
 async function onSubmit() {
@@ -133,6 +134,8 @@ async function onSubmit() {
   }
 
   emit('complete', factory)
+
+  factoryStore.refresh()
 
   state.value = getStateInitialValues(factory)
 }
@@ -245,6 +248,8 @@ const { metaSymbol } = useShortcuts()
             Create new factory
           </template>
         </h1>
+
+        <slot name="before-form" />
 
         <UForm
           :state="state"

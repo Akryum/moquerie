@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
+// import SuperJSON from 'superjson'
 import { useRouteQuery } from '@vueuse/router'
 import LinkList from '../LinkList.vue'
 import type { DBLocation } from '~/types/db.js'
@@ -21,14 +21,23 @@ const route = useRoute()
 
 const resourceName = computed(() => route.params.resourceName)
 
-const { data: factories, refresh } = await useFetch('/api/factories', {
-  query: {
-    resourceName,
-    location,
-  },
-  transform: value => SuperJSON.parse<ResourceFactory[]>(value as any),
+// const { data: factories, refresh } = await useFetch('/api/factories', {
+//   query: {
+//     resourceName,
+//     location,
+//   },
+//   transform: value => SuperJSON.parse<ResourceFactory[]>(value as any),
+// })
+// onWindowFocus(refresh)
+
+const factoryStore = useFactoryStore()
+
+watchEffect(() => {
+  factoryStore.fetchFactories({
+    resourceName: resourceName.value as string,
+    location: location.value,
+  })
 })
-onWindowFocus(refresh)
 
 // Filter
 
@@ -57,10 +66,9 @@ function onOpen(factory: ResourceFactory) {
 
 <template>
   <LinkList
-    v-if="factories"
     id="factory-list"
     ref="linkList"
-    :items="factories"
+    :items="factoryStore.factories"
     :filter="filter"
     :selected-item="(factory, route) => factory.id === route.params.factoryId"
     @open="onOpen"
