@@ -1,12 +1,7 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
-import type { ResourceFactory } from '~/types/factory.js'
-
 const route = useRoute()
-
-const { data: factory } = await useFetch(`/api/factories/${route.params.factoryId}`, {
-  transform: value => SuperJSON.parse<ResourceFactory>(value as any),
-})
+const factoryStore = useFactoryStore()
+const factory = await factoryStore.fetchFactory(route.params.factoryId as string)
 </script>
 
 <template>

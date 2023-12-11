@@ -143,7 +143,7 @@ async function onSubmit() {
 
   emit('complete', factory)
 
-  factoryStore.refresh()
+  factoryStore.refreshFactories()
 
   state.value = getStateInitialValues(factory)
 }
