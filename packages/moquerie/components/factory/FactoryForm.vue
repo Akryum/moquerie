@@ -393,7 +393,7 @@ const { metaSymbol } = useShortcuts()
             >
               {{ factory ? 'Update factory' : 'Create factory' }}
 
-              <span>
+              <span class="space-x-0.5 leading-none">
                 <UKbd>{{ metaSymbol }}</UKbd>
                 <UKbd>↵</UKbd>
               </span>
@@ -423,7 +423,7 @@ const { metaSymbol } = useShortcuts()
             >
               Delete factory
 
-              <span>
+              <span class="space-x-0.5 leading-none">
                 <UKbd>{{ metaSymbol }}</UKbd>
                 <UKbd>Del</UKbd>
               </span>
