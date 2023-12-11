@@ -58,6 +58,14 @@ watch(() => props.factory, (value) => {
   state.value = getStateInitialValues(value)
 })
 
+const stateChanged = ref(false)
+
+watch(state, () => {
+  stateChanged.value = true
+}, {
+  deep: true,
+})
+
 async function setDefaultValueFactory() {
   const data = await $fetch('/api/factories/defaultValueFactory', {
     query: {
@@ -142,11 +150,13 @@ defineShortcuts({
 
 // Cancel
 
-function onCancel() {
+async function onCancel() {
   emit('cancel')
 
   if (props.factory) {
     state.value = getStateInitialValues()
+    await nextTick()
+    stateChanged.value = false
   }
 }
 
@@ -366,6 +376,7 @@ const { metaSymbol } = useShortcuts()
             <UButton
               type="submit"
               icon="i-ph-check"
+              :disabled="factory && !stateChanged"
             >
               {{ factory ? 'Update factory' : 'Create factory' }}
 
