@@ -388,20 +388,6 @@ const { metaSymbol } = useShortcuts()
 
             <div class="flex-1" />
 
-            <UButton
-              v-if="factory"
-              color="gray"
-              icon="i-ph-trash"
-              @click="showConfirmRemove = true"
-            >
-              Delete factory
-
-              <span>
-                <UKbd>{{ metaSymbol }}</UKbd>
-                <UKbd>Del</UKbd>
-              </span>
-            </UButton>
-
             <Dropdown>
               <UButton
                 color="gray"
@@ -415,6 +401,20 @@ const { metaSymbol } = useShortcuts()
                 </div>
               </template>
             </Dropdown>
+
+            <UButton
+              v-if="factory"
+              color="gray"
+              icon="i-ph-trash"
+              @click="showConfirmRemove = true"
+            >
+              Delete factory
+
+              <span>
+                <UKbd>{{ metaSymbol }}</UKbd>
+                <UKbd>Del</UKbd>
+              </span>
+            </UButton>
           </div>
         </UForm>
 
