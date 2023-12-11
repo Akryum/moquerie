@@ -5,6 +5,38 @@
   }
 }
 
+/* Tooltip */
+
+.v-popper__popper.v-popper--theme-tooltip {
+  .v-popper__inner {
+    @apply bg-white text-black border border-gray-200;
+  }
+  
+  .v-popper__arrow-inner {
+    @apply border-white visible;
+  }
+  
+  .v-popper__arrow-outer {
+    @apply border-gray-200;
+  }
+
+  .dark & {
+    .v-popper__inner {
+      @apply bg-black text-white border-gray-800;
+    }
+  
+    .v-popper__arrow-inner {
+      @apply border-black;
+    }
+  
+    .v-popper__arrow-outer {
+      @apply border-gray-800;
+    }
+  }
+}
+
+/* Dropdown */
+
 .dark .v-popper__popper.v-popper--theme-dropdown {
   .v-popper__inner {
     @apply bg-black text-white border-gray-800;

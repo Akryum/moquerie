@@ -33,5 +33,13 @@ const icon = computed(() => {
     <div class="text-sm truncate">
       {{ resourceType.name }}
     </div>
+
+    <template #tooltip>
+      <div class="flex flex-col gap-1">
+        <ResourceInfo
+          :type="resourceType"
+        />
+      </div>
+    </template>
   </LinkListItem>
 </template>

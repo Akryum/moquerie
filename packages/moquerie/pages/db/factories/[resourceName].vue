@@ -26,7 +26,7 @@ defineShortcuts({
 <template>
   <div v-if="data" class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700">
     <div class="px-2 h-10 flex items-center gap-2">
-      <ResourceToolbarInfo
+      <ResourceInfo
         :type="data"
       />
 

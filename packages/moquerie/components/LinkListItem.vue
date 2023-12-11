@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Tooltip } from 'floating-vue'
 import type { RouteLocationRaw } from 'vue-router'
 
 const props = defineProps<{
@@ -22,23 +23,33 @@ watch(() => props.hover, (val) => {
 
 <template>
   <div ref="el">
-    <NuxtLink
-      :to="to"
-      class="flex items-center gap-2 px-2 py-1.5 mx-1 my-0.5 rounded"
-      :class="{
-        'text-primary-500 bg-primary-50 dark:bg-primary-950': hover,
-      }"
-      active-class="!bg-primary-100 dark:!bg-primary-900"
+    <Tooltip
+      placement="right"
+      :delay="{ show: 300, hide: 0 }"
+      :disabled="!$slots.tooltip"
     >
-      <UIcon v-if="icon" :name="icon" class="flex-none w-4 h-4 opacity-80" />
+      <NuxtLink
+        :to="to"
+        class="flex items-center gap-2 px-2 py-1.5 mx-1 my-0.5 rounded"
+        :class="{
+          'text-primary-500 bg-primary-50 dark:bg-primary-950': hover,
+        }"
+        active-class="!bg-primary-100 dark:!bg-primary-900"
+      >
+        <UIcon v-if="icon" :name="icon" class="flex-none w-4 h-4 opacity-80" />
 
-      <div class="flex-1 w-full">
-        <slot />
-      </div>
+        <div class="flex-1 w-full">
+          <slot />
+        </div>
 
-      <UKbd v-if="showShortcut">
-        ↵
-      </UKbd>
-    </NuxtLink>
+        <UKbd v-if="showShortcut">
+          ↵
+        </UKbd>
+      </NuxtLink>
+
+      <template #popper>
+        <slot name="tooltip" />
+      </template>
+    </Tooltip>
   </div>
 </template>
