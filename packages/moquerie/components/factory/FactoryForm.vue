@@ -129,6 +129,17 @@ async function onSubmit() {
   state.value = getStateInitialValues(factory)
 }
 
+// Shortcuts
+
+defineShortcuts({
+  meta_enter: {
+    usingInput: true,
+    handler: () => {
+      onSubmit()
+    },
+  },
+})
+
 // Cancel
 
 function onCancel() {
@@ -139,14 +150,70 @@ function onCancel() {
   }
 }
 
+// Delete factory
+
+const router = useRouter()
+const route = useRoute()
+
+const showConfirmRemove = ref(false)
+
+async function removeFactory() {
+  if (!props.factory) {
+    return
+  }
+
+  await $fetch('/api/factories/remove', {
+    method: 'DELETE',
+    query: {
+      id: props.factory.id,
+    },
+  })
+
+  toast.add({
+    id: 'factory-removed',
+    title: 'Factory removed!',
+    icon: 'i-ph-trash',
+    color: 'green',
+  })
+
+  router.replace({
+    name: 'db-factories-resourceName',
+    params: {
+      ...route.params,
+    },
+    query: {
+      ...route.query,
+    },
+  })
+}
+
 // Shortcuts
 
 defineShortcuts({
-  meta_enter: {
+  meta_delete: {
     usingInput: true,
     handler: () => {
-      onSubmit()
+      if (!props.factory) {
+        return
+      }
+      showConfirmRemove.value = true
     },
+  },
+
+  escape: {
+    usingInput: true,
+    handler: () => {
+      showConfirmRemove.value = false
+    },
+    whenever: [showConfirmRemove],
+  },
+
+  enter: {
+    usingInput: true,
+    handler: () => {
+      removeFactory()
+    },
+    whenever: [showConfirmRemove],
   },
 })
 
@@ -296,14 +363,33 @@ const { metaSymbol } = useShortcuts()
               Cancel
             </UButton>
 
-            <UButton type="submit">
+            <UButton
+              type="submit"
+              icon="i-ph-check"
+            >
               {{ factory ? 'Update factory' : 'Create factory' }}
 
-              <UKbd>{{ metaSymbol }}</UKbd>
-              <UKbd>↵</UKbd>
+              <span>
+                <UKbd>{{ metaSymbol }}</UKbd>
+                <UKbd>↵</UKbd>
+              </span>
             </UButton>
 
             <div class="flex-1" />
+
+            <UButton
+              v-if="factory"
+              color="gray"
+              icon="i-ph-trash"
+              @click="showConfirmRemove = true"
+            >
+              Delete factory
+
+              <span>
+                <UKbd>{{ metaSymbol }}</UKbd>
+                <UKbd>Del</UKbd>
+              </span>
+            </UButton>
 
             <Dropdown>
               <UButton
@@ -320,6 +406,39 @@ const { metaSymbol } = useShortcuts()
             </Dropdown>
           </div>
         </UForm>
+
+        <UModal v-model="showConfirmRemove">
+          <UCard v-if="factory">
+            <template #header>
+              <h2 class="text-lg font-bold flex items-center gap-2">
+                <UIcon name="i-ph-factory" class="w-6 h-6" />
+                Delete factory
+                <span class="border border-gray-500/50 rounded-lg px-1.5 font-bold text-primary">{{ factory.name }}</span>
+              </h2>
+            </template>
+
+            <div class="flex items-center gap-2">
+              <UButton
+                color="gray"
+                @click="showConfirmRemove = false"
+              >
+                Cancel
+
+                <UKbd>Esc</UKbd>
+              </UButton>
+
+              <UButton
+                color="red"
+                icon="i-ph-trash"
+                @click="removeFactory()"
+              >
+                Delete factory
+
+                <UKbd>↵</UKbd>
+              </UButton>
+            </div>
+          </UCard>
+        </UModal>
       </div>
     </div>
 
