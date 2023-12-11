@@ -7,6 +7,7 @@ const emit = defineEmits<{
 }>()
 
 const { metaSymbol } = useShortcuts()
+const route = useRoute()
 
 // Routes
 
@@ -78,7 +79,30 @@ const routes = computed(() => [
   },
 ])
 
+// Resource
+
+const resourceTypeStore = useResourceTypeStore()
+
 // Factories
+
+const createFactoryCommand = computed(() => {
+  const resourceName = route.params.resourceName ?? resourceTypeStore.lastSelectedResourceName
+  return {
+    id: '_route.db.factories.create',
+    icon: 'i-ph-plus',
+    label: 'Create factory',
+    to: resourceName
+      ? {
+          name: 'db-factories-resourceName-create',
+          params: {
+            resourceName,
+          },
+        }
+      : {
+          name: 'db-factories-create',
+        },
+  }
+})
 
 const { data: factories, refresh } = await useFetch('/api/factories', {
   transform: value => SuperJSON.parse<ResourceFactory[]>(value as any),
@@ -96,7 +120,7 @@ const factoryCommands = computed(() => factories.value?.map(f => ({
 
 const groups = computed(() => [
   { key: 'routes', commands: routes.value, label: 'Views' },
-  { key: 'factories', commands: factoryCommands.value, label: 'Factories' },
+  { key: 'factories', commands: [createFactoryCommand.value, ...factoryCommands.value], label: 'Factories' },
 ])
 
 const router = useRouter()

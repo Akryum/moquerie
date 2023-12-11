@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 useSaveRoute({
   key: 'db.resources.lastRoute',
+  basePath: '/db/resources',
   defaultRoute: {
     name: 'db-resources-resourceName',
   },

@@ -29,7 +29,7 @@ const fakerLocaleOptions = computed(() => {
   ]
 })
 
-const { data: resourceType, refresh } = await useFetch(`/api/resources/${props.resourceName}`)
+const { data: resourceType, refresh } = await useFetch(() => `/api/resources/${props.resourceName}`)
 onWindowFocus(refresh)
 
 function getStateInitialValues(factory = props.factory): FactoryData {
@@ -77,6 +77,14 @@ async function setDefaultValueFactory() {
 if (!props.factory) {
   setDefaultValueFactory()
 }
+
+watch(() => props.resourceName, () => {
+  state.value = getStateInitialValues()
+  if (!props.factory) {
+    setDefaultValueFactory()
+  }
+  refresh()
+})
 
 const tags = useTagModel(state.value, 'tags')
 const applyTags = useTagModel(state.value, 'applyTags')

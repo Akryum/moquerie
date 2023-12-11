@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 useSaveRoute({
   key: 'db.factories.lastRoute',
+  basePath: '/db/factories',
   defaultRoute: {
     name: 'db-factories-resourceName',
   },

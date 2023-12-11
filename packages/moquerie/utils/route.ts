@@ -13,6 +13,7 @@ let lastRoute: SavedRoute | null = null
 
 export interface UseSaveRouteOptions {
   key: string
+  basePath: string
   defaultRoute?: {
     name: RouteRecordName
     params?: RouteParams
@@ -25,17 +26,20 @@ export function useSaveRoute(options: UseSaveRouteOptions) {
   const router = useRouter()
 
   const savedRoute = savedRoutes.get(options.key)
+  const isBaseRoute = route.path === options.basePath
 
   if (savedRoute) {
-    router.replace({
-      name: savedRoute.name,
-      params: {
-        ...savedRoute.params,
-        // We reuse the params to keep same topic
-        ...lastRoute?.params,
-      },
-      query: savedRoute.query,
-    })
+    if (isBaseRoute) {
+      router.replace({
+        name: savedRoute.name,
+        params: {
+          ...savedRoute.params,
+          // We reuse the params to keep same topic
+          ...lastRoute?.params,
+        },
+        query: savedRoute.query,
+      })
+    }
   }
   else {
     const s = {
@@ -47,7 +51,7 @@ export function useSaveRoute(options: UseSaveRouteOptions) {
     if (!lastRoute) {
       lastRoute = s
     }
-    if (options.defaultRoute && !route.matched.some(m => m.name === options.defaultRoute!.name)) {
+    if (options.defaultRoute && isBaseRoute) {
       try {
         router.replace({
           name: options.defaultRoute.name,
