@@ -1,8 +1,16 @@
 <script lang="ts" setup>
-const commandPaletteStore = useCommandPaletteStore()
-const hasGraphQL = await useHasGraphql()
+import SuperJSON from 'superjson'
+import type { ResourceFactory } from '~/types/factory.js'
+
+const emit = defineEmits<{
+  close: []
+}>()
 
 const { metaSymbol } = useShortcuts()
+
+// Routes
+
+const hasGraphQL = await useHasGraphql()
 
 const routes = computed(() => [
   {
@@ -70,8 +78,25 @@ const routes = computed(() => [
   },
 ])
 
+// Factories
+
+const { data: factories, refresh } = await useFetch('/api/factories', {
+  transform: value => SuperJSON.parse<ResourceFactory[]>(value as any),
+})
+onWindowFocus(refresh)
+
+const factoryCommands = computed(() => factories.value?.map(f => ({
+  id: `factory.${f.name}`,
+  icon: 'i-ph-factory',
+  label: f.name,
+  to: `/db/factories/${f.resourceName}/view/${f.id}`,
+})) ?? [])
+
+// Final command list
+
 const groups = computed(() => [
   { key: 'routes', commands: routes.value, label: 'Views' },
+  { key: 'factories', commands: factoryCommands.value, label: 'Factories' },
 ])
 
 const router = useRouter()
@@ -80,41 +105,32 @@ function onSelect(command: any) {
   if (command.to) {
     router.push(command.to)
   }
-  commandPaletteStore.isOpen = false
+  emit('close')
 }
 
-defineShortcuts({
-  meta_k: {
-    usingInput: true,
-    handler: () => {
-      commandPaletteStore.isOpen = !commandPaletteStore.isOpen
-    },
-  },
+const commandPalette = ref<any>()
+
+onMounted(() => {
+  commandPalette.value?.$refs.comboboxInput.el.focus()
 })
 </script>
 
 <template>
-  <UModal
-    v-model="commandPaletteStore.isOpen"
-    :ui="{
-      container: 'sm:items-start',
+  <UCommandPalette
+    ref="commandPalette"
+    :close-button="{
+      icon: 'i-ph-x',
+      color: 'gray',
+      variant: 'link',
+      padded: false,
     }"
-  >
-    <UCommandPalette
-      :close-button="{
-        icon: 'i-ph-x',
-        color: 'gray',
-        variant: 'link',
-        padded: false,
-      }"
-      :groups="groups"
-      :fuse="{
-        fuseOptions: {
-          includeMatches: true,
-        },
-      }"
-      @update:model-value="onSelect"
-      @close="commandPaletteStore.isOpen = false"
-    />
-  </UModal>
+    :groups="groups"
+    :fuse="{
+      fuseOptions: {
+        includeMatches: true,
+      },
+    }"
+    @update:model-value="onSelect"
+    @close="$emit('close')"
+  />
 </template>

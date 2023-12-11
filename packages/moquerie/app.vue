@@ -4,7 +4,7 @@
     <NuxtPage class="w-full h-full overflow-y-auto" />
   </div>
 
-  <CommandPalette />
+  <CommandPaletteModal />
 
   <UNotifications />
 </template>

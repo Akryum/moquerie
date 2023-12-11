@@ -13,6 +13,8 @@ export default defineEventHandler<{ query: { resourceName: string, location?: DB
   else {
     factories = await storage.findAll()
   }
-  factories = factories.filter(factory => factory.resourceName === query.resourceName)
+  if (query.resourceName) {
+    factories = factories.filter(factory => factory.resourceName === query.resourceName)
+  }
   return SuperJSON.stringify(factories) as unknown as ResourceFactory[]
 })
