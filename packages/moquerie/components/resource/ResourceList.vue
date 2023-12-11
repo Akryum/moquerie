@@ -13,8 +13,6 @@ function filter(type: ResourceSchemaType, filterValue: string) {
     || type.tags.some(tag => tag.toLowerCase().includes(filterValue))
 }
 
-// type.name === route.params.name
-
 const router = useRouter()
 
 function openResource(resource: ResourceSchemaType) {

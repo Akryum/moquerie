@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// import SuperJSON from 'superjson'
 import { useRouteQuery } from '@vueuse/router'
 import LinkList from '../LinkList.vue'
 import type { DBLocation } from '~/types/db.js'
@@ -20,15 +19,6 @@ function onClickOnLocationButton() {
 const route = useRoute()
 
 const resourceName = computed(() => route.params.resourceName)
-
-// const { data: factories, refresh } = await useFetch('/api/factories', {
-//   query: {
-//     resourceName,
-//     location,
-//   },
-//   transform: value => SuperJSON.parse<ResourceFactory[]>(value as any),
-// })
-// onWindowFocus(refresh)
 
 const factoryStore = useFactoryStore()
 
@@ -71,6 +61,7 @@ function onOpen(factory: ResourceFactory) {
     :items="factoryStore.factories"
     :filter="filter"
     :selected-item="(factory, route) => factory.id === route.params.factoryId"
+    filter-placeholder="Filter factories by name, tags..."
     @open="onOpen"
   >
     <template #toolbar>
