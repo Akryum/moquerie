@@ -2,6 +2,8 @@ import { nanoid } from 'nanoid'
 import type { Faker } from '@faker-js/faker'
 import type { ResourceFactory, ResourceFactoryValue } from '../../types/factory.js'
 import type { ResourceInstance, ResourceSchemaType } from '../../types/resource.js'
+import { findAllResourceInstances } from '../resource/findAll.js'
+import { createResourceInstanceReference } from '../resource/resourceReference.js'
 import { generateValueFromFaker } from './fakerGenerate.js'
 import { getFaker } from './fakerGet.js'
 import { runValueCode } from '~/lib/util/vm.js'
@@ -41,6 +43,7 @@ export async function createInstanceFromFactory<TType extends ResourceSchemaType
     value,
     tags: factory.applyTags ?? [],
     comment: factory.applyComment || null, // empty string => null
+    factoryId: factory.id,
   }
 }
 
@@ -205,7 +208,30 @@ export async function createFactoryValue(options: CreateFactoryValueOptions) {
       }
     }
     case 'resourceReference': {
-      // @TODO handle resourceReference
+      if (!createValue.resourceTypeName) {
+        throw new Error(`For resourceReference factory value, resourceTypeName is required.`)
+      }
+
+      let instanceId: string[] | undefined
+      if (createValue.resourceRandom) {
+        const allInstances = await findAllResourceInstances(createValue.resourceTypeName)
+        const randomIndex = Math.floor(Math.random() * allInstances.length)
+        instanceId = [allInstances[randomIndex]?.id]
+      }
+      else if (createValue.resourceId) {
+        instanceId = Array.isArray(createValue.resourceId) ? createValue.resourceId : [createValue.resourceId]
+      }
+
+      instanceId = instanceId?.filter(Boolean)
+
+      if (instanceId?.length) {
+        if (!array && instanceId.length > 1) {
+          throw new Error(`Expected single instance for ${factory.name}#${options.path.join('.')} but got ${instanceId.length}`)
+        }
+        const refs = instanceId.map(id => createResourceInstanceReference(createValue.resourceTypeName!, id))
+        return array ? refs : refs[0]
+      }
+
       return array ? [] : null
     }
   }

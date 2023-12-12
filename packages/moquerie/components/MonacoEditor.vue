@@ -114,6 +114,12 @@ onMounted(() => {
     // Do nothing
   })
 
+  // // Handle inside a modal with transition
+
+  // setTimeout(() => {
+  //   editor.layout()
+  // }, 1000)
+
   // Hidden areas
 
   const wrapCodeLines = computed(() => props.wrapCode

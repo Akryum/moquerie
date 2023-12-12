@@ -9,16 +9,19 @@ onWindowFocus(refresh)
 const router = useRouter()
 
 defineShortcuts({
-  n: () => {
-    router.push({
-      name: 'db-factories-resourceName-create',
-      params: {
-        ...route.params,
-      },
-      query: {
-        ...route.query,
-      },
-    })
+  meta_shift_x: {
+    usingInput: true,
+    handler: () => {
+      router.push({
+        name: 'db-factories-resourceName-create',
+        params: {
+          ...route.params,
+        },
+        query: {
+          ...route.query,
+        },
+      })
+    },
   },
 })
 </script>
@@ -46,7 +49,7 @@ defineShortcuts({
         icon="i-ph-plus"
       >
         New factory
-        <UKbd>N</UKbd>
+        <KbShortcut keys="meta_shift_x" />
       </UButton>
     </div>
     <div class="flex-1 h-0 flex items-stretch">

@@ -42,9 +42,7 @@ watch(() => props.hover, (val) => {
           <slot />
         </div>
 
-        <UKbd v-if="showShortcut">
-          ↵
-        </UKbd>
+        <KbShortcut v-if="showShortcut" :keys="['enter']" />
       </NuxtLink>
 
       <template #popper>

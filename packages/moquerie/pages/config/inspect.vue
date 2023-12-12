@@ -66,7 +66,7 @@ function openFile() {
         <UIcon name="i-ph-eye" />
         Resolved config
       </div>
-      <ErrorMessage v-if="error" :error="error" />
+      <ErrorMessage v-if="error" :error="error" class="p-12" />
       <MonacoEditor
         v-else
         filename="resolved-config.json"

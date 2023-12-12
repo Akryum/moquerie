@@ -53,6 +53,7 @@ export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSch
   active: boolean
   tags: string[]
   comment: string | null
+  factoryId: string | null
 }
 
 export type ResourceInstanceValue<TType extends ResourceSchemaType> =
@@ -98,46 +99,3 @@ export interface ResourceInstanceReference {
   __resourceType: string
   __id: string
 }
-
-// function create<TType extends ResourceSchemaType>(type: TType, value: ResourceInstance<TType>['value']): ResourceInstance<TType> {
-//   return {
-//     id: uuid(),
-//     type,
-//     value,
-//   }
-// }
-
-// const meow1 = create({
-//   name: 'meow',
-//   tags: [],
-//   description: '',
-//   hasAction: false,
-//   array: false,
-//   type: 'string',
-// }, 'meow')
-
-// const val1 = meow1.value
-
-// const meow = create({
-//   name: 'meow',
-//   tags: [],
-//   description: '',
-//   hasAction: false,
-//   array: false,
-//   type: 'object',
-//   fields: {
-//     meow: {
-//       name: 'meow',
-//       tags: [],
-//       description: '',
-//       hasAction: false,
-//       array: false,
-//       type: 'string',
-//     },
-//   },
-// }, {
-//   meow: 'meow',
-// })
-
-// const val = meow.value
-// const v = val.meow

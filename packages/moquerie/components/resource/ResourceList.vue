@@ -23,15 +23,34 @@ function openResource(resource: ResourceSchemaType) {
     },
   })
 }
+
+// Shortcut
+
+const linkList = ref<any>()
+
+defineShortcuts({
+  meta_e: {
+    usingInput: true,
+    handler: () => {
+      linkList.value?.focusFilterInput()
+    },
+  },
+})
 </script>
 
 <template>
   <LinkList
     id="resource-list"
+    ref="linkList"
     :items="resourceTypeStore.resourceTypes"
     :filter="filter"
     :selected-item="(type, route) => type.name === route.params.resourceName"
     filter-placeholder="Filter resources by name, tags..."
+    :ui="{
+      input: {
+        trailing: { padding: { xs: 'pe-16' } },
+      },
+    }"
     @open="openResource"
   >
     <template #default="{ item, ...props }">
@@ -40,6 +59,10 @@ function openResource(resource: ResourceSchemaType) {
         :route-name="routeName"
         v-bind="props"
       />
+    </template>
+
+    <template #trailing>
+      <KbShortcut :keys="['meta', 'E']" />
     </template>
   </LinkList>
 </template>

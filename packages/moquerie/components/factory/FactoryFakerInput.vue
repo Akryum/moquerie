@@ -110,8 +110,6 @@ const fakerOptionsWrapCode = computed(() => {
   }
 })
 
-const { metaSymbol } = useShortcuts()
-
 // Array
 
 const fakerCountType = computed({
@@ -167,11 +165,7 @@ interface RandomFakerCount {
         <template #hint>
           <div class="text-xs flex items-center gap-1">
             <span>Hint with</span>
-            <span>
-              <UKbd>{{ metaSymbol }}</UKbd>
-              <UKbd>⇧</UKbd>
-              <UKbd>␣</UKbd>
-            </span>
+            <KbShortcut :keys="['meta', 'shift', 'space']" />
           </div>
         </template>
 

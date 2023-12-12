@@ -5,7 +5,7 @@ onWindowFocus(refresh)
 
 <template>
   <KeepAlive>
-    <ErrorMessage v-if="error" :error="error" />
+    <ErrorMessage v-if="error" :error="error" class="p-12" />
     <UTabs
       v-else
       :items="[

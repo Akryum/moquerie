@@ -11,7 +11,7 @@ export const useFactoryStore = defineStore('factories', () => {
 
   async function fetchFactories(options: { resourceName?: string, location?: DBLocation } = {}) {
     lastFetchOptions = options
-    factories.value = SuperJSON.parse(await $fetch('/api/factories', {
+    return factories.value = SuperJSON.parse(await $fetch('/api/factories', {
       query: options,
     }))
   }

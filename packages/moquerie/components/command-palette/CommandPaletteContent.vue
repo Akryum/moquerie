@@ -83,6 +83,25 @@ const routes = computed(() => [
 
 const resourceTypeStore = useResourceTypeStore()
 
+const createResourceCommand = computed(() => {
+  const resourceName = route.params.resourceName ?? resourceTypeStore.lastSelectedResourceName
+  return {
+    id: '_route.db.resource.create',
+    icon: 'i-ph-plus',
+    label: 'Create resource instance',
+    to: resourceName
+      ? {
+          name: 'db-resources-resourceName-create',
+          params: {
+            resourceName,
+          },
+        }
+      : {
+          name: 'db-resources-create',
+        },
+  }
+})
+
 // Factories
 
 const createFactoryCommand = computed(() => {
@@ -121,6 +140,7 @@ const factoryCommands = computed(() => factories.value?.map(f => ({
 const groups = computed(() => [
   { key: 'routes', commands: routes.value, label: 'Views' },
   { key: 'factories', commands: [createFactoryCommand.value, ...factoryCommands.value], label: 'Factories' },
+  { key: 'resources', commands: [createResourceCommand.value], label: 'Resources' },
 ])
 
 const router = useRouter()

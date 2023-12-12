@@ -69,12 +69,25 @@ function update(updated: Partial<ResourceFactoryValue>) {
     />
 
     <div v-if="value.generateType === 'static'">
-      <UInput
+      <div class="p-2 flex items-center gap-2">
+        <UToggle
+          :model-value="value.staticEvaluated ?? false"
+          @update:model-value="update({ staticEvaluated: $event })"
+        />
+        Evaluate as JavaScript
+      </div>
+
+      <UTextarea
+        v-if="!value.staticEvaluated"
         :model-value="value.staticValue ?? ''"
+        :ui="{
+          base: 'h-[200px]',
+        }"
         @update:model-value="update({ staticValue: $event })"
       />
 
       <MonacoEditor
+        v-else
         :filename="`field-${resourceType.name}-edit.js`"
         :source="value.staticValue ?? ''"
         :options="{
@@ -82,7 +95,7 @@ function update(updated: Partial<ResourceFactoryValue>) {
           lineNumbers: 'off',
           folding: false,
         }"
-        class="h-[200px] border border-gray-300 dark:border-gray-700 rounded overflow-hidden"
+        class="h-[200px] border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden"
         @update:source="update({ staticValue: $event })"
       />
     </div>

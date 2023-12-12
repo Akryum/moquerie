@@ -1,14 +1,54 @@
 <script lang="ts" setup>
 const route = useRoute()
+const { data: resourceType, refresh } = await useFetch(`/api/resources/${route.params.resourceName}`)
+onWindowFocus(refresh)
+
+const router = useRouter()
+
+defineShortcuts({
+  meta_shift_x: {
+    usingInput: true,
+    handler: () => {
+      router.push({
+        name: 'db-resources-resourceName-create',
+        params: {
+          ...route.params,
+        },
+        query: {
+          ...route.query,
+        },
+      })
+    },
+  },
+})
 </script>
 
 <template>
-  <div class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700">
-    <div class="p-2">
-      <div>{{ route.params.resourceName }}</div>
+  <div v-if="resourceType" class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700">
+    <div class="px-2 h-10 flex items-center gap-2">
+      <ResourceInfo :type="resourceType" />
+
+      <div class="flex-1" />
+
+      <UButton
+        v-if="$route.name !== 'db-resources-resourceName-create'"
+        :to="{
+          name: 'db-resources-resourceName-create',
+          params: {
+            ...$route.params,
+          },
+          query: {
+            ...$route.query,
+          },
+        }"
+        icon="i-ph-plus"
+      >
+        New instance
+        <KbShortcut keys="meta_shift_x" />
+      </UButton>
     </div>
     <div class="flex-1 overflow-y-auto flex">
-      <UIcon name="i-ph-traffic-cone" class="w-12 h-12 m-auto opacity-30" />
+      <NuxtPage />
     </div>
   </div>
 </template>

@@ -220,30 +220,12 @@ defineShortcuts({
       showConfirmRemove.value = true
     },
   },
-
-  escape: {
-    usingInput: true,
-    handler: () => {
-      showConfirmRemove.value = false
-    },
-    whenever: [showConfirmRemove],
-  },
-
-  enter: {
-    usingInput: true,
-    handler: () => {
-      removeFactory()
-    },
-    whenever: [showConfirmRemove],
-  },
 })
-
-const { metaSymbol } = useShortcuts()
 </script>
 
 <template>
-  <div class="flex items-stretch">
-    <div class="w-1/2 h-full overflow-y-auto p-4">
+  <div class="grid grid-cols-2">
+    <div class="w-full h-full overflow-y-auto p-4">
       <div class="space-y-4">
         <h1 class="flex items-center gap-1">
           <UIcon name="i-ph-factory" class="text-primary-500 w-6 h-6" />
@@ -377,8 +359,7 @@ const { metaSymbol } = useShortcuts()
             <UTextarea v-model="state.applyComment" />
           </UFormGroup>
 
-          <!-- Form actions -->
-          <div class="flex items-center gap-4 sticky -bottom-4 bg-white dark:bg-gray-950 py-2">
+          <FormActions class="-bottom-4">
             <UButton
               color="gray"
               @click="onCancel()"
@@ -393,10 +374,7 @@ const { metaSymbol } = useShortcuts()
             >
               {{ factory ? 'Update factory' : 'Create factory' }}
 
-              <span class="space-x-0.5 leading-none">
-                <UKbd>{{ metaSymbol }}</UKbd>
-                <UKbd>↵</UKbd>
-              </span>
+              <KbShortcut :keys="['meta', 'enter']" />
             </UButton>
 
             <div class="flex-1" />
@@ -423,50 +401,28 @@ const { metaSymbol } = useShortcuts()
             >
               Delete factory
 
-              <span class="space-x-0.5 leading-none">
-                <UKbd>{{ metaSymbol }}</UKbd>
-                <UKbd>Del</UKbd>
-              </span>
+              <KbShortcut :keys="['meta', 'Del']" />
             </UButton>
-          </div>
+          </FormActions>
         </UForm>
 
-        <UModal v-model="showConfirmRemove">
-          <UCard v-if="factory">
-            <template #header>
-              <h2 class="text-lg font-bold flex items-center gap-2">
-                <UIcon name="i-ph-factory" class="w-6 h-6" />
-                Delete factory
-                <span class="border border-gray-500/50 rounded-lg px-1.5 font-bold text-primary">{{ factory.name }}</span>
-              </h2>
+        <template v-if="factory">
+          <ConfirmModal
+            v-model="showConfirmRemove"
+            title="Delete factory?"
+            confirm-label="Delete factory"
+            @cancel="showConfirmRemove = false"
+            @confirm="removeFactory()"
+          >
+            <template #after-title>
+              <span class="border border-gray-500/50 rounded-lg px-1.5 font-bold text-primary">{{ factory.name }}</span>
             </template>
-
-            <div class="flex items-center gap-2">
-              <UButton
-                color="gray"
-                @click="showConfirmRemove = false"
-              >
-                Cancel
-
-                <UKbd>Esc</UKbd>
-              </UButton>
-
-              <UButton
-                color="red"
-                icon="i-ph-trash"
-                @click="removeFactory()"
-              >
-                Delete factory
-
-                <UKbd>↵</UKbd>
-              </UButton>
-            </div>
-          </UCard>
-        </UModal>
+          </ConfirmModal>
+        </template>
       </div>
     </div>
 
-    <div class="w-1/2 h-full">
+    <div class="w-full h-full">
       <FactoryPreview
         :factory="state"
         class="h-full p-4"

@@ -1,4 +1,5 @@
 <script lang="ts" setup generic="TItem = any">
+import { VTooltip as vTooltip } from 'floating-vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 const props = defineProps<{
@@ -7,6 +8,9 @@ const props = defineProps<{
   filter: (item: TItem, filterValue: string) => boolean
   selectedItem: (item: TItem, route: RouteLocationNormalizedLoaded) => boolean
   filterPlaceholder?: string
+  ui?: {
+    input?: any
+  }
 }>()
 
 const emit = defineEmits<{
@@ -57,6 +61,7 @@ const filterInput = ref<any | null>(null)
 
 function focusFilterInput() {
   filterInput.value?.input.focus()
+  filterInput.value?.input.select()
 }
 
 defineExpose({
@@ -76,13 +81,14 @@ defineExpose({
       <UInput
         ref="filterInput"
         v-model="filter"
+        v-tooltip="filterPlaceholder"
         size="xs"
         :placeholder="filterPlaceholder ?? 'Filter...'"
         icon="i-ph-magnifying-glass"
         class="w-full"
         autocomplete="off"
         autofocus
-        :ui="{ icon: { trailing: { pointer: '' } } }"
+        :ui="{ trailing: { padding: { xs: 'pe-4' } }, icon: { trailing: { pointer: '' } }, ...ui?.input }"
         @keydown.up="hoverIndex = Math.max(hoverIndex - 1, 0)"
         @keydown.down="hoverIndex = Math.min(hoverIndex + 1, displayedItems.length - 1)"
         @keydown.enter="openItem(displayedItems[hoverIndex])"
@@ -90,15 +96,9 @@ defineExpose({
         @blur="showKeyboardNavigationHints = false"
       >
         <template #trailing>
-          <UButton
-            v-show="filter"
-            icon="i-ph-backspace"
-            color="gray"
-            variant="link"
-            size="xs"
-            :padded="false"
-            @click="filter = ''"
-          />
+          <slot name="trailing">
+            <span />
+          </slot>
         </template>
       </UInput>
     </div>
