@@ -161,6 +161,7 @@ defineShortcuts({
             v-model="selectedFactory"
             :options="factoryStore.factories"
             searchable
+            :search-attributes="['name', 'description', 'tags']"
             class="w-full"
           >
             <template #label>
