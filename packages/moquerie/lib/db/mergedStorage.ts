@@ -1,19 +1,16 @@
-import { useStorage } from './storage.js'
+import { type UseStorageOptions, useStorage } from './storage.js'
 import type { DBLocation } from '~/types/db.js'
 
-export interface UseMergedStorageOptions {
-  name: string
-}
+export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'location'>
 
-export async function useMergedStorage<TData extends { id: string }>(options: UseMergedStorageOptions) {
-  const { name } = options
+export async function useMergedStorage<TData extends { id: string }>(options: UseMergedStorageOptions<TData>) {
   const storages = {
     local: await useStorage<TData>({
-      name,
+      ...options,
       location: 'local',
     }),
     repository: await useStorage<TData>({
-      name,
+      ...options,
       location: 'repository',
     }),
   }

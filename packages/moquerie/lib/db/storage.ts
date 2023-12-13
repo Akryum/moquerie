@@ -1,8 +1,15 @@
 import fs from 'node:fs'
 import path from 'pathe'
-import SuperJSON from 'superjson'
+import createJITI from 'jiti'
+import { parse, prettyPrint } from 'recast'
+import babelParser from '@babel/parser'
+import { builders } from 'ast-types'
 import { useQueue } from '../util/queue.js'
 import type { DBLocation } from '../../types/db.js'
+import { getCwd } from '../util/env.js'
+import { createExportedVariable } from '../ast/exportVariable.js'
+import { ensureDir } from '../util/fs.js'
+import { generateAstFromObject } from '../ast/objectToAst.js'
 import { getLocalDbFolder, getRepositoryDbFolder } from './path.js'
 
 const manifestVersion = '0.0.1'
@@ -13,23 +20,27 @@ interface Manifest {
   files: Record<string, string>
 }
 
-export interface UseStorageOptions {
+export interface UseStorageOptions<TData> {
   name: string
   location: DBLocation
+  filename?: (item: TData) => string
 }
 
-export async function useStorage<TData extends { id: string }>(options: UseStorageOptions) {
+export async function useStorage<TData extends { id: string }>(options: UseStorageOptions<TData>) {
+  const getFilename = options.filename ?? ((item: any) => `${item.id}.js`)
   const baseFolder = options.location === 'local'
     ? getLocalDbFolder()
     : getRepositoryDbFolder()
   const folder = path.join(baseFolder, options.name)
   const manifestFile = path.join(folder, 'manifest.json')
 
-  if (!fs.existsSync(folder)) {
-    await fs.promises.mkdir(folder, { recursive: true })
-  }
+  await ensureDir(folder)
 
   // Read
+
+  const jiti = createJITI(getCwd(), {
+    requireCache: false,
+  })
 
   async function readManifest() {
     if (!fs.existsSync(manifestFile)) {
@@ -58,18 +69,19 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   }
 
   async function readFile(id: string, file: string) {
-    const content = await fs.promises.readFile(getFilePath(file), 'utf8')
-    const firstLineIndex = content.indexOf('\n')
-    if (firstLineIndex === -1) {
-      throw new Error(`Invalid storage file ${file}`)
+    const mod = await jiti(getFilePath(file))
+
+    if (!mod.version) {
+      throw new Error(`Invalid storage file ${file} - missing version`)
     }
-    const version = content.slice(0, firstLineIndex)
-    if (version !== storageVersion) {
-      throw new Error(`Invalid storage file version ${version} - migration not implemented yet`)
+    if (mod.version !== storageVersion) {
+      throw new Error(`Invalid storage file ${file} version ${mod.version} - migration not implemented yet`)
     }
 
-    const jsonRaw = content.slice(firstLineIndex + 1)
-    const item = SuperJSON.parse<TData>(jsonRaw)
+    if (!mod.default) {
+      throw new Error(`Invalid storage file ${file} - missing default export`)
+    }
+    const item = mod.default
     if (item.id !== id) {
       throw new Error(`Invalid storage file ${file} - id mismatch`)
     }
@@ -80,8 +92,13 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     data.length = 0
     for (const id in manifest.files) {
       const file = manifest.files[id]
-      const item = await readFile(id, file)
-      data.push(item)
+      try {
+        const item = await readFile(id, file)
+        data.push(item)
+      }
+      catch (e) {
+        console.error(e)
+      }
     }
   }
 
@@ -90,7 +107,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   // Write
 
   const writeQueue = useQueue({
-    delay: 5000,
+    delay: 2500,
   })
 
   async function writeManifest() {
@@ -107,10 +124,51 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
       throw new Error(`Invalid storage file ${item.id} not found in manifest`)
     }
     const file = getFilePath(manifestData)
-    const { json, meta } = SuperJSON.serialize(item)
-    const jsonRaw = JSON.stringify({ json, meta }, null, 2)
-    const content = `${storageVersion}\n${jsonRaw}`
-    await fs.promises.writeFile(file, content, 'utf-8')
+    let ast: any
+
+    const createAstBase = () => parse(`export const version = '${storageVersion}'`, {
+      parser: babelParser,
+    })
+
+    if (fs.existsSync(file)) {
+      try {
+        const readContent = await fs.promises.readFile(file, 'utf-8')
+        ast = parse(readContent, {
+          parser: babelParser,
+        })
+
+        // Add export version const if missing
+        const versionNode = ast.program.body.find((node: any) => node.type === 'ExportNamedDeclaration' && node.declaration?.declarations[0]?.id.name === 'version')
+        if (versionNode) {
+          versionNode.declaration.declarations[0].init.value = storageVersion
+        }
+        else {
+          ast.program.body.unshift(createExportedVariable('version', storageVersion))
+        }
+      }
+      catch (e) {
+        console.error(e)
+        ast = createAstBase()
+      }
+    }
+    else {
+      ast = createAstBase()
+    }
+
+    const itemAst = generateAstFromObject(item)
+
+    // Update existing default export
+    const defaultExport = ast.program.body.find((node: any) => node.type === 'ExportDefaultDeclaration')
+    if (defaultExport) {
+      defaultExport.declaration = itemAst
+    }
+    else {
+      ast.program.body.push(builders.exportDefaultDeclaration(itemAst))
+    }
+
+    const code = prettyPrint(ast, { tabWidth: 2 }).code
+    await ensureDir(path.dirname(file))
+    await fs.promises.writeFile(file, code, 'utf-8')
   }
 
   function queueWriteFile(item: TData) {
@@ -176,7 +234,23 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     else {
       data[index] = item
     }
-    manifest.files[item.id] = `${item.id}.json`
+
+    // Deduplicate filenames
+    let filename = getFilename(item)
+    const ext = path.extname(filename)
+    const files = Object.values(manifest.files)
+    let testCount = 0
+    let testFilename = filename
+    while (files.includes(testFilename)) {
+      testCount++
+      testFilename = filename.replace(ext, `-${testCount}${ext}`)
+    }
+    if (testCount > 0) {
+      filename = testFilename
+    }
+
+    manifest.files[item.id] = filename
+
     queueWriteFile(item)
     queueWriteManifest()
   }

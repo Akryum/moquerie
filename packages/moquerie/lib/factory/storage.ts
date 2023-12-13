@@ -1,4 +1,5 @@
 import { type MergedStorage, useMergedStorage } from '../db/mergedStorage.js'
+import { getPrettyFilename } from '../util/fs.js'
 import type { ResourceFactory } from '~/types/factory.js'
 
 let storage: MergedStorage<ResourceFactory>
@@ -13,6 +14,7 @@ export async function getFactoryStorage() {
   }
   storagePromise = useMergedStorage({
     name: 'factory',
+    filename: item => `${getPrettyFilename(item.resourceName)}/${getPrettyFilename(item.name)}.js`,
   })
   storage = await storagePromise
   return storage
