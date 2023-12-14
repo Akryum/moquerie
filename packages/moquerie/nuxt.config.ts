@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@pinia/nuxt',
+    '@nuxtjs/google-fonts',
   ],
 
   ui: {
@@ -20,4 +21,11 @@ export default defineNuxtConfig({
     'floating-vue/dist/style.css',
     '~/assets/css/floating-vue.css',
   ],
+
+  googleFonts: {
+    families: {
+      'Noto+Sans': [400, 700],
+      'Noto+Sans+Mono': [400, 700],
+    },
+  },
 })

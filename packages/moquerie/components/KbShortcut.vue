@@ -22,6 +22,18 @@ const keys = computed(() => {
         return 'Esc'
       case 'delete':
         return 'Del'
+      case 'pageup':
+        return 'Page↑'
+      case 'pagedown':
+        return 'Page↓'
+      case 'arrowup':
+        return '↑'
+      case 'arrowdown':
+        return '↓'
+      case 'arrowleft':
+        return '←'
+      case 'arrowright':
+        return '→'
       default:
         if (key.length === 1) {
           return key.toUpperCase()

@@ -15,6 +15,7 @@ export async function getFactoryStorage() {
   storagePromise = useMergedStorage({
     name: 'factory',
     filename: item => `${getPrettyFilename(item.resourceName)}/${getPrettyFilename(item.name)}.js`,
+    format: 'js',
   })
   storage = await storagePromise
   return storage

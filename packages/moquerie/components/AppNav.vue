@@ -2,7 +2,6 @@
 const hasGraphQL = await useHasGraphql()
 
 const commandPaletteStore = useCommandPaletteStore()
-const { metaSymbol } = useShortcuts()
 
 const router = useRouter()
 
@@ -43,7 +42,7 @@ const colorMode = useColorMode()
 </script>
 
 <template>
-  <nav class="flex flex-col items-center p-0.5">
+  <nav class="flex flex-col items-center p-0.5 border-r border-gray-300 dark:border-gray-700">
     <AppNavItem
       to="/"
       active-route="/"
@@ -54,44 +53,44 @@ const colorMode = useColorMode()
     <AppNavItem
       icon="i-ph-magnifying-glass"
       title="Search & commands"
-      :shortcuts="[metaSymbol, 'K']"
+      shortcuts="meta_k"
       @click="commandPaletteStore.isOpen = true"
     />
 
     <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
+      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
     </div>
 
     <AppNavItem
       to="/db/resources"
       icon="i-ph-database"
       title="Resources"
-      :shortcuts="[metaSymbol, '⇧', 'R']"
+      shortcuts="meta_shift_r"
     />
 
     <AppNavItem
       to="/db/factories"
       icon="i-ph-factory"
       title="Factories"
-      :shortcuts="[metaSymbol, '⇧', 'F']"
+      shortcuts="meta_shift_f"
     />
 
     <AppNavItem
       to="/db/snapshots"
       icon="i-ph-camera"
       title="Snapshots"
-      :shortcuts="[metaSymbol, '⇧', 'S']"
+      shortcuts="meta_shift_s"
     />
 
     <AppNavItem
       to="/db/history"
       icon="i-ph-clock-clockwise"
       title="History"
-      :shortcuts="[metaSymbol, '⇧', 'H']"
+      shortcuts="meta_shift_h"
     />
 
     <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
+      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
     </div>
 
     <AppNavItem
@@ -105,7 +104,7 @@ const colorMode = useColorMode()
     <div class="flex-1 w-0" />
 
     <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-600 mx-2 my-1" />
+      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
     </div>
 
     <!-- Theme toggle -->
@@ -120,7 +119,7 @@ const colorMode = useColorMode()
       active-route="/config"
       icon="i-ph-sliders"
       title="Config"
-      :shortcuts="[metaSymbol, ',']"
+      shortcuts="meta_,"
     />
   </nav>
 </template>

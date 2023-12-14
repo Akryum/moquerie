@@ -21,7 +21,7 @@ useHead({
   >
     <template #first>
       <ResourceList
-        route-name="db-resources-resourceName"
+        route-name="db-resources-resourceName-instances"
       />
     </template>
 

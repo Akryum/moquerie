@@ -43,7 +43,7 @@ export type ResourceSchemaField = ResourceSchemaCommon & (
 
 export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSchemaType> {
   id: string
-  typeName: TType['name']
+  resourceName: TType['name']
   value: ResourceInstanceValue<TType>
   createdAt: Date
   updatedAt: Date | null
@@ -99,3 +99,5 @@ export interface ResourceInstanceReference {
   __resourceType: string
   __id: string
 }
+
+export type FilterActive = 'active' | 'inactive' | 'all'

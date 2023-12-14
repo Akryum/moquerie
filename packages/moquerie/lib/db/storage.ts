@@ -4,6 +4,7 @@ import createJITI from 'jiti'
 import { parse, prettyPrint } from 'recast'
 import babelParser from '@babel/parser'
 import { builders } from 'ast-types'
+import SuperJSON from 'superjson'
 import { useQueue } from '../util/queue.js'
 import type { DBLocation } from '../../types/db.js'
 import { getCwd } from '../util/env.js'
@@ -24,10 +25,12 @@ export interface UseStorageOptions<TData> {
   name: string
   location: DBLocation
   filename?: (item: TData) => string
+  format?: 'js' | 'json'
 }
 
 export async function useStorage<TData extends { id: string }>(options: UseStorageOptions<TData>) {
-  const getFilename = options.filename ?? ((item: any) => `${item.id}.js`)
+  const getFilename = options.filename ?? ((item: any) => `${item.id}.${options.format ?? 'json'}`)
+  const fileFormat = options.format ?? 'json'
   const baseFolder = options.location === 'local'
     ? getLocalDbFolder()
     : getRepositoryDbFolder()
@@ -69,19 +72,36 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   }
 
   async function readFile(id: string, file: string) {
-    const mod = await jiti(getFilePath(file))
+    let item
+    if (fileFormat === 'js') {
+      const mod = await jiti(getFilePath(file))
 
-    if (!mod.version) {
-      throw new Error(`Invalid storage file ${file} - missing version`)
-    }
-    if (mod.version !== storageVersion) {
-      throw new Error(`Invalid storage file ${file} version ${mod.version} - migration not implemented yet`)
-    }
+      if (!mod.version) {
+        throw new Error(`Invalid storage file ${file} - missing version`)
+      }
+      if (mod.version !== storageVersion) {
+        throw new Error(`Invalid storage file ${file} version ${mod.version} - migration not implemented yet`)
+      }
 
-    if (!mod.default) {
-      throw new Error(`Invalid storage file ${file} - missing default export`)
+      if (!mod.default) {
+        throw new Error(`Invalid storage file ${file} - missing default export`)
+      }
+      item = mod.default
     }
-    const item = mod.default
+    else if (fileFormat === 'json') {
+      const content = await fs.promises.readFile(getFilePath(file), 'utf-8')
+      const data = SuperJSON.parse(content) as any
+
+      if (!data.version) {
+        throw new Error(`Invalid storage file ${file} - missing version`)
+      }
+
+      if (data.version !== storageVersion) {
+        throw new Error(`Invalid storage file ${file} version ${data.version} - migration not implemented yet`)
+      }
+
+      item = data.item
+    }
     if (item.id !== id) {
       throw new Error(`Invalid storage file ${file} - id mismatch`)
     }
@@ -90,16 +110,20 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   async function load() {
     data.length = 0
+    const promises = []
     for (const id in manifest.files) {
-      const file = manifest.files[id]
-      try {
-        const item = await readFile(id, file)
-        data.push(item)
-      }
-      catch (e) {
-        console.error(e)
-      }
+      promises.push((async () => {
+        const file = manifest.files[id]
+        try {
+          const item = await readFile(id, file)
+          data.push(item)
+        }
+        catch (e) {
+          console.error(e)
+        }
+      })())
     }
+    await Promise.all(promises)
   }
 
   await load()
@@ -107,7 +131,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   // Write
 
   const writeQueue = useQueue({
-    delay: 2500,
+    delay: 1000,
   })
 
   async function writeManifest() {
@@ -124,51 +148,65 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
       throw new Error(`Invalid storage file ${item.id} not found in manifest`)
     }
     const file = getFilePath(manifestData)
-    let ast: any
+    let content: string
 
-    const createAstBase = () => parse(`export const version = '${storageVersion}'`, {
-      parser: babelParser,
-    })
+    if (fileFormat === 'js') {
+      let ast: any
 
-    if (fs.existsSync(file)) {
-      try {
-        const readContent = await fs.promises.readFile(file, 'utf-8')
-        ast = parse(readContent, {
-          parser: babelParser,
-        })
+      const createAstBase = () => parse(`export const version = '${storageVersion}'`, {
+        parser: babelParser,
+      })
 
-        // Add export version const if missing
-        const versionNode = ast.program.body.find((node: any) => node.type === 'ExportNamedDeclaration' && node.declaration?.declarations[0]?.id.name === 'version')
-        if (versionNode) {
-          versionNode.declaration.declarations[0].init.value = storageVersion
+      if (fs.existsSync(file)) {
+        try {
+          const readContent = await fs.promises.readFile(file, 'utf-8')
+          ast = parse(readContent, {
+            parser: babelParser,
+          })
+
+          // Add export version const if missing
+          const versionNode = ast.program.body.find((node: any) => node.type === 'ExportNamedDeclaration' && node.declaration?.declarations[0]?.id.name === 'version')
+          if (versionNode) {
+            versionNode.declaration.declarations[0].init.value = storageVersion
+          }
+          else {
+            ast.program.body.unshift(createExportedVariable('version', storageVersion))
+          }
         }
-        else {
-          ast.program.body.unshift(createExportedVariable('version', storageVersion))
+        catch (e) {
+          console.error(e)
+          ast = createAstBase()
         }
       }
-      catch (e) {
-        console.error(e)
+      else {
         ast = createAstBase()
       }
+
+      const itemAst = generateAstFromObject(item)
+
+      // Update existing default export
+      const defaultExport = ast.program.body.find((node: any) => node.type === 'ExportDefaultDeclaration')
+      if (defaultExport) {
+        defaultExport.declaration = itemAst
+      }
+      else {
+        ast.program.body.push(builders.exportDefaultDeclaration(itemAst))
+      }
+
+      // @TODO auto-lint using project's eslint
+
+      content = prettyPrint(ast, { tabWidth: 2 }).code
     }
-    else {
-      ast = createAstBase()
+    else if (fileFormat === 'json') {
+      content = SuperJSON.stringify({
+        version: storageVersion,
+        item,
+      })
     }
 
-    const itemAst = generateAstFromObject(item)
-
-    // Update existing default export
-    const defaultExport = ast.program.body.find((node: any) => node.type === 'ExportDefaultDeclaration')
-    if (defaultExport) {
-      defaultExport.declaration = itemAst
-    }
-    else {
-      ast.program.body.push(builders.exportDefaultDeclaration(itemAst))
-    }
-
-    const code = prettyPrint(ast, { tabWidth: 2 }).code
+    // Write
     await ensureDir(path.dirname(file))
-    await fs.promises.writeFile(file, code, 'utf-8')
+    await fs.promises.writeFile(file, content!, 'utf-8')
   }
 
   function queueWriteFile(item: TData) {
@@ -196,7 +234,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   // Refresh reads
 
-  // @TODO better system for reloading files
+  // @TODO better system for reloading files using watch for example
 
   setInterval(async () => {
     if (!writeQueue.size) {

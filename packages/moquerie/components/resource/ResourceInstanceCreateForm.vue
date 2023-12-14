@@ -72,7 +72,7 @@ async function generateInstances() {
     })
 
     router.push({
-      name: 'db-resources-resourceName',
+      name: 'db-resources-resourceName-instances',
       params: {
         resourceName: props.resourceName,
       },

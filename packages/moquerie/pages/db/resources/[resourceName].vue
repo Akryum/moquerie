@@ -47,7 +47,7 @@ defineShortcuts({
         <KbShortcut keys="meta_shift_x" />
       </UButton>
     </div>
-    <div class="flex-1 overflow-y-auto flex">
+    <div class="flex-1 overflow-y-auto">
       <NuxtPage />
     </div>
   </div>

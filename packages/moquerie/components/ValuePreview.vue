@@ -6,7 +6,7 @@ const props = defineProps<{
 const type = computed(() => {
   if (typeof props.value === 'string') {
     if (props.value.startsWith('http')) {
-      if (props.value.match(/\.(png|jpe?g|gif|svg|webp)$/) || props.value.includes('avatar')) {
+      if (isProbablyAnImage(props.value)) {
         return 'image'
       }
       return 'url'
@@ -18,7 +18,11 @@ const type = computed(() => {
 </script>
 
 <template>
-  <img v-if="type === 'image'" :src="value" class="object-contain">
+  <img
+    v-if="type === 'image'"
+    :src="value" class="object-contain max-w-full max-h-full"
+    loading="lazy"
+  >
   <a v-else-if="type === 'url'" :href="value" target="_blank" class="text-primary-500 hover:underline">{{ value }}</a>
   <div v-else-if="type === 'boolean'" class="inline-flex items-center gap-2">
     <UIcon
@@ -27,5 +31,10 @@ const type = computed(() => {
     />
     <span>{{ value }}</span>
   </div>
-  <span v-else>{{ value }}</span>
+  <span
+    v-else
+    :class="{
+      'text-right text-blue-500': type === 'number',
+    }"
+  >{{ value }}</span>
 </template>

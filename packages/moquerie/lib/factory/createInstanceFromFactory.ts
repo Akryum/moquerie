@@ -19,7 +19,7 @@ export async function createInstanceFromFactory<TType extends ResourceSchemaType
   const { resourceType, factory, factoryDataContext } = options
 
   const id = nanoid()
-  const typeName = factory.resourceName
+  const resourceName = factory.resourceName
 
   const faker = await getFaker({
     locale: factory.fakerLocale,
@@ -36,7 +36,7 @@ export async function createInstanceFromFactory<TType extends ResourceSchemaType
 
   return {
     id,
-    typeName,
+    resourceName,
     createdAt: new Date(),
     updatedAt: null,
     active: true,
@@ -218,8 +218,8 @@ export async function createFactoryValue(options: CreateFactoryValueOptions) {
         const randomIndex = Math.floor(Math.random() * allInstances.length)
         instanceId = [allInstances[randomIndex]?.id]
       }
-      else if (createValue.resourceId) {
-        instanceId = Array.isArray(createValue.resourceId) ? createValue.resourceId : [createValue.resourceId]
+      else if (createValue.instanceId) {
+        instanceId = Array.isArray(createValue.instanceId) ? createValue.instanceId : [createValue.instanceId]
       }
 
       instanceId = instanceId?.filter(Boolean)

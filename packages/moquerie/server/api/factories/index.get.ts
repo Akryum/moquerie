@@ -16,5 +16,6 @@ export default defineEventHandler<{ query: { resourceName: string, location?: DB
   if (query.resourceName) {
     factories = factories.filter(factory => factory.resourceName === query.resourceName)
   }
+  factories.reverse()
   return SuperJSON.stringify(factories) as unknown as ResourceFactory[]
 })

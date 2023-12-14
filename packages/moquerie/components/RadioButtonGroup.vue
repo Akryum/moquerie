@@ -2,6 +2,7 @@
 interface Option {
   value: TValue
   label: string
+  icon?: string
 }
 
 defineProps<{
@@ -35,6 +36,11 @@ defineEmits<{
       }"
       @click="$emit('update:modelValue', option.value)"
     >
+      <UIcon
+        v-if="option.icon"
+        :name="option.icon"
+        class="w-4 h-4 flex-none"
+      />
       {{ option.label }}
     </UButton>
   </UButtonGroup>

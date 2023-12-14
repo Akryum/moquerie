@@ -95,7 +95,7 @@ export interface ResourceFactoryValue {
   /**
    * In case of array, it will be a list of resource ids.
    */
-  resourceId?: string | string[]
+  instanceId?: string | string[]
   /**
    * Selects a random resource for the corresponding type.
    */

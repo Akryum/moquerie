@@ -13,7 +13,7 @@ export async function getResourceInstanceStorage(resourceTypeName: string): Prom
     return storagePromise.get(resourceTypeName)!
   }
   const promise = useStorage<ResourceInstance>({
-    name: `resource-instance:${resourceTypeName}`,
+    name: `resource-instance/${resourceTypeName}`,
     location: 'local',
   })
   storagePromise.set(resourceTypeName, promise)
