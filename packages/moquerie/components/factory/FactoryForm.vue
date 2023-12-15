@@ -410,9 +410,11 @@ defineShortcuts({
 
         <template v-if="factory">
           <ConfirmModal
-            v-model="showConfirmRemove"
+            :shown="showConfirmRemove"
             title="Delete factory?"
+            icon="i-ph-factory"
             confirm-label="Delete factory"
+            confirm-icon="i-ph-trash"
             @cancel="showConfirmRemove = false"
             @confirm="removeFactory()"
           >

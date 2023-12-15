@@ -48,6 +48,10 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
   onWindowFocus(refreshInstances)
 
   function updateInList(result: ResourceInstance) {
+    if (result.resourceName !== lastFetchInstancesOptions?.resourceName) {
+      return
+    }
+
     const shouldBeInList = (lastFetchInstancesOptions?.filterActive === 'active' && result.active)
       || (lastFetchInstancesOptions?.filterActive === 'inactive' && !result.active)
       || lastFetchInstancesOptions?.filterActive === 'all'
@@ -120,6 +124,18 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
     refreshInstance()
   }
 
+  // Delete instances
+
+  async function deleteInstances(resourceName: string, ids: string[]) {
+    await $fetch(`/api/resources/instances/${resourceName}/bulk`, {
+      method: 'DELETE',
+      body: {
+        ids,
+      },
+    })
+    await refreshInstances()
+  }
+
   return {
     instances,
     fetchInstances,
@@ -129,5 +145,6 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
     refreshInstance,
     updateInstance,
     bulkUpdateInstances,
+    deleteInstances,
   }
 })
