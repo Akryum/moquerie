@@ -14,12 +14,12 @@ defineProps<{
   >
     <UButton
       color="gray"
-      variant="soft"
+      variant="ghost"
       block
       v-bind="$attrs"
     >
       <div class="flex flex-col gap-0.5 items-center">
-        <div class="w-8 h-8 rounded-full bg-gray-500/30 flex items-center justify-center">
+        <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
           <UIcon :name="icon" class="w-4 h-4" />
         </div>
         <slot />
