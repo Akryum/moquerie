@@ -37,16 +37,18 @@ function getStateInitialValues(factory = props.factory): FactoryData {
     name: factory?.name ?? `${props.resourceName} factory`,
     location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
     description: factory?.description ?? '',
-    tags: factory?.tags ?? [],
+    tags: factory?.tags ? structuredClone(toRaw(factory.tags)) : [],
     resourceName: props.resourceName,
-    createPrompts: factory?.createPrompts ?? [],
-    createValue: factory?.createValue ?? {
-      generateType: 'static',
-      children: {},
-    },
+    createPrompts: factory?.createPrompts ? structuredClone(toRaw(factory.createPrompts)) : [],
+    createValue: factory?.createValue
+      ? structuredClone(toRaw(factory.createValue))
+      : {
+          generateType: 'static',
+          children: {},
+        },
     fakerSeed: factory?.fakerSeed ?? '',
     fakerLocale: factory?.fakerLocale,
-    applyTags: factory?.applyTags ?? [],
+    applyTags: factory?.applyTags ? structuredClone(toRaw(factory.applyTags)) : [],
     applyComment: factory?.applyComment ?? '',
   }
 }

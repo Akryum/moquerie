@@ -1,3 +1,5 @@
+import type { ResourceSchemaType } from '~/types/resource.js'
+
 export const useResourceTypeStore = defineStore('resourceTypes', () => {
   const fetchQuery = useFetch('/api/resources')
   const { data, refresh } = fetchQuery
@@ -34,10 +36,36 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
     immediate: true,
   })
 
+  // Fetch single type
+
+  const resourceType = ref<ResourceSchemaType | undefined>()
+
+  let lastFetchResourceType: string | undefined
+
+  async function fetchResourceType(resourceName: string) {
+    lastFetchResourceType = resourceName
+
+    const data = (await $fetch(`/api/resources/${resourceName}`)) as ResourceSchemaType
+    resourceType.value = data
+    return resourceType
+  }
+
+  async function refreshResourceType() {
+    if (!lastFetchResourceType) {
+      return
+    }
+
+    await fetchResourceType(lastFetchResourceType)
+  }
+
+  onWindowFocus(refreshResourceType)
+
   return {
     resourceTypes,
     refresh,
     wait,
     lastSelectedResourceName,
+    fetchResourceType,
+    refreshResourceType,
   }
 })

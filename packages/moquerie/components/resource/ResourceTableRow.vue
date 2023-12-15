@@ -66,9 +66,9 @@ onMounted(() => {
       >
         <ResourceReferencesPreview
           v-if="col.fieldData?.type === 'resource'"
-          :resource-type="resourceType"
-          :instance="instance"
           :field="col.fieldData"
+          :value="instance.value[col.field as keyof typeof instance]"
+          class="border border-primary/10 px-2 py-1 rounded-lg"
         />
         <ValuePreview
           v-else

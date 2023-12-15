@@ -18,6 +18,14 @@ watchEffect(() => {
   }
 })
 
+const toast = useToast()
+
+// Resource type
+
+const resourceTypeStore = useResourceTypeStore()
+
+const resourceType = await resourceTypeStore.fetchResourceType(resourceName())
+
 // Toggle active
 
 async function bulkToggleActive() {
@@ -36,6 +44,25 @@ defineShortcuts({
     handler: bulkToggleActive,
   },
 })
+
+// Update value
+
+async function onSubmitValue(value: any) {
+  await instanceStore.updateInstance({
+    resourceName: resourceName(),
+    instanceId: instanceIds.value[0],
+    data: {
+      value,
+    },
+  })
+
+  toast.add({
+    id: 'instance-value-updated',
+    title: 'Instance data updated!',
+    icon: 'i-ph-pencil-simple',
+    color: 'green',
+  })
+}
 </script>
 
 <template>
@@ -74,6 +101,12 @@ defineShortcuts({
         show-toggle-active-shortcut
       />
     </div>
-    <div />
+    <div v-if="resourceType" class="p-2">
+      <ResourceInstanceValueForm
+        :resource-type="resourceType"
+        :instance="instanceStore.instance"
+        @submit="onSubmitValue"
+      />
+    </div>
   </div>
 </template>

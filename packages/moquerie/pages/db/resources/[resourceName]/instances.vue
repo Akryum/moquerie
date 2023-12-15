@@ -7,6 +7,7 @@ const resourceName = () => route.params.resourceName as string
   <SplitPane
     save-id="db.resources.instances"
     :default-split="80"
+    :min="60"
     class="w-full h-full"
   >
     <template #first>
