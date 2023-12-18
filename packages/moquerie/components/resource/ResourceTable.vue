@@ -7,6 +7,7 @@ const props = defineProps<{
   instances: ResourceInstance[]
   selectedInstanceIds?: string[]
   dimInactiveInstances?: boolean
+  emptyPlaceholder?: string
 }>()
 
 const emit = defineEmits<{
@@ -133,11 +134,11 @@ watch(() => props.selectedInstanceIds, (value) => {
   <div
     v-if="resourceType"
     ref="el"
-    class="border-y border-gray-200 dark:border-gray-800 overflow-auto"
+    class="border-t border-gray-200 dark:border-gray-800 overflow-auto"
   >
     <!-- Headers -->
-    <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-      <div class="w-[42px]" />
+    <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 min-w-max">
+      <div class="w-[42px] flex-none" />
 
       <ResourceTableColumnHeader
         v-for="col in cols"
@@ -157,6 +158,7 @@ watch(() => props.selectedInstanceIds, (value) => {
         :selected="selectedInstanceIds?.includes(instance.id)"
         :selected-ids="selectedInstanceIds"
         :dim="dimInactiveInstances && !instance.active"
+        class="last:!border-b border-gray-200 dark:border-gray-800"
         @click="onRowClick(instance, $event)"
       />
     </div>
@@ -165,7 +167,7 @@ watch(() => props.selectedInstanceIds, (value) => {
     <div v-if="!instances.length" class="p-6 flex flex-col items-center justify-center gap-2">
       <UIcon name="i-ph-database" class="w-8 h-8 opacity-10" />
       <div class="opacity-40 text-xs">
-        No instances found
+        {{ emptyPlaceholder ?? 'No instances found' }}
       </div>
     </div>
   </div>

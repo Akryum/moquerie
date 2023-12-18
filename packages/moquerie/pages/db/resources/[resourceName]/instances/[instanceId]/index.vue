@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { VTooltip as vTooltip } from 'floating-vue'
+import { isAnyOpen } from '~/components/resource/resourceInstanceValueOverlays.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -45,6 +46,7 @@ defineShortcuts({
   'meta_;': {
     usingInput: true,
     handler: bulkToggleActive,
+    whenever: [() => !isAnyOpen.value],
   },
 })
 
@@ -73,8 +75,11 @@ async function deleteInstances() {
 }
 
 defineShortcuts({
-  delete: () => {
-    showConfirmDeleteModal.value = true
+  delete: {
+    handler: () => {
+      showConfirmDeleteModal.value = true
+    },
+    whenever: [() => !isAnyOpen.value],
   },
 })
 

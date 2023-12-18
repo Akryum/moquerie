@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import * as monaco from 'monaco-editor'
 import { Dropdown, VTooltip as vTooltip } from 'floating-vue'
-import { isOpen } from './resourceInstanceValueFaker.js'
+import { isFakerOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
   array?: boolean
@@ -194,11 +194,11 @@ defineShortcuts({
 // Is open
 
 onMounted(() => {
-  isOpen.value = true
+  isFakerOpen.value = true
 })
 
 onBeforeUnmount(() => {
-  isOpen.value = false
+  isFakerOpen.value = false
 })
 
 // Autofocus

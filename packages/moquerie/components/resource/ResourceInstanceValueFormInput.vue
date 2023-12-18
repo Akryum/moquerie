@@ -69,6 +69,10 @@ function onGenerate(value: any, previousSelection: {
   previousFakerSelection.value = previousSelection
   focusInput()
 }
+
+// Resource references
+
+const isResourceRefsOpen = ref(false)
 </script>
 
 <template>
@@ -120,8 +124,9 @@ function onGenerate(value: any, previousSelection: {
       v-tooltip="'Edit references'"
       color="gray"
       block
+      @click="isResourceRefsOpen = true"
     >
-      <ResourceReferencesPreview
+      <ResourceReferencesSummary
         :field="field"
         :value="modelValue"
       />
@@ -154,4 +159,33 @@ function onGenerate(value: any, previousSelection: {
       />
     </template>
   </UFormGroup>
+
+  <UModal
+    v-model="isResourceRefsOpen"
+    :ui="{
+      width: 'sm:max-w-[calc(70vw-100px)]',
+      height: 'h-[calc(100vh-80px)]',
+    }"
+  >
+    <template v-if="field.type === 'resource'">
+      <ResourceInstanceValueReferenceArray
+        v-if="field.array"
+        :resource-type="resourceType"
+        :field="field"
+        :model-value="modelValue"
+        class="h-full"
+        @update:model-value="$emit('update:modelValue', $event)"
+        @close="isResourceRefsOpen = false"
+      />
+      <ResourceInstanceValueReferenceSingle
+        v-else
+        :resource-type="resourceType"
+        :field="field"
+        :model-value="modelValue"
+        class="h-full"
+        @update:model-value="$emit('update:modelValue', $event)"
+        @close="isResourceRefsOpen = false"
+      />
+    </template>
+  </UModal>
 </template>

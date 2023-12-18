@@ -28,7 +28,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="relative [&:last-child>.scroll-el]:bottom-0 select-none"
+    class="relative [&:last-child>.scroll-el]:bottom-0 select-none min-w-max"
     :class="[
       selected
         ? 'bg-primary-100 dark:bg-primary-900'
@@ -45,7 +45,7 @@ onMounted(() => {
       <!-- Active -->
       <div
         v-tooltip="instance.active ? 'Active' : 'Inactive'"
-        class="w-[42px] flex items-center justify-center opacity-50 hover:opacity-100"
+        class="w-[42px] flex items-center justify-center opacity-50 hover:opacity-100 flex-none"
       >
         <UIcon
           :name="instance.active ? 'i-ph-eye' : 'i-ph-eye-slash'"
@@ -56,7 +56,7 @@ onMounted(() => {
       <div
         v-for="col in props.cols"
         :key="col.field"
-        class="px-2 h-[40px] flex items-center break-all"
+        class="px-2 h-[40px] flex items-center break-all flex-none"
         :class="{
           'opacity-50': dim,
         }"
@@ -64,7 +64,7 @@ onMounted(() => {
           width: `${col.size}px`,
         }"
       >
-        <ResourceReferencesPreview
+        <ResourceReferencesSummary
           v-if="col.fieldData?.type === 'resource'"
           :field="col.fieldData"
           :value="instance.value[col.field as keyof typeof instance]"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Tooltip } from 'floating-vue'
 import SuperJSON from 'superjson'
-import { isOpen as isFakerGeneratorOpen } from './resourceInstanceValueFaker.js'
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { DBLocation } from '~/types/db.js'
 import type { ResourceFactory } from '~/types/factory.js'
 import type { ResourceInstance } from '~/types/resource.js'
@@ -177,13 +177,13 @@ defineShortcuts({
         openFactorySelectMenu()
       }
     },
-    whenever: [() => !isFakerGeneratorOpen.value],
+    whenever: [() => !isAnyOpen.value],
   },
 
   escape: {
     usingInput: true,
     handler: onCancel,
-    whenever: [() => !isFakerGeneratorOpen.value],
+    whenever: [() => !isAnyOpen.value],
   },
 })
 </script>

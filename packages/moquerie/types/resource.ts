@@ -1,11 +1,16 @@
-export interface ResourceSchemaCommon {
+export type ResourceSchemaCommon = {
   name: string
   tags: readonly string[]
   description?: string
-  array: boolean
   nonNull: boolean
   deprecationReason?: string
-}
+} & (
+  {
+    array: false
+  } | {
+    array: true
+  }
+)
 
 export type ResourceSchemaType = ResourceSchemaCommon & (
   {
@@ -96,7 +101,7 @@ export type ResourceInstanceFieldValue<TField extends ResourceSchemaField> =
               : never
 
 export interface ResourceInstanceReference {
-  __resourceType: string
+  __resourceName: string
   __id: string
 }
 

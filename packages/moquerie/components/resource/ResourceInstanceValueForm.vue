@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
-import { isOpen as isFakerGeneratorOpen } from './resourceInstanceValueFaker.js'
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { ResourceInstance, ResourceSchemaType } from '~/types/resource.js'
 
 const props = defineProps<{
@@ -72,13 +72,13 @@ defineShortcuts({
     handler: () => {
       onSubmit()
     },
-    whenever: [() => !isFakerGeneratorOpen.value],
+    whenever: [() => !isAnyOpen.value],
   },
 
   escape: {
     usingInput: true,
     handler: onCancel,
-    whenever: [() => !isFakerGeneratorOpen.value],
+    whenever: [() => !isAnyOpen.value],
   },
 })
 </script>
