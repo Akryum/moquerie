@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VTooltip as vTooltip } from 'floating-vue'
+import { Menu, VTooltip as vTooltip } from 'floating-vue'
 import type { Col } from './tableTypes.js'
 import type { ResourceInstance, ResourceSchemaType } from '~/types/resource.js'
 
@@ -69,12 +69,31 @@ onMounted(() => {
           width: `${col.size}px`,
         }"
       >
-        <ResourceReferencesSummary
-          v-if="col.fieldData?.type === 'resource'"
-          :field="col.fieldData"
-          :value="instance.value[col.field as keyof typeof instance]"
-          class="border border-primary/10 px-2 py-1 rounded-lg"
-        />
+        <template v-if="col.fieldData?.type === 'resource'">
+          <Menu
+            :delay="500"
+            :dispose-timeout="0"
+          >
+            <template #default="{ shown }">
+              <ResourceReferencesSummary
+                :field="col.fieldData"
+                :value="instance.value[col.field as keyof typeof instance]"
+                class="border border-primary/10 px-2 py-1 rounded-lg"
+                :class="{
+                  'ring-2 ring-gray-500/50': shown,
+                }"
+              />
+            </template>
+
+            <template #popper>
+              <ResourceReferencesPreview
+                :field="col.fieldData"
+                :value="instance.value[col.field as keyof typeof instance]"
+                class="max-w-[600px] min-h-[200px] max-h-[600px] [&_.resource-table]:!border-t-0"
+              />
+            </template>
+          </Menu>
+        </template>
         <ValuePreview
           v-else
           :value="instance.value[col.field as keyof typeof instance]"

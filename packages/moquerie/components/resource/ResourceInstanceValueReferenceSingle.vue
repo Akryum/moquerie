@@ -136,9 +136,9 @@ defineShortcuts({
     </div>
 
     <ResourceTable
-      :resource-name="props.field.resourceName"
+      :resource-name="field.resourceName"
       :instances="allInstances ?? []"
-      :selected-instance-ids="props.modelValue ? [props.modelValue.__id] : []"
+      :selected-instance-ids="modelValue ? [modelValue.__id] : []"
       empty-placeholder="No instance referenced"
       dim-inactive-instances
       class="flex-1"

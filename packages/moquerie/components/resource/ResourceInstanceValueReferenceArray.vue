@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
     </div>
 
     <ResourceTable
-      :resource-name="props.field.resourceName"
+      :resource-name="field.resourceName"
       :instances="currentInstances"
       :selected-instance-ids="selectedIds[mode].value"
       empty-placeholder="No instances referenced"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Dropdown, Tooltip, VTooltip as vTooltip } from 'floating-vue'
+import { Dropdown, Menu, Tooltip } from 'floating-vue'
 import type { ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
 // @TODO Handle required/non-null fields
@@ -118,19 +118,42 @@ const isResourceRefsOpen = ref(false)
       </Dropdown>
     </template>
 
-    <UButton
+    <Menu
       v-if="field.type === 'resource'"
-      ref="editReferencesButton"
-      v-tooltip="'Edit references'"
-      color="gray"
-      block
-      @click="isResourceRefsOpen = true"
+      placement="left"
+      :delay="500"
+      :dispose-timeout="0"
     >
-      <ResourceReferencesSummary
-        :field="field"
-        :value="modelValue"
-      />
-    </UButton>
+      <template #default="{ shown, hide }">
+        <UButton
+          ref="editReferencesButton"
+          color="gray"
+          block
+          :class="{
+            'ring-2 ring-gray-500/50': shown,
+          }"
+          @click="hide({ skipDelay: true });isResourceRefsOpen = true"
+        >
+          <ResourceReferencesSummary
+            :field="field"
+            :value="modelValue"
+          />
+        </UButton>
+      </template>
+
+      <template #popper>
+        <div class="p-2 flex items-center gap-2 justify-center text-gray-500">
+          <UIcon name="i-ph-mouse" class="w-4 h-4" />
+          Click to edit references
+        </div>
+
+        <ResourceReferencesPreview
+          :field="field"
+          :value="modelValue"
+          class="max-w-[600px] min-h-[200px] max-h-[600px]"
+        />
+      </template>
+    </Menu>
 
     <template v-else>
       <!-- @TODO handle array -->
