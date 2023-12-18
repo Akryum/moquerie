@@ -2,6 +2,10 @@
 import { VTooltip as vTooltip } from 'floating-vue'
 import { isAnyOpen } from '~/components/resource/resourceInstanceValueOverlays.js'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const route = useRoute()
 const router = useRouter()
 
@@ -46,6 +50,32 @@ defineShortcuts({
   'meta_;': {
     usingInput: true,
     handler: bulkToggleActive,
+    whenever: [() => !isAnyOpen.value],
+  },
+})
+
+// Duplicate
+
+async function duplicate() {
+  if (instanceIds.value.length !== 1) {
+    return
+  }
+
+  const copy = await instanceStore.duplicateInstance(resourceName(), instanceIds.value[0])
+
+  router.push({
+    name: 'db-resources-resourceName-instances-instanceId',
+    params: {
+      resourceName: resourceName(),
+      instanceId: copy.id,
+    },
+  })
+}
+
+defineShortcuts({
+  meta_d: {
+    usingInput: true,
+    handler: duplicate,
     whenever: [() => !isAnyOpen.value],
   },
 })
@@ -179,7 +209,7 @@ async function onSubmitValue(value: any) {
       <VerticalButton
         icon="i-ph-copy"
         shortcut="meta_d"
-        disabled
+        @click="duplicate()"
       >
         Duplicate
       </VerticalButton>

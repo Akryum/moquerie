@@ -106,7 +106,7 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
       method: 'PATCH',
       body: options.data,
     })
-    const data = SuperJSON.parse(result) as ResourceInstance
+    const data = SuperJSON.parse(result as string) as ResourceInstance
     updateInList(data)
     instance.value = data
     return data
@@ -122,6 +122,16 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
     })
     refreshInstances()
     refreshInstance()
+  }
+
+  // Duplicate instance
+
+  async function duplicateInstance(resourceName: string, instanceId: string) {
+    const result = SuperJSON.parse(await $fetch(`/api/resources/instances/${resourceName}/${instanceId}/duplicate`, {
+      method: 'POST',
+    })) as ResourceInstance
+    refreshInstances()
+    return result
   }
 
   // Delete instances
@@ -145,6 +155,7 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
     refreshInstance,
     updateInstance,
     bulkUpdateInstances,
+    duplicateInstance,
     deleteInstances,
   }
 })

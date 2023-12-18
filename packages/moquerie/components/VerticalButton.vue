@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { Tooltip } from 'floating-vue'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 defineProps<{
   icon: string
   tooltip?: string
