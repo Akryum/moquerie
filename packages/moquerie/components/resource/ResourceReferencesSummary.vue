@@ -22,7 +22,14 @@ const list = computed(() => {
 <template>
   <div class="flex items-center gap-1">
     <UIcon name="i-ph-database" class="w-4 h-4" />
-    <span class="font-bold text-sm font-mono text-primary-500">{{ list.length }}</span>
+    <span
+      class="font-bold text-sm font-mono"
+      :class="[
+        list.length === 0 ? 'opacity-50' : ' text-primary-500',
+      ]"
+    >
+      {{ list.length }}
+    </span>
     <span class="text-xs">{{ field.resourceName }}{{ list.length > 1 ? 's' : '' }}</span>
   </div>
 </template>
