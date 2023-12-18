@@ -41,7 +41,12 @@ onMounted(() => {
       class="scroll-el absolute inset-x-0 -inset-y-10 pointer-events-none"
     />
 
-    <div class="flex divide-x divide-gray-200 dark:divide-gray-800">
+    <div
+      class="flex divide-x divide-gray-200 dark:divide-gray-800"
+      :class="{
+        'bg-gray-500/5 dark:bg-gray-500/20': dim,
+      }"
+    >
       <!-- Active -->
       <div
         v-tooltip="instance.active ? 'Active' : 'Inactive'"
