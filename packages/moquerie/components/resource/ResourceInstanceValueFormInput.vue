@@ -134,9 +134,8 @@ function onGenerate(value: any, previousSelection: {
         v-if="field.type === 'boolean'"
         @click="$emit('update:modelValue', !modelValue)"
       >
-        <UCheckbox
+        <UToggle
           :model-value="modelValue"
-          :label="field.name"
           class="pointer-events-none"
         />
       </div>
