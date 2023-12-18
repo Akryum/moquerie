@@ -37,6 +37,10 @@ const resourceType = await resourceTypeStore.fetchResourceType(resourceName())
 // Toggle active
 
 async function bulkToggleActive() {
+  if (!instanceIds.value.length) {
+    return
+  }
+
   await instanceStore.bulkUpdateInstances({
     resourceName: resourceName(),
     instanceIds: instanceIds.value,
@@ -57,17 +61,17 @@ defineShortcuts({
 // Duplicate
 
 async function duplicate() {
-  if (instanceIds.value.length !== 1) {
+  if (!instanceIds.value.length) {
     return
   }
 
-  const copy = await instanceStore.duplicateInstance(resourceName(), instanceIds.value[0])
+  const copies = await instanceStore.duplicateInstances(resourceName(), instanceIds.value)
 
   router.push({
     name: 'db-resources-resourceName-instances-instanceId',
     params: {
       resourceName: resourceName(),
-      instanceId: copy.id,
+      instanceId: copies.map(i => i.id).join(','),
     },
   })
 }
@@ -107,6 +111,9 @@ async function deleteInstances() {
 defineShortcuts({
   delete: {
     handler: () => {
+      if (!instanceIds.value.length) {
+        return
+      }
       showConfirmDeleteModal.value = true
     },
     whenever: [() => !isAnyOpen.value],
@@ -156,6 +163,15 @@ async function onSubmitValue(value: any) {
         >
           Toggle active
           <KbShortcut keys="meta_;" />
+        </UButton>
+
+        <UButton
+          color="gray"
+          icon="i-ph-copy"
+          @click="duplicate()"
+        >
+          Duplicate
+          <KbShortcut keys="meta_d" />
         </UButton>
 
         <UButton

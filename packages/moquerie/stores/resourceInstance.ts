@@ -126,10 +126,13 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
 
   // Duplicate instance
 
-  async function duplicateInstance(resourceName: string, instanceId: string) {
-    const result = SuperJSON.parse(await $fetch(`/api/resources/instances/${resourceName}/${instanceId}/duplicate`, {
+  async function duplicateInstances(resourceName: string, ids: string[]) {
+    const result = SuperJSON.parse(await $fetch(`/api/resources/instances/${resourceName}/duplicate`, {
       method: 'POST',
-    })) as ResourceInstance
+      body: {
+        ids,
+      },
+    })) as ResourceInstance[]
     refreshInstances()
     return result
   }
@@ -155,7 +158,7 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
     refreshInstance,
     updateInstance,
     bulkUpdateInstances,
-    duplicateInstance,
+    duplicateInstances,
     deleteInstances,
   }
 })
