@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   value: any
+  type?: string
 }>()
 
 const type = computed(() => {
@@ -13,7 +14,7 @@ const type = computed(() => {
     }
   }
 
-  return typeof props.value
+  return props.type ?? typeof props.value
 })
 </script>
 
@@ -24,12 +25,15 @@ const type = computed(() => {
     loading="lazy"
   >
   <a v-else-if="type === 'url'" :href="value" target="_blank" class="text-primary-500 hover:underline">{{ value }}</a>
-  <div v-else-if="type === 'boolean'" class="inline-flex items-center gap-2">
+  <div
+    v-else-if="type === 'boolean'"
+    class="inline-flex items-center gap-2"
+  >
     <UIcon
-      :name="value ? 'i-ph-check-circle text-green-500' : 'i-ph-circle'"
+      :name="value ? 'i-ph-check-circle text-primary-500' : 'i-ph-circle text-gray-500'"
       class="w-4 h-4 flex-none"
     />
-    <span>{{ value }}</span>
+    <span class="opacity-50">{{ !!value }}</span>
   </div>
   <span
     v-else

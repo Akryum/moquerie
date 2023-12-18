@@ -4,9 +4,9 @@ import type { ResourceFactory, ResourceFactoryValue } from '../../types/factory.
 import type { ResourceInstance, ResourceSchemaType } from '../../types/resource.js'
 import { findAllResourceInstances } from '../resource/findAll.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
+import { runValueCode } from '../util/vm.js'
 import { generateValueFromFaker } from './fakerGenerate.js'
 import { getFaker } from './fakerGet.js'
-import { runValueCode } from '~/lib/util/vm.js'
 
 export interface CreateInstanceFromFactoryOptions {
   resourceType: ResourceSchemaType

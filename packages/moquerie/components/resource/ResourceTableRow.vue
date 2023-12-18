@@ -73,7 +73,8 @@ onMounted(() => {
         <ValuePreview
           v-else
           :value="instance.value[col.field as keyof typeof instance]"
-          class="leading-tight text-xs"
+          :type="col.fieldData?.type"
+          class="leading-tight text-xs line-clamp-2"
           :class="{
             'font-mono': col.fieldData?.type === 'number' || col.field.match(/id/),
           }"
