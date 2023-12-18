@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { FilterActive, ResourceInstance } from '~/types/resource.js'
 
 const props = defineProps<{
@@ -49,6 +50,7 @@ defineShortcuts({
         onSelectInstance(instanceStore.instances[index - 1])
       }
     },
+    whenever: [() => !isAnyOpen.value],
   },
   pagedown: {
     usingInput: true,
@@ -58,6 +60,7 @@ defineShortcuts({
         onSelectInstance(instanceStore.instances[index + 1])
       }
     },
+    whenever: [() => !isAnyOpen.value],
   },
 })
 

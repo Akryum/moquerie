@@ -81,6 +81,25 @@ onMounted(() => {
 onBeforeUnmount(() => {
   isReferencesOpen.value = false
 })
+
+// Move selection with keyboard
+
+defineShortcuts({
+  arrowdown: () => {
+    const index = allInstances.value?.findIndex(i => i.id === props.modelValue?.__id) ?? -1
+    const nextInstance = allInstances.value?.[index + 1]
+    if (nextInstance) {
+      emit('update:modelValue', { __id: nextInstance.id, __resourceName: nextInstance.resourceName })
+    }
+  },
+  arrowup: () => {
+    const index = allInstances.value?.findIndex(i => i.id === props.modelValue?.__id) ?? -1
+    const nextInstance = allInstances.value?.[index - 1]
+    if (nextInstance) {
+      emit('update:modelValue', { __id: nextInstance.id, __resourceName: nextInstance.resourceName })
+    }
+  },
+})
 </script>
 
 <template>
