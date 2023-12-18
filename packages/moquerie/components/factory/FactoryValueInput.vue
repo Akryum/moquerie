@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { ResourceFactoryValue } from '~/types/factory.js'
-import type { ResourceSchemaType } from '~/types/resource.js'
+import type { ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
+  field: ResourceSchemaField
   type: string
   value: ResourceFactoryValue
   array?: boolean
@@ -58,6 +59,8 @@ function update(updated: Partial<ResourceFactoryValue>) {
   }
   emit('update:value', newValue)
 }
+
+const isResourceRefsOpen = ref(false)
 </script>
 
 <template>
@@ -125,11 +128,58 @@ function update(updated: Partial<ResourceFactoryValue>) {
         />
         Select random instance
       </div>
+
+      <UButton
+        v-if="!value.resourceRandom"
+        color="gray"
+        block
+        @click="isResourceRefsOpen = true"
+      >
+        <ResourceReferencesSummary
+          v-if="field.type === 'resource'"
+          :field="field"
+          :value="value.instanceRefs"
+        />
+      </UButton>
     </div>
 
     <div v-else class="flex items-end justify-center p-6 gap-4">
       <UIcon name="i-ph-arrow-bend-left-up" class="w-10 h-10 flex-none text-primary-500" />
       <p>Select a generate type to continue</p>
     </div>
+
+    <UModal
+      v-model="isResourceRefsOpen"
+      :ui="{
+        width: 'sm:max-w-[calc(70vw-100px)]',
+        height: 'h-[calc(100vh-80px)]',
+        wrapper: 'z-[10001]',
+      }"
+    >
+      <template v-if="field.type === 'resource'">
+        <ResourceInstanceValueReferenceArray
+          v-if="field.array"
+          :resource-type="resourceType"
+          :field="field"
+          :model-value="value.instanceRefs as any ?? null"
+          class="h-full"
+          @update:model-value="update({
+            instanceRefs: $event,
+          })"
+          @close="isResourceRefsOpen = false"
+        />
+        <ResourceInstanceValueReferenceSingle
+          v-else
+          :resource-type="resourceType"
+          :field="field"
+          :model-value="value.instanceRefs as any ?? null"
+          class="h-full"
+          @update:model-value="update({
+            instanceRefs: $event,
+          })"
+          @close="isResourceRefsOpen = false"
+        />
+      </template>
+    </UModal>
   </div>
 </template>

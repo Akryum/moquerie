@@ -73,6 +73,7 @@ onMounted(() => {
           <Menu
             :delay="500"
             :dispose-timeout="0"
+            popper-class="!z-[10002]"
           >
             <template #default="{ shown }">
               <ResourceReferencesSummary

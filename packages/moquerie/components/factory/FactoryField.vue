@@ -1,5 +1,6 @@
 <script lang="ts">
 import { Dropdown, VTooltip as vTooltip } from 'floating-vue'
+import { isAnyOpen } from '../resource/resourceInstanceValueOverlays.js'
 import type { ResourceFactoryValue } from '~/types/factory.js'
 import type { ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
@@ -48,9 +49,10 @@ watch(selectedField, (val) => {
     v-model:shown="isOpen"
     placement="left"
     popper-class="no-overflow"
-    :dispose-timeout="200"
+    :dispose-timeout="0"
     shift-cross-axis
     instant-move
+    :auto-hide="!isAnyOpen"
   >
     <div
       ref="el"
@@ -111,6 +113,7 @@ watch(selectedField, (val) => {
         </div>
         <FactoryValueInput
           :resource-type="resourceType"
+          :field="field"
           :type="field.type"
           :value="value"
           :array="field.array"

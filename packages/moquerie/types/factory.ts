@@ -1,4 +1,5 @@
 import type { DBLocation } from './db.js'
+import type { ResourceInstanceReference } from './resource.js'
 
 export interface ResourceFactory {
   id: string
@@ -95,7 +96,7 @@ export interface ResourceFactoryValue {
   /**
    * In case of array, it will be a list of resource ids.
    */
-  instanceId?: string | string[]
+  instanceRefs?: ResourceInstanceReference | ResourceInstanceReference[] | null
   /**
    * Selects a random resource for the corresponding type.
    */

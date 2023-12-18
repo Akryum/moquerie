@@ -212,24 +212,21 @@ export async function createFactoryValue(options: CreateFactoryValueOptions) {
         throw new Error(`For resourceReference factory value, resourceTypeName is required.`)
       }
 
-      let instanceId: string[] | undefined
       if (createValue.resourceRandom) {
         const allInstances = await findAllResourceInstances(createValue.resourceTypeName)
         const randomIndex = Math.floor(Math.random() * allInstances.length)
-        instanceId = [allInstances[randomIndex]?.id]
-      }
-      else if (createValue.instanceId) {
-        instanceId = Array.isArray(createValue.instanceId) ? createValue.instanceId : [createValue.instanceId]
-      }
+        const instanceId = [allInstances[randomIndex]?.id].filter(Boolean)
 
-      instanceId = instanceId?.filter(Boolean)
-
-      if (instanceId?.length) {
-        if (!array && instanceId.length > 1) {
-          throw new Error(`Expected single instance for ${factory.name}#${options.path.join('.')} but got ${instanceId.length}`)
+        if (instanceId?.length) {
+          if (!array && instanceId.length > 1) {
+            throw new Error(`Expected single instance for ${factory.name}#${options.path.join('.')} but got ${instanceId.length}`)
+          }
+          const refs = instanceId.map(id => createResourceInstanceReference(createValue.resourceTypeName!, id))
+          return array ? refs : refs[0]
         }
-        const refs = instanceId.map(id => createResourceInstanceReference(createValue.resourceTypeName!, id))
-        return array ? refs : refs[0]
+      }
+      else if (createValue.instanceRefs) {
+        return Array.isArray(createValue.instanceRefs) ? createValue.instanceRefs : [createValue.instanceRefs]
       }
 
       return array ? [] : null
