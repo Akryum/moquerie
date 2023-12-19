@@ -7,7 +7,6 @@ const props = defineProps<{
   resourceType: ResourceSchemaType
   field: ResourceSchemaField & {
     type: 'resource'
-    array: true
   }
   modelValue: ResourceInstanceReference[] | null
   readonly?: boolean

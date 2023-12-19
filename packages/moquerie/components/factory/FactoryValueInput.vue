@@ -156,30 +156,17 @@ const isResourceRefsOpen = ref(false)
         wrapper: 'z-[10001]',
       }"
     >
-      <template v-if="field.type === 'resource'">
-        <ResourceInstanceValueReferenceArray
-          v-if="field.array"
-          :resource-type="resourceType"
-          :field="field"
-          :model-value="value.instanceRefs as any ?? null"
-          class="h-full"
-          @update:model-value="update({
-            instanceRefs: $event,
-          })"
-          @close="isResourceRefsOpen = false"
-        />
-        <ResourceInstanceValueReferenceSingle
-          v-else
-          :resource-type="resourceType"
-          :field="field"
-          :model-value="value.instanceRefs as any ?? null"
-          class="h-full"
-          @update:model-value="update({
-            instanceRefs: $event,
-          })"
-          @close="isResourceRefsOpen = false"
-        />
-      </template>
+      <ResourceInstanceValueReferences
+        v-if="field.type === 'resource'"
+        :resource-type="resourceType"
+        :field="field"
+        :model-value="value.instanceRefs as any ?? null"
+        class="h-full"
+        @update:model-value="update({
+          instanceRefs: $event,
+        })"
+        @close="isResourceRefsOpen = false"
+      />
     </UModal>
   </div>
 </template>

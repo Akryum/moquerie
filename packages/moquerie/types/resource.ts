@@ -81,9 +81,11 @@ export type ResourceInstanceObjectValue<TFields extends Record<string, ResourceS
 }
 
 export type ResourceInstanceFieldValueMightBeArray<TField extends ResourceSchemaField> =
-  TField['array'] extends true
-    ? Array<ResourceInstanceFieldValue<TField>>
-    : ResourceInstanceFieldValue<TField>
+  TField extends Extract<ResourceSchemaField, { type: 'resource' }>
+    ? ResourceInstanceReference[]
+    : TField['array'] extends true
+      ? Array<ResourceInstanceFieldValue<TField>>
+      : ResourceInstanceFieldValue<TField>
 
 export type ResourceInstanceFieldValue<TField extends ResourceSchemaField> =
   TField['type'] extends 'string'
@@ -96,9 +98,7 @@ export type ResourceInstanceFieldValue<TField extends ResourceSchemaField> =
           ? Date
           : TField['type'] extends 'any'
             ? any
-            : TField extends Extract<ResourceSchemaField, { type: 'resource' }>
-              ? ResourceInstanceReference
-              : never
+            : never
 
 export interface ResourceInstanceReference {
   __resourceName: string

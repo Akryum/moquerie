@@ -190,25 +190,14 @@ const isResourceRefsOpen = ref(false)
       height: 'h-[calc(100vh-80px)]',
     }"
   >
-    <template v-if="field.type === 'resource'">
-      <ResourceInstanceValueReferenceArray
-        v-if="field.array"
-        :resource-type="resourceType"
-        :field="field"
-        :model-value="modelValue"
-        class="h-full"
-        @update:model-value="$emit('update:modelValue', $event)"
-        @close="isResourceRefsOpen = false"
-      />
-      <ResourceInstanceValueReferenceSingle
-        v-else
-        :resource-type="resourceType"
-        :field="field"
-        :model-value="modelValue"
-        class="h-full"
-        @update:model-value="$emit('update:modelValue', $event)"
-        @close="isResourceRefsOpen = false"
-      />
-    </template>
+    <ResourceInstanceValueReferences
+      v-if="field.type === 'resource'"
+      :resource-type="resourceType"
+      :field="field"
+      :model-value="modelValue"
+      class="h-full"
+      @update:model-value="$emit('update:modelValue', $event)"
+      @close="isResourceRefsOpen = false"
+    />
   </UModal>
 </template>

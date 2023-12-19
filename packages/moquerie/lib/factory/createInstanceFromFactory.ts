@@ -222,14 +222,14 @@ export async function createFactoryValue(options: CreateFactoryValueOptions) {
             throw new Error(`Expected single instance for ${factory.name}#${options.path.join('.')} but got ${instanceId.length}`)
           }
           const refs = instanceId.map(id => createResourceInstanceReference(createValue.resourceTypeName!, id))
-          return array ? refs : refs[0]
+          return refs
         }
       }
       else if (createValue.instanceRefs) {
-        return Array.isArray(createValue.instanceRefs) ? createValue.instanceRefs : [createValue.instanceRefs]
+        return createValue.instanceRefs
       }
 
-      return array ? [] : null
+      return []
     }
   }
 }
