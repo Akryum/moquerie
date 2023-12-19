@@ -65,6 +65,11 @@ function onGenerate(value: any, previousSelection: {
   paramsCode?: string
 }) {
   fakerOpen.value = false
+
+  if (props.field.array) {
+    value = [...props.modelValue ?? [], value]
+  }
+
   emit('update:modelValue', value)
   previousFakerSelection.value = previousSelection
   focusInput()
@@ -73,14 +78,52 @@ function onGenerate(value: any, previousSelection: {
 // Resource references
 
 const isResourceRefsOpen = ref(false)
+
+// Array
+
+function addNewArrayItem() {
+  if (!props.field.array || props.field.type === 'resource') {
+    return
+  }
+
+  let value: any
+  switch (props.field.type) {
+    case 'boolean':
+      value = false
+      break
+    case 'number':
+      value = 0
+      break
+    case 'string':
+      value = ''
+      break
+    case 'date':
+      value = new Date()
+      break
+    default:
+      value = null
+  }
+
+  emit('update:modelValue', [...props.modelValue ?? [], value])
+}
+
+function updateArrayItem(index: number, value: any) {
+  const newValue = [...props.modelValue]
+  newValue[index] = value
+  emit('update:modelValue', newValue)
+}
+
+function removeArrayItem(index: number) {
+  const newValue = [...props.modelValue]
+  newValue.splice(index, 1)
+  emit('update:modelValue', newValue)
+}
 </script>
 
 <template>
-  <UFormGroup
-    :description="field.description"
-  >
+  <UFormGroup class="group">
     <template #label>
-      <div class="mb-0.5 flex items-center gap-2">
+      <div class="mb-0.5 flex items-center gap-2 group-hover:text-primary-500 group-focus-within:text-primary-500">
         <span>{{ field.name }}</span>
 
         <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
@@ -88,42 +131,64 @@ const isResourceRefsOpen = ref(false)
       </div>
     </template>
 
+    <template v-if="field.description">
+      <div class="mb-0.5 text-xs text-gray-500">
+        {{ field.description }}
+      </div>
+    </template>
+
     <template v-if="!['resource', 'boolean'].includes(field.type)" #hint>
-      <Dropdown
-        v-model:shown="fakerOpen"
-        placement="bottom-end"
-        :dispose-timeout="0"
-        class="leading-[0]"
-      >
-        <Tooltip>
+      <div class="flex items-center leading-[0]">
+        <Dropdown
+          v-model:shown="fakerOpen"
+          placement="bottom-end"
+          :dispose-timeout="0"
+          class="leading-[0]"
+        >
+          <Tooltip>
+            <UButton
+              icon="i-ph-dice-three"
+              color="gray"
+              variant="link"
+              :padded="false"
+              tabindex="-1"
+            />
+
+            <template #popper>
+              Generate with faker
+
+              <KbShortcut keys="meta_g" />
+            </template>
+          </Tooltip>
+
+          <template #popper="{ hide }">
+            <div class="p-4 pb-2 w-[400px]">
+              <ResourceInstanceValueFaker
+                :array="field.array"
+                :previous-factory="previousFakerSelection?.factory"
+                :previous-locale="previousFakerSelection?.locale"
+                :previous-params-code="previousFakerSelection?.paramsCode"
+                @cancel="hide();focusInput()"
+                @generate="onGenerate"
+              />
+            </div>
+          </template>
+        </Dropdown>
+
+        <Tooltip v-if="field.array">
           <UButton
-            icon="i-ph-dice-three"
+            icon="i-ph-plus"
             color="gray"
             variant="link"
             :padded="false"
-            tabindex="-1"
+            @click="addNewArrayItem()"
           />
 
           <template #popper>
-            Generate with faker
-
-            <KbShortcut keys="meta_g" />
+            Add new item
           </template>
         </Tooltip>
-
-        <template #popper="{ hide }">
-          <div class="p-4 pb-2 w-[400px]">
-            <ResourceInstanceValueFaker
-              :array="field.array"
-              :previous-factory="previousFakerSelection?.factory"
-              :previous-locale="previousFakerSelection?.locale"
-              :previous-params-code="previousFakerSelection?.paramsCode"
-              @cancel="hide();focusInput()"
-              @generate="onGenerate"
-            />
-          </div>
-        </template>
-      </Dropdown>
+      </div>
     </template>
 
     <Menu
@@ -131,6 +196,7 @@ const isResourceRefsOpen = ref(false)
       placement="left"
       :delay="500"
       :dispose-timeout="0"
+      :triggers="['hover']"
     >
       <template #default="{ shown, hide }">
         <UButton
@@ -164,30 +230,70 @@ const isResourceRefsOpen = ref(false)
     </Menu>
 
     <template v-else>
-      <!-- @TODO handle array -->
+      <div v-if="field.array" class="flex flex-col gap-1">
+        <div
+          v-for="(item, index) in modelValue ?? []"
+          :key="index"
+          class="flex items-center gap-2 pr-1 border border-gray-200 dark:border-gray-800 rounded-md"
+        >
+          <div
+            v-if="field.type === 'boolean'"
+            @click="updateArrayItem(index, $event)"
+          >
+            <UToggle
+              :model-value="item"
+              class="pointer-events-none"
+            />
+          </div>
 
-      <div
-        v-if="field.type === 'boolean'"
-        @click="$emit('update:modelValue', !modelValue)"
-      >
-        <UToggle
-          :model-value="modelValue"
-          class="pointer-events-none"
-        />
+          <UTextarea
+            v-else
+            ref="input"
+            :model-value="item"
+            :autofocus="autofocus"
+            :name="field.name"
+            :rows="1"
+            autoresize
+            variant="none"
+            class="flex-1"
+            @focus="inputFocused = true"
+            @blur="inputFocused = false"
+            @update:model-value="updateArrayItem(index, $event)"
+          />
+
+          <UButton
+            icon="i-ph-trash"
+            color="gray"
+            variant="link"
+            :padded="false"
+            @click="removeArrayItem(index)"
+          />
+        </div>
       </div>
+      <template v-else>
+        <div
+          v-if="field.type === 'boolean'"
+          @click="$emit('update:modelValue', !modelValue)"
+        >
+          <UToggle
+            :model-value="modelValue"
+            class="pointer-events-none"
+          />
+        </div>
 
-      <UTextarea
-        v-else
-        ref="input"
-        :model-value="modelValue"
-        :autofocus="autofocus"
-        :name="field.name"
-        :rows="1"
-        autoresize
-        @focus="inputFocused = true"
-        @blur="inputFocused = false"
-        @update:model-value="$emit('update:modelValue', $event)"
-      />
+        <UTextarea
+          v-else
+          ref="input"
+          :model-value="modelValue"
+          :autofocus="autofocus"
+          :name="field.name"
+          :rows="1"
+          autoresize
+          @focus="inputFocused = true"
+          @blur="inputFocused = false"
+          @update:model-value="$emit('update:modelValue', $event)"
+        />
+      </template>
     </template>
   </UFormGroup>
 

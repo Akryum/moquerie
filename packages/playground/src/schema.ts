@@ -22,6 +22,8 @@ export const schema = makeExecutableSchema({
       "The user who received the message"
       to: User!
       archived: Boolean
+      "Useful for filtering"
+      tags: [String!]!
     }
 
     type Query {
