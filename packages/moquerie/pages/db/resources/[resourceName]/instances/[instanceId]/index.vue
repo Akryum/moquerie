@@ -84,6 +84,23 @@ defineShortcuts({
   },
 })
 
+// Bulk edit
+
+const showBulkEditModal = ref(false)
+
+defineShortcuts({
+  meta_i: {
+    usingInput: true,
+    handler: () => {
+      if (!instanceIds.value.length) {
+        return
+      }
+      showBulkEditModal.value = true
+    },
+    whenever: [() => !isAnyOpen.value],
+  },
+})
+
 // Delete
 
 const showConfirmDeleteModal = ref(false)
@@ -176,6 +193,15 @@ async function onSubmitValue(value: any) {
 
         <UButton
           color="gray"
+          icon="i-ph-pencil-simple"
+          @click="showBulkEditModal = true"
+        >
+          Bulk edit
+          <KbShortcut keys="meta_i" />
+        </UButton>
+
+        <UButton
+          color="gray"
           icon="i-ph-trash"
           @click="showConfirmDeleteModal = true"
         >
@@ -257,4 +283,17 @@ async function onSubmitValue(value: any) {
     @cancel="showConfirmDeleteModal = false"
     @confirm="deleteInstances()"
   />
+
+  <UModal
+    v-model="showBulkEditModal"
+  >
+    <ResourceBulkEditForm
+      v-if="resourceType"
+      :resource-type="resourceType"
+      :instance-ids="instanceIds"
+      class="p-4"
+      @cancel="showBulkEditModal = false"
+      @submit="showBulkEditModal = false"
+    />
+  </UModal>
 </template>
