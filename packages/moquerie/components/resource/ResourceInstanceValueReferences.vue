@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
+import { Tooltip } from 'floating-vue'
 import { isReferencesOpen } from './resourceInstanceValueOverlays.js'
 import type { FilterActive, ResourceInstance, ResourceInstanceReference, ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
@@ -124,6 +125,46 @@ function removeSelected() {
 defineShortcuts({
   delete: () => {
     removeSelected()
+  },
+})
+
+// Move refs
+
+function moveUp() {
+  if (!selectedIds.referenced.value.length) {
+    return
+  }
+  let newRefs = listOfRefs.value
+  const selectedRefs = selectedIds.referenced.value.map(id => newRefs.find(ref => ref.__id === id)).filter(Boolean) as ResourceInstanceReference[]
+  newRefs = newRefs.filter(ref => ref.__id === selectedIds.referenced.value[0] || !selectedIds.referenced.value.includes(ref.__id))
+  const firstIndex = newRefs.findIndex(ref => ref.__id === selectedIds.referenced.value[0])
+  newRefs.splice(firstIndex, 1)
+  newRefs.splice(Math.max(0, firstIndex - 1), 0, ...selectedRefs)
+  emit('update:modelValue', newRefs)
+}
+
+defineShortcuts({
+  meta_arrowup: () => {
+    moveUp()
+  },
+})
+
+function moveDown() {
+  if (!selectedIds.referenced.value.length) {
+    return
+  }
+  let newRefs = listOfRefs.value
+  const selectedRefs = selectedIds.referenced.value.map(id => newRefs.find(ref => ref.__id === id)).filter(Boolean) as ResourceInstanceReference[]
+  newRefs = newRefs.filter(ref => ref.__id === selectedIds.referenced.value[0] || !selectedIds.referenced.value.includes(ref.__id))
+  const firstIndex = newRefs.findIndex(ref => ref.__id === selectedIds.referenced.value[0])
+  newRefs.splice(firstIndex, 1)
+  newRefs.splice(Math.min(listOfRefs.value.length - 1, firstIndex + 1), 0, ...selectedRefs)
+  emit('update:modelValue', newRefs)
+}
+
+defineShortcuts({
+  meta_arrowdown: () => {
+    moveDown()
   },
 })
 
@@ -260,6 +301,34 @@ onBeforeUnmount(() => {
           </UButton>
 
           <template v-if="!readonly">
+            <template v-if="m === 'referenced'">
+              <Tooltip>
+                <UButton
+                  color="gray"
+                  icon="i-ph-arrow-fat-line-up"
+                  @click="moveUp()"
+                />
+
+                <template #popper>
+                  <div>Move up</div>
+                  <KbShortcut keys="meta_arrowup" />
+                </template>
+              </Tooltip>
+
+              <Tooltip>
+                <UButton
+                  color="gray"
+                  icon="i-ph-arrow-fat-line-down"
+                  @click="moveDown()"
+                />
+
+                <template #popper>
+                  <div>Move down</div>
+                  <KbShortcut keys="meta_arrowdown" />
+                </template>
+              </Tooltip>
+            </template>
+
             <UButton
               v-if="m === 'referenced'"
               color="primary"
