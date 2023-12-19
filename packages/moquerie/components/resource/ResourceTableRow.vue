@@ -97,15 +97,29 @@ onMounted(() => {
             </template>
           </Menu>
         </template>
-        <ValuePreview
-          v-else
-          :value="instance.value[col.field as keyof typeof instance]"
-          :type="col.fieldData?.type"
-          class="leading-tight text-xs line-clamp-2"
-          :class="{
-            'font-mono': col.fieldData?.type === 'number' || col.field.match(/id/),
-          }"
-        />
+        <template v-else>
+          <div v-if="col.fieldData?.array" class="flex items-center flex-wrap h-full overflow-hidden gap-1">
+            <ValuePreview
+              v-for="(item, index) in instance.value[col.field as keyof typeof instance]"
+              :key="index"
+              :value="item"
+              :type="col.fieldData?.type"
+              class="leading-tight text-xs line-clamp-2 px-1 py-0.5 border border-gray-500/10 rounded"
+              :class="{
+                'font-mono': col.fieldData?.type === 'number' || col.field.match(/id/),
+              }"
+            />
+          </div>
+          <ValuePreview
+            v-else
+            :value="instance.value[col.field as keyof typeof instance]"
+            :type="col.fieldData?.type"
+            class="leading-tight text-xs line-clamp-2"
+            :class="{
+              'font-mono': col.fieldData?.type === 'number' || col.field.match(/id/),
+            }"
+          />
+        </template>
       </div>
 
       <slot name="end" />
