@@ -58,6 +58,14 @@ onWindowFocus(refreshReferenced)
 
 const referencedInstances = computed(() => referencedInstancesRaw.value?.filter(i => filterActive.value === 'all' || i.active === (filterActive.value === 'active')) ?? [])
 
+// Orphans
+
+const orphans = computed(() => ids.value.filter(id => !referencedInstances.value.find(i => i.id === id)))
+
+function clearOrphans() {
+  emit('update:modelValue', listOfRefs.value.filter(ref => !orphans.value.includes(ref.__id)))
+}
+
 // All instances
 
 // @TODO paginate
@@ -170,6 +178,36 @@ onBeforeUnmount(() => {
         :field="field"
         :value="modelValue"
       />
+    </div>
+
+    <!-- Orphans -->
+    <div
+      v-if="orphans.length"
+      class="flex items-center gap-2 p-2 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950 text-orange-500 mx-4"
+    >
+      <UIcon name="i-ph-selection-slash" class="w-6 h-6" />
+      <div class="truncate">
+        There is {{ orphans.length }} orphan reference{{ orphans.length > 1 ? 's' : '' }}
+      </div>
+      <InfoTooltip>
+        <div class="max-w-[400px] flex items-center gap-4 p-2">
+          <div class="w-16 h-16 flex items-center justify-center bg-orange-500/10 rounded-full flex-none">
+            <UIcon name="i-ph-selection-slash" class="w-8 h-8 text-orange-500" />
+          </div>
+          <div>
+            Orphan references are references to instances that no longer exist. If you don't plan on importing them back, you can clear the references.
+          </div>
+        </div>
+      </InfoTooltip>
+
+      <div class="flex-1" />
+      <UButton
+        color="orange"
+        icon="i-ph-trash"
+        @click="clearOrphans()"
+      >
+        Clear orphan{{ orphans.length > 1 ? 's' : '' }}
+      </UButton>
     </div>
 
     <!-- Toolbar -->
