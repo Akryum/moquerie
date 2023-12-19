@@ -60,7 +60,7 @@ const referencedInstances = computed(() => referencedInstancesRaw.value?.filter(
 
 // Orphans
 
-const orphans = computed(() => ids.value.filter(id => !referencedInstances.value.find(i => i.id === id)))
+const orphans = computed(() => ids.value.filter(id => !referencedInstancesRaw.value?.find(i => i.id === id)))
 
 function clearOrphans() {
   emit('update:modelValue', listOfRefs.value.filter(ref => !orphans.value.includes(ref.__id)))
