@@ -68,11 +68,12 @@ export interface ResourceFactoryValue {
   /**
    * Static value or script, as JS code.
    */
-  staticValue?: string
+  staticValue?: any
   /**
    * Need to evaluate staticValue when running the factory.
    */
   staticEvaluated?: boolean
+  staticScript?: string
   /**
    * Faker factory. Example: 'image.avatar'.
    */

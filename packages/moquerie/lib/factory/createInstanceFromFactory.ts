@@ -126,10 +126,10 @@ export async function createFactoryValue(options: CreateFactoryValueOptions) {
         if (createValue.children) {
           throw new Error(`For staticEvaluated factory value, children are not supported.`)
         }
-        if (!createValue.staticValue) {
-          throw new Error(`For staticEvaluated factory value, staticValue is required.`)
+        if (!createValue.staticScript) {
+          throw new Error(`For staticEvaluated factory value, staticScript is required.`)
         }
-        const result = await runValueCode(createValue.staticValue, factoryDataContext)
+        const result = await runValueCode(createValue.staticScript, factoryDataContext)
 
         if (array && !Array.isArray(result)) {
           throw new Error(`Expected array for ${factory.name}#${options.path.join('.')} but got ${typeof result}`)

@@ -17,7 +17,7 @@
           icon: 'i-ph-play',
         },
       ]"
-      class="my-1 mr-1 min-w-[160px]"
+      class="m-1 min-w-[160px]"
     />
     <NuxtPage class="w-full h-full" />
   </div>

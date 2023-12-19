@@ -13,6 +13,12 @@ export const schema = makeExecutableSchema({
       messages: [Message!]!
     }
 
+    enum MessageType {
+      public
+      "Message is not visible to other users"
+      private
+    }
+
     "Message sent between users"
     type Message {
       id: ID!
@@ -24,6 +30,7 @@ export const schema = makeExecutableSchema({
       archived: Boolean
       "Useful for filtering"
       tags: [String!]!
+      type: MessageType!
     }
 
     type Query {

@@ -3,6 +3,7 @@ export type ResourceSchemaCommon = {
   tags: readonly string[]
   description?: string
   nonNull: boolean
+  isDeprecated: boolean
   deprecationReason?: string
 } & (
   {
@@ -29,6 +30,12 @@ export type ResourceSchemaType = ResourceSchemaCommon & (
   }
 )
 
+export interface ResourceSchemaFieldEnumValue {
+  value: any
+  description?: string
+  deprecationReason?: string
+}
+
 export type ResourceSchemaField = ResourceSchemaCommon & (
   {
     type: 'string'
@@ -43,6 +50,9 @@ export type ResourceSchemaField = ResourceSchemaCommon & (
   } | {
     type: 'resource'
     resourceName: string
+  } | {
+    type: 'enum'
+    values: Array<ResourceSchemaFieldEnumValue>
   }
 )
 
@@ -96,9 +106,11 @@ export type ResourceInstanceFieldValue<TField extends ResourceSchemaField> =
         ? boolean
         : TField['type'] extends 'date'
           ? Date
-          : TField['type'] extends 'any'
-            ? any
-            : never
+          : TField extends Extract<ResourceSchemaField, { type: 'enum' }>
+            ? TField['values'][number]['value']
+            : TField['type'] extends 'any'
+              ? any
+              : never
 
 export interface ResourceInstanceReference {
   __resourceName: string

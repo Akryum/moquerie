@@ -137,9 +137,10 @@ function removeArrayItem(index: number) {
       </div>
     </template>
 
-    <template v-if="!['resource', 'boolean'].includes(field.type)" #hint>
-      <div class="flex items-center leading-[0]">
+    <template #hint>
+      <div class="flex items-center leading-[0] gap-0.5">
         <Dropdown
+          v-if="!['resource', 'boolean', 'enum'].includes(field.type)"
           v-model:shown="fakerOpen"
           placement="bottom-end"
           :dispose-timeout="0"
@@ -246,6 +247,13 @@ function removeArrayItem(index: number) {
             />
           </div>
 
+          <ResourceEnumSelect
+            v-else-if="field.type === 'enum'"
+            :model-value="item"
+            :field="field"
+            @update:model-value="updateArrayItem(index, $event)"
+          />
+
           <UTextarea
             v-else
             ref="input"
@@ -280,6 +288,13 @@ function removeArrayItem(index: number) {
             class="pointer-events-none"
           />
         </div>
+
+        <ResourceEnumSelect
+          v-else-if="field.type === 'enum'"
+          :model-value="modelValue"
+          :field="field"
+          @update:model-value="$emit('update:modelValue', $event)"
+        />
 
         <UTextarea
           v-else

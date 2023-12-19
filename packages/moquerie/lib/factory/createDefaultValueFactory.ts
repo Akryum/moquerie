@@ -24,6 +24,14 @@ export function createDefaultValueFactory(options: CreateDefaultValueFactoryOpti
         continue
       }
 
+      if (field.type === 'enum') {
+        children[key] = {
+          generateType: 'static',
+          staticValue: field.values[0].value,
+        }
+        continue
+      }
+
       const result = autoSelectFakerGenerator({
         name: key,
         type: field.type as any,

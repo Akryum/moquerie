@@ -80,6 +80,21 @@ export async function getResourceSchema(ctx: Context) {
             resourceName: gqlFieldType.name,
           }
         }
+        else if (gqlFieldType.kind === 'ENUM') {
+          const enumName = gqlFieldType.name
+          const enumData = gqlIntrospection.__schema.types.find(t => t.kind === 'ENUM' && t.name === enumName)
+          if (!enumData || enumData.kind !== 'ENUM') {
+            throw new Error(`Enum ${enumName} not found`)
+          }
+          type = {
+            type: 'enum',
+            values: enumData.enumValues.map(v => ({
+              value: v.name,
+              description: v.description ?? undefined,
+              deprecationReason: v.deprecationReason ?? v.isDeprecated ? '' : undefined,
+            })),
+          }
+        }
 
         const tags = ['graphql', 'field']
 
@@ -94,6 +109,7 @@ export async function getResourceSchema(ctx: Context) {
           description: field.description ?? undefined,
           array,
           nonNull,
+          isDeprecated: field.isDeprecated ?? false,
           deprecationReason: field.deprecationReason ?? undefined,
         }
 
@@ -115,6 +131,7 @@ export async function getResourceSchema(ctx: Context) {
         type: 'object',
         fields,
         nonNull: false,
+        isDeprecated: false,
       } satisfies ResourceSchemaType
 
       typesTemp[resType.name] = resType

@@ -80,26 +80,47 @@ const isResourceRefsOpen = ref(false)
         Evaluate as JavaScript
       </div>
 
-      <UTextarea
-        v-if="!value.staticEvaluated"
-        :model-value="value.staticValue ?? ''"
-        :ui="{
-          base: 'h-[200px]',
-        }"
-        @update:model-value="update({ staticValue: $event })"
-      />
+      <template v-if="!value.staticEvaluated">
+        <div
+          v-if="field.type === 'boolean'"
+          class="p-2 border rounded-md flex items-center gap-2 cursor-pointer select-none"
+          @click="update({ staticValue: !value.staticValue })"
+        >
+          <UToggle
+            :model-value="!!value.staticValue"
+            class="pointer-events-none"
+          />
+          {{ value.staticValue ? 'true' : 'false' }}
+        </div>
+
+        <ResourceEnumSelect
+          v-else-if="field.type === 'enum'"
+          :model-value="value.staticValue"
+          :field="field"
+          @update:model-value="update({ staticValue: $event })"
+        />
+
+        <UTextarea
+          v-else
+          :model-value="value.staticValue ?? ''"
+          :ui="{
+            base: 'h-[200px]',
+          }"
+          @update:model-value="update({ staticValue: $event })"
+        />
+      </template>
 
       <MonacoEditor
         v-else
         :filename="`field-${resourceType.name}-edit.js`"
-        :source="value.staticValue ?? ''"
+        :source="value.staticScript ?? ''"
         :options="{
           language: 'javascript',
           lineNumbers: 'off',
           folding: false,
         }"
         class="h-[200px] border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden"
-        @update:source="update({ staticValue: $event })"
+        @update:source="update({ staticScript: $event })"
       />
     </div>
 
