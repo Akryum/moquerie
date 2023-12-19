@@ -65,15 +65,11 @@ watch(selectedField, (val) => {
       @keydown.enter="isOpen = true"
     >
       <div class="flex items-baseline gap-2">
-        <div class="font-mono text-primary-500 font-bold flex items-baseline gap-1">
+        <div class="text-primary-500 flex items-center gap-1">
           {{ field.name }}
-          <span
-            v-if="field.array"
-            v-tooltip="'Array'"
-            class="text-primary-500 font-mono"
-          >
-            []
-          </span>
+
+          <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
+          <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
         </div>
         <div v-if="field.description" class="text-sm text-gray-500 dark:text-gray-400 truncate flex-shrink">
           {{ field.description }}
@@ -92,15 +88,10 @@ watch(selectedField, (val) => {
     <template #popper>
       <div class="p-2 space-y-2">
         <div class="flex items-center gap-2">
-          <div class="font-mono text-primary-500 font-bold flex-1 flex items-baseline gap-1">
+          <div class="text-primary-500 flex-1 flex items-center gap-1">
             {{ field.name }}
-            <span
-              v-if="field.array"
-              v-tooltip="'Array'"
-              class="text-primary-500 font-mono"
-            >
-              []
-            </span>
+            <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
+            <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
           </div>
 
           <div>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Dropdown, Menu, Tooltip } from 'floating-vue'
+import { Dropdown, Menu, Tooltip, VTooltip as vTooltip } from 'floating-vue'
 import type { ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
 // @TODO Handle required/non-null fields
@@ -77,9 +77,17 @@ const isResourceRefsOpen = ref(false)
 
 <template>
   <UFormGroup
-    :label="field.name"
     :description="field.description"
   >
+    <template #label>
+      <div class="mb-0.5 flex items-center gap-2">
+        <span>{{ field.name }}</span>
+
+        <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
+        <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
+      </div>
+    </template>
+
     <template v-if="!['resource', 'boolean'].includes(field.type)" #hint>
       <Dropdown
         v-model:shown="fakerOpen"

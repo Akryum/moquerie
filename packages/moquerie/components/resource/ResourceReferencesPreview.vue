@@ -36,6 +36,8 @@ const { data: instances, refresh: refreshReferenced } = await useFetch(`/api/res
 onWindowFocus(refreshReferenced)
 
 // const instances = computed(() => instancesRaw.value?.filter(i => filterActive.value === 'all' || i.active === (filterActive.value === 'active')) ?? [])
+
+const firstActive = computed(() => instances.value?.find(i => i.active))
 </script>
 
 <template>
@@ -63,6 +65,22 @@ onWindowFocus(refreshReferenced)
       empty-placeholder="No instances referenced"
       dim-inactive-instances
       class="resource-table flex-1"
-    />
+    >
+      <template v-if="!field.array" #header-start>
+        <div class="w-[42px] flex-none" />
+      </template>
+      <template v-if="!field.array" #row-start="{ instance }">
+        <div
+          v-if="instance.id === firstActive?.id"
+          v-tooltip="'Selected instance'"
+          class="w-[42px] flex-none flex items-center justify-center text-primary-500"
+        >
+          <UIcon
+            name="i-ph-arrow-fat-right-fill"
+          />
+        </div>
+        <div v-else class="w-[42px] flex-none" />
+      </template>
+    </ResourceTable>
   </div>
 </template>

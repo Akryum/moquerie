@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
-import { Tooltip } from 'floating-vue'
+import { Tooltip, VTooltip as vTooltip } from 'floating-vue'
 import { isReferencesOpen } from './resourceInstanceValueOverlays.js'
 import type { FilterActive, ResourceInstance, ResourceInstanceReference, ResourceSchemaField, ResourceSchemaType } from '~/types/resource.js'
 
@@ -197,6 +197,10 @@ defineShortcuts({
   },
 })
 
+// Selected instance preview
+
+const firstActiveReference = computed(() => referencedInstancesRaw.value?.find(i => i.active)?.id)
+
 // Is Open
 
 onMounted(() => {
@@ -211,10 +215,14 @@ onBeforeUnmount(() => {
 <template>
   <div class="flex flex-col gap-4 py-4">
     <div class="px-4 flex items-center justify-between">
-      <div class="flex-1 flex items-baseline gap-2">
+      <div class="flex-1 flex items-center gap-2">
         <div>
           {{ field.name }}
         </div>
+
+        <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
+        <UIcon v-else v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
+
         <div v-if="field.description" class="text-sm text-gray-500">
           {{ field.description }}
         </div>
@@ -286,7 +294,23 @@ onBeforeUnmount(() => {
           @select="instance => selectedIds[m].value = [instance.id]"
           @select-multiple="instances => selectedIds[m].value = instances.map(i => i.id)"
           @dblclick="m === 'referenced' ? removeSelected() : addSelected()"
-        />
+        >
+          <template v-if="m === 'referenced' && !field.array" #header-start>
+            <div class="w-[42px] flex-none" />
+          </template>
+          <template v-if="m === 'referenced' && !field.array" #row-start="{ instance }">
+            <div
+              v-if="instance.id === firstActiveReference"
+              v-tooltip="'Selected instance'"
+              class="w-[42px] flex-none flex items-center justify-center text-primary-500"
+            >
+              <UIcon
+                name="i-ph-arrow-fat-right-fill"
+              />
+            </div>
+            <div v-else class="w-[42px] flex-none" />
+          </template>
+        </ResourceTable>
 
         <div class="flex items-center justify-center gap-2 pb-2">
           <UButton

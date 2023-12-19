@@ -47,6 +47,8 @@ onMounted(() => {
         'bg-gray-500/5 dark:bg-gray-500/20': dim,
       }"
     >
+      <slot name="start" />
+
       <!-- Active -->
       <div
         v-tooltip="instance.active ? 'Active' : 'Inactive'"
@@ -105,6 +107,8 @@ onMounted(() => {
           }"
         />
       </div>
+
+      <slot name="end" />
     </div>
   </div>
 </template>

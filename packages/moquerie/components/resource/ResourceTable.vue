@@ -138,6 +138,8 @@ watch(() => props.selectedInstanceIds, (value) => {
   >
     <!-- Headers -->
     <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 min-w-max">
+      <slot name="header-start" />
+
       <div class="w-[42px] flex-none" />
 
       <ResourceTableColumnHeader
@@ -145,6 +147,8 @@ watch(() => props.selectedInstanceIds, (value) => {
         :key="col.field"
         :col="col"
       />
+
+      <slot name="header-end" />
     </div>
 
     <!-- Rows -->
@@ -160,7 +164,15 @@ watch(() => props.selectedInstanceIds, (value) => {
         :dim="dimInactiveInstances && !instance.active"
         class="last:!border-b border-gray-200 dark:border-gray-800"
         @click="onRowClick(instance, $event)"
-      />
+      >
+        <template #start>
+          <slot name="row-start" :instance="instance" />
+        </template>
+
+        <template #end>
+          <slot name="row-end" :instance="instance" />
+        </template>
+      </ResourceTableRow>
     </div>
 
     <!-- Empty -->
