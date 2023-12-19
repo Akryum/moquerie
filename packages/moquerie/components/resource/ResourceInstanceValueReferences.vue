@@ -30,19 +30,6 @@ const listOfRefs = computed(() => {
 
 const ids = computed(() => listOfRefs.value.map(ref => ref.__id))
 
-// Mode
-
-const mode = ref<'referenced' | 'other'>('referenced')
-
-defineShortcuts({
-  meta_r: {
-    usingInput: true,
-    handler: () => {
-      mode.value = mode.value === 'referenced' ? 'other' : 'referenced'
-    },
-  },
-})
-
 // Referenced instances
 
 const filterActive = useLocalStorage<FilterActive>('resource-reference-table-filter-active', 'active')
@@ -60,7 +47,20 @@ const referencedInstances = computed(() => referencedInstancesRaw.value?.filter(
 
 // Orphans
 
-const orphans = computed(() => ids.value.filter(id => !referencedInstancesRaw.value?.find(i => i.id === id)))
+const orphans = ref<string[]>([])
+
+function computeOrphans() {
+  orphans.value = ids.value.filter(id => !referencedInstancesRaw.value?.find(i => i.id === id))
+}
+
+watchDebounced(ids, computeOrphans, {
+  debounce: 200,
+  immediate: true,
+})
+watchDebounced(referencedInstancesRaw, computeOrphans, {
+  debounce: 200,
+  immediate: true,
+})
 
 function clearOrphans() {
   emit('update:modelValue', listOfRefs.value.filter(ref => !orphans.value.includes(ref.__id)))
@@ -80,16 +80,18 @@ onWindowFocus(refreshAll)
 
 const otherInstances = computed(() => (allInstances.value ?? []).filter(instance => !ids.value.includes(instance.id)))
 
-const currentInstances = computed(() => (mode.value === 'referenced' ? referencedInstances.value : otherInstances.value) ?? [])
+function getInstances(mode: 'referenced' | 'other') {
+  return mode === 'referenced' ? referencedInstances.value : otherInstances.value
+}
 
 // Selection
 
 const selectedIds = {
-  referenced: ref<string[]>([]),
+  referenced: ref<string[]>(referencedInstances.value.length ? [referencedInstances.value[0].id] : []),
   other: ref<string[]>([]),
 } as const
 
-const currentSelection = computed(() => selectedIds[mode.value].value)
+const currentSelection = computed(() => [...selectedIds.referenced.value, ...selectedIds.other.value])
 
 // Add
 
@@ -129,15 +131,15 @@ defineShortcuts({
 
 const instanceStore = useResourceInstanceStore()
 
-async function bulkToggleActive() {
+async function bulkToggleActive(mode: 'referenced' | 'other') {
   await instanceStore.bulkUpdateInstances({
     resourceName: props.field.resourceName,
     instanceIds: currentSelection.value,
     data: {
-      active: !currentInstances.value.find(i => i.id === currentSelection.value[0])?.active ?? true,
+      active: !getInstances(mode).find(i => i.id === currentSelection.value[0])?.active ?? true,
     },
   })
-  if (mode.value === 'referenced') {
+  if (mode === 'referenced') {
     await refreshReferenced()
   }
   else {
@@ -147,7 +149,10 @@ async function bulkToggleActive() {
 
 defineShortcuts({
   'meta_;': () => {
-    bulkToggleActive()
+    bulkToggleActive('referenced')
+  },
+  'meta_shift_;': () => {
+    bulkToggleActive('other')
   },
 })
 
@@ -163,9 +168,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 py-4">
+  <div class="flex flex-col gap-4 py-4">
     <div class="px-4 flex items-center justify-between">
-      <div class="flex items-baseline gap-2">
+      <div class="flex-1 flex items-baseline gap-2">
         <div>
           {{ field.name }}
         </div>
@@ -174,10 +179,24 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <ResourceReferencesSummary
-        :field="field"
-        :value="modelValue"
+      <RadioButtonGroup
+        v-model="filterActive"
+        :options="[
+          { label: 'Active', value: 'active', icon: 'i-ph-eye' },
+          { label: 'All', value: 'all' },
+          { label: 'Inactive', value: 'inactive', icon: 'i-ph-eye-slash' },
+        ]"
+        :button-attrs="{
+          color: 'gray',
+        }"
       />
+
+      <div class="flex-1 flex justify-end">
+        <ResourceReferencesSummary
+          :field="field"
+          :value="modelValue"
+        />
+      </div>
     </div>
 
     <!-- Orphans -->
@@ -210,58 +229,64 @@ onBeforeUnmount(() => {
       </UButton>
     </div>
 
-    <!-- Toolbar -->
-    <div
-      class="flex items-center gap-2 px-4"
-      :class="$props.readonly ? 'justify-center' : 'justify-between'"
-    >
+    <div class="flex flex-1 divide-x divide-gray-200 dark:divide-gray-800 border-b border-gray-200 dark:border-gray-800">
       <div
-        v-if="!readonly"
-        class="flex items-center gap-2"
+        v-for="m of (['referenced', 'other'] as const)"
+        :key="m"
+        class="w-1/2 flex flex-col gap-2"
       >
-        <RadioButtonGroup
-          v-model="mode"
-          :options="[
-            {
-              label: 'Already Referenced',
-              value: 'referenced',
-              icon: 'i-ph-link',
-            },
-            {
-              label: 'Other Instances',
-              value: 'other',
-              icon: 'i-ph-plus-circle',
-            },
-          ]"
+        <ResourceTable
+          :resource-name="field.resourceName"
+          :instances="getInstances(m)"
+          :selected-instance-ids="selectedIds[m].value"
+          empty-placeholder="No instances referenced"
+          dim-inactive-instances
+          class="flex-1"
+          @select="instance => selectedIds[m].value = [instance.id]"
+          @select-multiple="instances => selectedIds[m].value = instances.map(i => i.id)"
+          @dblclick="m === 'referenced' ? removeSelected() : addSelected()"
         />
 
-        <KbShortcut keys="meta_r" />
+        <div class="flex items-center justify-center gap-2 pb-2">
+          <UButton
+            color="gray"
+            :disabled="!selectedIds[m].value.length"
+            icon="i-ph-eye"
+            @click="bulkToggleActive(m)"
+          >
+            Toggle active
+
+            <KbShortcut :keys="m === 'referenced' ? 'meta_;' : 'meta_shift_;'" />
+          </UButton>
+
+          <template v-if="!readonly">
+            <UButton
+              v-if="m === 'referenced'"
+              color="primary"
+              :disabled="!selectedIds.referenced.value.length"
+              icon="i-ph-minus-circle"
+              @click="removeSelected()"
+            >
+              Remove {{ selectedIds.referenced.value.length }} instance{{ selectedIds.referenced.value.length > 1 ? 's' : '' }}
+
+              <KbShortcut keys="delete" />
+            </UButton>
+
+            <UButton
+              v-if="m === 'other'"
+              color="primary"
+              :disabled="!selectedIds.other.value.length"
+              icon="i-ph-plus-circle"
+              @click="addSelected()"
+            >
+              Add {{ selectedIds.other.value.length }} instance{{ selectedIds.other.value.length > 1 ? 's' : '' }}
+
+              <KbShortcut keys="enter" />
+            </UButton>
+          </template>
+        </div>
       </div>
-
-      <RadioButtonGroup
-        v-model="filterActive"
-        :options="[
-          { label: 'Active', value: 'active', icon: 'i-ph-eye' },
-          { label: 'All', value: 'all' },
-          { label: 'Inactive', value: 'inactive', icon: 'i-ph-eye-slash' },
-        ]"
-        :button-attrs="{
-          color: 'gray',
-        }"
-      />
     </div>
-
-    <ResourceTable
-      :resource-name="field.resourceName"
-      :instances="currentInstances"
-      :selected-instance-ids="selectedIds[mode].value"
-      empty-placeholder="No instances referenced"
-      dim-inactive-instances
-      class="flex-1"
-      @select="instance => selectedIds[mode].value = [instance.id]"
-      @select-multiple="instances => selectedIds[mode].value = instances.map(i => i.id)"
-      @dblclick="mode === 'referenced' ? removeSelected() : addSelected()"
-    />
 
     <div class="flex items-center px-4" :class="[props.readonly ? 'justify-center' : 'justify-between']">
       <UButton
@@ -275,46 +300,7 @@ onBeforeUnmount(() => {
 
       <template v-if="!readonly">
         <div class="opacity-50 italic text-xs">
-          Double-click to {{ mode === 'referenced' ? 'remove' : 'add' }}
-        </div>
-
-        <div class="flex gap-2">
-          <UButton
-            color="gray"
-            :disabled="!currentSelection.length"
-            icon="i-ph-eye"
-            @click="bulkToggleActive()"
-          >
-            Toggle active
-
-            <KbShortcut keys="meta_;" />
-          </UButton>
-
-          <template v-if="mode === 'other'">
-            <UButton
-              color="primary"
-              :disabled="!selectedIds.other.value.length"
-              icon="i-ph-plus-circle"
-              @click="addSelected()"
-            >
-              Add {{ selectedIds.other.value.length }} instance{{ selectedIds.other.value.length > 1 ? 's' : '' }}
-
-              <KbShortcut keys="enter" />
-            </UButton>
-          </template>
-
-          <template v-else-if="mode === 'referenced'">
-            <UButton
-              color="primary"
-              :disabled="!selectedIds.referenced.value.length"
-              icon="i-ph-minus-circle"
-              @click="removeSelected()"
-            >
-              Remove {{ selectedIds.referenced.value.length }} instance{{ selectedIds.referenced.value.length > 1 ? 's' : '' }}
-
-              <KbShortcut keys="delete" />
-            </UButton>
-          </template>
+          Double-click to add/remove
         </div>
       </template>
     </div>

@@ -186,7 +186,7 @@ const isResourceRefsOpen = ref(false)
   <UModal
     v-model="isResourceRefsOpen"
     :ui="{
-      width: 'sm:max-w-[calc(70vw-100px)]',
+      width: 'sm:max-w-[calc(100vw-100px)]',
       height: 'h-[calc(100vh-80px)]',
     }"
   >
