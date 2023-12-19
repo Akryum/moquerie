@@ -102,7 +102,8 @@ defineShortcuts({
     </div>
     <!-- @TODO other types -->
 
-    <FormActions class="bottom-0">
+    <!-- @TODO sticky actions bar with focus scroll + offset -->
+    <FormActions>
       <UButton
         color="gray"
         :disabled="instance && !stateChanged"
