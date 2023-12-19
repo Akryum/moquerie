@@ -76,6 +76,24 @@ function onSelectMultipleInstances(instances: ResourceInstance[]) {
     },
   })
 }
+
+// Select all
+
+defineShortcuts({
+  meta_a: {
+    handler: () => {
+      const ids = instanceStore.instances.map(instance => instance.id).join(',')
+      router.push({
+        name: 'db-resources-resourceName-instances-instanceId',
+        params: {
+          resourceName: props.resourceName,
+          instanceId: ids,
+        },
+      })
+    },
+    whenever: [() => !isAnyOpen.value],
+  },
+})
 </script>
 
 <template>
