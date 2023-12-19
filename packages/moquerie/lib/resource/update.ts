@@ -12,7 +12,9 @@ export async function updateResourceInstanceById(resourceName: string, instanceI
 
   const data = deepmerge.all([instance, partialData, {
     updatedAt: new Date(),
-  }]) as ResourceInstance
+  }], {
+    arrayMerge: (dest, source) => source,
+  }) as ResourceInstance
 
   const storage = await getResourceInstanceStorage(resourceName)
 
