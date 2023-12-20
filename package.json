@@ -5,7 +5,9 @@
   "private": true,
   "description": "",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev": "pnpm run -r --filter \"./packages/**\" dev",
+    "build": "pnpm run -r --filter \"./packages/**\" build"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.1.1",

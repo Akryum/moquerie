@@ -4,8 +4,8 @@
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "target": "ESNext",
-    "module": "Node16",
-    "moduleResolution": "Node16",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "skipLibCheck": true,
     "isolatedModules": true,
     "useDefineForClassFields": true,
@@ -28,7 +28,7 @@
   },
   "include": [
     "src",
-    "types"
+    "src/types"
   ],
   "exclude": [
     "node_modules",

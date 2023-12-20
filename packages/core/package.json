@@ -1,0 +1,62 @@
+{
+  "name": "@moquerie/core",
+  "version": "0.0.0",
+  "description": "Create API & backend mocks with ease",
+  "author": {
+    "name": "Guillaume Chau"
+  },
+  "repository": {
+    "url": "https://github.com/Akryum/moquerie.git",
+    "type": "git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    },
+    "./util": {
+      "types": "./dist/util/index.d.ts",
+      "import": "./dist/util/index.js"
+    },
+    "./*": "./*"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.6",
+    "@faker-js/faker": "^8.3.1",
+    "ast-types": "^0.14.2",
+    "c12": "^1.5.1",
+    "env-paths": "^3.0.0",
+    "fast-glob": "^3.3.2",
+    "jiti": "^1.21.0",
+    "nanoid": "^5.0.4",
+    "pathe": "^1.1.1",
+    "recast": "^0.23.4",
+    "scule": "^1.1.1",
+    "superjson": "^2.2.1"
+  },
+  "devDependencies": {
+    "graphql": "^16.8.1",
+    "typescript": "^5.3.2"
+  },
+  "peerDependencies": {
+    "graphql": ">15"
+  },
+  "peerDependenciesMeta": {
+    "graphql": {
+      "optional": true
+    }
+  }
+}
