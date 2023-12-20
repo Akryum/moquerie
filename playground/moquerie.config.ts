@@ -2,6 +2,8 @@ import { defineConfig } from 'moquerie/config'
 
 export default defineConfig({
   graphql: {
-    schema: './src/schema.ts#schema',
+    schema: {
+      scanCodeFiles: './src/**/*.ts',
+    },
   },
 })

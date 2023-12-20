@@ -4,9 +4,10 @@
       <Title>Moquerie</Title>
     </Head>
 
-    <div class="m-auto flex flex-col items-center">
-      <img src="~/assets/moquerie-text.svg" width="300" height="50" alt="Moquerie">
-      <img src="~/assets/moquerie.svg" width="200" height="200">
+    <div class="m-auto flex flex-col items-center gap-12">
+      <img src="~/assets/moquerie.svg" width="100" height="100">
+
+      <ServerInfo />
     </div>
   </div>
 </template>

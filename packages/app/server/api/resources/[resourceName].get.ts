@@ -1,8 +1,7 @@
-import { createContext, getResourceSchema } from '@moquerie/core'
+import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
-  const ctx = await createContext()
-  const schema = await getResourceSchema(ctx)
+  const ctx = await getResolvedContext()
   const { resourceName } = getRouterParams(event)
-  return schema.types[resourceName]
+  return ctx.schema.types[resourceName]
 })

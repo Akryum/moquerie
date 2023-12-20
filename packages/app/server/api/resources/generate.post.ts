@@ -1,10 +1,9 @@
-import { createContext, generateResourceInstances, getFactoryStorage, getResourceSchema } from '@moquerie/core'
+import { generateResourceInstances, getFactoryStorage, getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
-  const ctx = await createContext()
-  const schema = await getResourceSchema(ctx)
+  const ctx = await getResolvedContext()
   const { resourceName, factoryId, count } = await readBody(event)
-  const resourceType = schema.types[resourceName]
+  const resourceType = ctx.schema.types[resourceName]
   if (!resourceType) {
     throw new Error(`Resource type not found: ${resourceName}`)
   }

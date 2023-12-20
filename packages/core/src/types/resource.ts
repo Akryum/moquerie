@@ -56,6 +56,10 @@ export type ResourceSchemaField = ResourceSchemaCommon & (
   }
 )
 
+export interface ResourceSchema {
+  types: Record<string, ResourceSchemaType>
+}
+
 export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSchemaType> {
   id: string
   resourceName: TType['name']

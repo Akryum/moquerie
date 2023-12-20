@@ -1,11 +1,42 @@
 export interface Config {
   /**
+   * Options for the API server
+   */
+  server?: {
+    /**
+     * Port to listen on
+     * You can also use the PORT environment variable
+     */
+    port?: number
+  }
+
+  /**
    * Enable GraphQL support
    */
   graphql?: {
     /**
-     * File exporting the graphql schema. You can add a `#name` suffix to import a named export. By default it will try to import the default export.
+     * GraphQL schema
      */
-    schema?: string
+    schema: {
+      /**
+       * Live URL to the GraphQL server
+       */
+      url: string
+    } | {
+      /**
+       * Introspection result JSON file
+       */
+      jsonFile: string
+    } | {
+      /**
+       * `.graphql` files to load, can be a path to a single file or a glob pattern
+       */
+      graphqlFiles: string
+    } | {
+      /**
+       * Glob pattern of files to scan for `gql` tags
+       */
+      scanCodeFiles: string
+    }
   }
 }

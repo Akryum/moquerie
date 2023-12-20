@@ -1,12 +1,13 @@
 import { printSchema } from 'graphql'
-import { createContext, resolveGraphQLSchema, resolveGraphQLSchemaIntrospection } from '@moquerie/core'
+import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
-  const ctx = await createContext()
-  const schema = await resolveGraphQLSchema(ctx)
-  const introspection = await resolveGraphQLSchemaIntrospection(ctx)
+  const ctx = await getResolvedContext()
+  if (!ctx.graphqlSchema) {
+    throw new Error('GraphQL schema not found')
+  }
   return {
-    schema: printSchema(schema),
-    introspection,
+    schema: printSchema(ctx.graphqlSchema.schema),
+    introspection: ctx.graphqlSchema.introspection,
   }
 })
