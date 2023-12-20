@@ -1,6 +1,6 @@
 <template>
   <div class="text-center px-2 text-xs flex flex-col gap-2 justify-center items-center">
-    <UIcon name="i-ph-arrow-bend-up-left" class="w-6 h-6 opacity-50 flex-none" />
+    <UIcon name="i-ph-arrow-bend-up-left" class="w-10 h-10 text-primary-500 flex-none" />
 
     Select an instance
 

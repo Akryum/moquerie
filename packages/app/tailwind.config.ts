@@ -10,7 +10,7 @@ export default <Partial<Config>>{
         mono: ['Noto Sans Mono', ...defaultTheme.fontFamily.mono],
       },
       colors: {
-        primary: colors.rose,
+        primary: colors.violet,
       },
     },
   },
