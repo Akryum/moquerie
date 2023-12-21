@@ -142,7 +142,7 @@ function removeArrayItem(index: number) {
         <Dropdown
           v-if="!['resource', 'boolean', 'enum'].includes(field.type)"
           v-model:shown="fakerOpen"
-          placement="bottom-end"
+          placement="left-end"
           :dispose-timeout="0"
           class="leading-[0]"
         >
