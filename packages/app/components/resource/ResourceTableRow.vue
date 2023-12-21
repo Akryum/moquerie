@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Menu, VTooltip as vTooltip } from 'floating-vue'
-import type { Col } from './tableTypes.js'
 import type { ResourceInstance, ResourceSchemaType } from '@moquerie/core'
+import type { Col } from './tableTypes.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
@@ -24,6 +24,21 @@ onMounted(() => {
     }
   })
 })
+
+// Toggle active
+
+const instanceStore = useResourceInstanceStore()
+
+async function toggleActive() {
+  await instanceStore.updateInstance({
+    resourceName: props.resourceType.name,
+    instanceId: props.instance.id,
+    data: {
+      active: !props.instance.active,
+    },
+    refetchAll: true,
+  })
+}
 </script>
 
 <template>
@@ -52,7 +67,10 @@ onMounted(() => {
       <!-- Active -->
       <div
         v-tooltip="instance.active ? 'Active' : 'Inactive'"
-        class="w-[42px] flex items-center justify-center opacity-50 hover:opacity-100 flex-none"
+        class="w-[42px] flex items-center justify-center opacity-50 hover:opacity-100 flex-none cursor-pointer"
+        aria-role="button"
+        aria-label="Toggle active"
+        @click.stop="toggleActive()"
       >
         <UIcon
           :name="instance.active ? 'i-ph-eye' : 'i-ph-eye-slash'"

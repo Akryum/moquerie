@@ -15,6 +15,7 @@ export interface UpdateInstanceOptions {
   resourceName: string
   instanceId: string
   data: Partial<ResourceInstance>
+  refetchAll?: boolean
 }
 
 export interface BulkUpdateInstancesOptions {
@@ -107,7 +108,13 @@ export const useResourceInstanceStore = defineStore('resourceInstance', () => {
       body: options.data,
     })
     const data = SuperJSON.parse(result as string) as ResourceInstance
-    updateInList(data)
+    if (options.refetchAll) {
+      refreshInstances()
+      refreshInstance()
+    }
+    else {
+      updateInList(data)
+    }
     instance.value = data
     return data
   }
