@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
-import type { FactoryData } from './formTypes.js'
 import type { ResourceFactory } from '@moquerie/core'
+import type { FactoryData } from './formTypes.js'
 import { useTagModel } from '~/utils/form.js'
 
 const props = defineProps<{

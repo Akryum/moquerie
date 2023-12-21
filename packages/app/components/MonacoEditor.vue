@@ -251,5 +251,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="el" />
+  <!-- Never use intrinsic size of monaco editor -->
+  <div style="contain: size;">
+    <div ref="el" class="h-full" />
+  </div>
 </template>
