@@ -12,6 +12,10 @@ export async function updateResourceInstanceById(resourceName: string, instanceI
   const data = {
     ...instance,
     ...partialData,
+    value: {
+      ...instance.value,
+      ...partialData.value,
+    },
     updatedAt: new Date(),
   }
 
