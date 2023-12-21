@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import type { ResourceInstance } from '../types/resource.js'
 import { getResourceInstanceStorage } from './storage.js'
+import { deactiveOtherSingletonResourceInstances } from './deactivateOthers.js'
 
 export interface CreateInstanceOptions {
   resourceName: string
@@ -9,7 +10,7 @@ export interface CreateInstanceOptions {
   comment?: string
 }
 
-export async function createInstance(options: CreateInstanceOptions) {
+export async function createResourceInstance(options: CreateInstanceOptions) {
   const { resourceName, value, tags, comment } = options
   const storage = await getResourceInstanceStorage(resourceName)
 
@@ -28,6 +29,8 @@ export async function createInstance(options: CreateInstanceOptions) {
   }
 
   await storage.save(instance)
+
+  await deactiveOtherSingletonResourceInstances(resourceName, id)
 
   return instance
 }

@@ -1,4 +1,5 @@
 export * from './createInstance.js'
+export * from './deactivateOthers.js'
 export * from './find.js'
 export * from './findAll.js'
 export * from './generateInstances.js'

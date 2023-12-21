@@ -19,6 +19,9 @@ export async function generateResourceInstances(options: GenerateResourceInstanc
       factoryDataContext: {},
       resourceType,
     })
+    if (!resourceType.array) {
+      instance.active = false
+    }
     instances.push(instance)
     await storage?.save(instance)
   }
