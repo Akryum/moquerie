@@ -13,7 +13,9 @@ export type ResourceSchemaCommon = {
   }
 )
 
-export type ResourceSchemaType = ResourceSchemaCommon & (
+export type ResourceSchemaType = ResourceSchemaCommon & {
+  idFields?: string[]
+} & (
   {
     type: 'string'
   } | {

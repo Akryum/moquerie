@@ -8,13 +8,14 @@ export interface CreateInstanceOptions {
   value: any
   tags?: string[]
   comment?: string
+  id?: string
 }
 
 export async function createResourceInstance(options: CreateInstanceOptions) {
   const { resourceName, value, tags, comment } = options
   const storage = await getResourceInstanceStorage(resourceName)
 
-  const id = nanoid()
+  const id = options.id ?? nanoid()
 
   const instance: ResourceInstance = {
     id,

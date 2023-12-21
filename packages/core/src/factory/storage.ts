@@ -1,4 +1,4 @@
-import { type MergedStorage, useMergedStorage } from '../db/mergedStorage.js'
+import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
 import { getPrettyFilename } from '../util/fs.js'
 import type { ResourceFactory } from '../types/factory.js'
 

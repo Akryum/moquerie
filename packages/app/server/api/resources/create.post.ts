@@ -1,5 +1,5 @@
 import SuperJSON from 'superjson'
-import { createInstance, getResolvedContext } from '@moquerie/core'
+import { createResourceInstance, getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
   const ctx = await getResolvedContext()
@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     throw new Error(`Resource type not found: ${resourceName}`)
   }
 
-  const instance = await createInstance({
+  const instance = await createResourceInstance({
     resourceName,
     value,
   })

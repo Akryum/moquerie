@@ -1,5 +1,5 @@
-import type { Storage } from '../db/storage.js'
-import { useStorage } from '../db/storage.js'
+import type { Storage } from '../storage/storage.js'
+import { useStorage } from '../storage/storage.js'
 import type { ResourceInstance } from '../types/resource.js'
 
 const storage: Map<string, Storage<ResourceInstance>> = new Map()

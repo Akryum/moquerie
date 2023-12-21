@@ -10,6 +10,7 @@ import { getResourceSchema } from './resource.js'
 import type { Server } from './server.js'
 import { createServer } from './server.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
+import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -77,6 +78,8 @@ export interface ResolvedContext {
   schema: ResourceSchema
   graphqlSchema?: ResolvedGraphQLSchema
   server: Server
+  // @TODO type
+  db: QueryManagerProxy
 }
 
 let resolvedContext: ResolvedContext
@@ -101,6 +104,7 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     schema,
     graphqlSchema,
     server,
+    db: createQueryManagerProxy(),
   }
 }
 
