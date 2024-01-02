@@ -21,3 +21,9 @@ export function getProjectName(): string {
   }
   throw new Error(`[moquerie] package.json not found looking from ${cwd}`)
 }
+
+export function projectHasTypescript(): boolean {
+  const cwd = getCwd()
+  const tsconfigFile = findUp(cwd, ['tsconfig.json'])
+  return !!tsconfigFile
+}
