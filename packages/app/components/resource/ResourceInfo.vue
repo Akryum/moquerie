@@ -18,6 +18,7 @@ defineProps<{
       v-tooltip="'This resource can only have one active instance at a time'"
       color="blue"
       variant="subtle"
+      class="cursor-help"
     >
       <UIcon name="i-ph-crown-simple" class="w-4 h-4 flex-none mr-1" />
       Singleton

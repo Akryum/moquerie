@@ -216,7 +216,7 @@ async function onSubmitValue(value: any) {
     class="overflow-auto divide-y divide-gray-200 dark:divide-gray-800"
     v-bind="$attrs"
   >
-    <div class="p-2 flex items-center gap-1 text-sm text-gray-500">
+    <div class="p-2 flex items-center gap-1 text-sm text-gray-500 leading-none">
       <span class="flex-1">
         Switch to previous or next
       </span>

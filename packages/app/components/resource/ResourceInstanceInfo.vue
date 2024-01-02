@@ -12,17 +12,17 @@ const factory = props.instance.factoryId ? await factoryStore.fetchFactory(props
 
 <template>
   <div>
-    <div class="text-sm [&>*]:p-1">
+    <div class="text-sm [&>*]:p-1 leading-none">
       <div class="flex items-center gap-1">
-        <UIcon name="i-ph-database" class="w-4 h-4" />
+        <UIcon name="i-ph-database" class="w-4 h-4 flex-none" />
         <span>{{ instance.resourceName }}</span>
-        <span class="text-primary-500">{{ instance.id }}</span>
+        <span class="text-primary-500 break-all">{{ instance.id }}</span>
       </div>
-      <div class="flex items-center gap-1">
-        <UIcon name="i-ph-calendar-blank" class="w-4 h-4" />
+      <div class="flex items-center gap-1 truncate">
+        <UIcon name="i-ph-calendar-blank" class="w-4 h-4 flex-none" />
         Created {{ instance.createdAt.toLocaleString() }}
       </div>
-      <div class="!pl-6">
+      <div class="!pl-6 truncate">
         Updated {{ instance.updatedAt?.toLocaleString() ?? '-' }}
       </div>
 
