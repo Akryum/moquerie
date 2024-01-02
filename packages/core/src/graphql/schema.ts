@@ -32,14 +32,22 @@ async function resolveGraphQLTypeDefs(ctx: Context): Promise<Source[]> {
   else if ('scanCodeFiles' in ctx.config.graphql.schema) {
     target = ctx.config.graphql.schema.scanCodeFiles
     const Loader = (await import('@graphql-tools/code-file-loader')).CodeFileLoader
-    loaders.push(new Loader())
+    loaders.push(new Loader({
+      noRequire: true,
+    }))
   }
   else {
     throw new Error('[moquerie] config.graphql.schema must be one of url, jsonFile, graphqlFiles, or scanCodeFiles')
   }
 
-  const typeDefs = await loadTypedefs(path.resolve(getCwd(), target), {
+  const glob = path.resolve(getCwd(), target)
+  const typeDefs = await loadTypedefs(glob, {
     loaders,
+    ignore: [
+      '**/node_modules/**',
+      '**/*.mock.js',
+      '**/*.mock.ts',
+    ],
   })
   return typeDefs
 }

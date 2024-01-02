@@ -12,14 +12,31 @@ import { updateResourceInstanceById } from './update.js'
  * Used to return final values for the API.
  */
 export interface QueryManager<TData> {
-  findById (id: string): Promise<TData | null>
-  findByIdOrThrow (id: string): Promise<TData>
+  /**
+   * Find multiple resource values.
+   */
   findMany (predicate?: (data: TData) => boolean): Promise<TData[]>
+  /**
+   * Find first resource value that matches the predicate.
+   */
   findFirst (predicate?: (data: TData) => boolean): Promise<TData | null>
+  /**
+   * Find first resource value that matches the predicate or throw an error if none is found.
+   */
   findFirstOrThrow (predicate: (data: TData) => boolean): Promise<TData>
+  /**
+   * Create a new resource instance from the supplied data.
+   */
   create (data: TData): Promise<TData>
-  update (id: string, data: Partial<TData>): Promise<TData>
-  delete (id: string): Promise<void>
+  /**
+   * Update multiple resource instances that match the predicate.
+   * @param data Will override existing values.
+   */
+  update (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]>
+  /**
+   * Delete multiple resource instances that match the predicate.
+   */
+  delete (predicate: (data: TData) => boolean): Promise<void>
 }
 
 export interface CreateQueryManagerOptions {
@@ -179,7 +196,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(resource
 
   // Search for existing active instance
   const instances = await getInstancesCached(serializeContext.instancesCache, resourceName)
-  let instance = instances.find(i => getValueId(i.value) === valueId)
+  let instance = valueId ? instances.find(i => getValueId(i.value) === valueId) : instances[0]
 
   const getStoreKey = (resourceName: string, id: string) => `${resourceName}:${id}`
 
@@ -272,7 +289,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(resource
 /* Query manager */
 
 export function createQueryManager<TData>(options: CreateQueryManagerOptions): QueryManager<TData> {
-  async function findById(id: string): Promise<TData | null> {
+  async function findByInstanceId(id: string): Promise<TData | null> {
     const instance = await findResourceInstanceById(options.resourceName, id)
     if (instance?.active) {
       return deserializeInstanceValue(instance)
@@ -280,8 +297,8 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
     return null
   }
 
-  async function findByIdOrThrow(id: string): Promise<TData> {
-    const instance = await findById(id)
+  async function findByInstanceIdOrThrow(id: string): Promise<TData> {
+    const instance = await findByInstanceId(id)
     if (instance == null) {
       throw new Error(`Resource instance "${options.resourceName}:${id}" not found`)
     }
@@ -312,26 +329,41 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   async function create(data: TData): Promise<TData> {
     const result = await serializeInstanceValue(options.resourceName, null, data as any)
     if (result) {
-      return findByIdOrThrow(result.__id)
+      return findByInstanceIdOrThrow(result.__id)
     }
     throw new Error(`Failed to create resource instance ${options.resourceName}: ${JSON.stringify(data)}`)
   }
 
-  async function update(id: string, data: Partial<TData>): Promise<TData> {
-    const result = await serializeInstanceValue(options.resourceName, id, data as any)
-    if (result) {
-      return findByIdOrThrow(result.__id)
-    }
-    throw new Error(`Failed to update resource instance ${options.resourceName}:${id}`)
+  async function selectForChange(predicate?: (data: TData) => boolean) {
+    const instances = await findAllResourceInstances(options.resourceName, {
+      filterActive: 'active',
+    })
+    const valuesWithInstances = await Promise.all(instances.map(async i => ({
+      instance: i,
+      value: await deserializeInstanceValue<TData>(i),
+    })))
+    return predicate ? valuesWithInstances.filter(({ value }) => predicate(value)) : valuesWithInstances
   }
 
-  async function _delete(id: string): Promise<void> {
-    await removeResourceInstanceById(options.resourceName, id)
+  async function update(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]> {
+    const selected = await selectForChange(predicate)
+
+    // Update instances
+    const result = (await Promise.all(selected.map(r => serializeInstanceValue(options.resourceName, null, {
+      ...r.value,
+      ...data,
+    })))).filter(Boolean) as ResourceInstanceReference[]
+    return Promise.all(result.map(r => findByInstanceIdOrThrow(r.__id)))
+  }
+
+  async function _delete(predicate: (data: TData) => boolean): Promise<void> {
+    const selected = await selectForChange(predicate)
+    await Promise.all(selected.map(r => removeResourceInstanceById(options.resourceName, r.instance.id)))
   }
 
   return {
-    findById,
-    findByIdOrThrow,
+    // findById,
+    // findByIdOrThrow,
     findMany,
     findFirst,
     findFirstOrThrow,

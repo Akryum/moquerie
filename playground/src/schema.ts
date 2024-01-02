@@ -36,7 +36,12 @@ export const schema = makeExecutableSchema({
     type Query {
       hello: String
       manyHellos: [String!]!
+      manyHellosCount: Int!
       currentUser: User
+    }
+
+    type Mutation {
+      addHello (message: String!): [String!]!
     }
   `,
   resolvers: {

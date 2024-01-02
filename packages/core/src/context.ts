@@ -11,6 +11,7 @@ import type { Server } from './server.js'
 import { createServer } from './server.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
+import { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -54,7 +55,7 @@ async function createContext(): Promise<Context> {
   }
 }
 
-let contextPromise: Promise<Context>
+let contextPromise: Promise<Context> | null = null
 
 export async function getContext(): Promise<Context> {
   if (context) {
@@ -66,8 +67,13 @@ export async function getContext(): Promise<Context> {
   }
 
   contextPromise = createContext()
-  context = await contextPromise
-  return context
+  try {
+    context = await contextPromise
+    return context
+  }
+  finally {
+    contextPromise = null
+  }
 }
 
 /**
@@ -78,6 +84,7 @@ export interface ResolvedContext {
   schema: ResourceSchema
   graphqlSchema?: ResolvedGraphQLSchema
   server: Server
+  fieldActions: FieldActionWatcher
   // @TODO type
   db: QueryManagerProxy
 }
@@ -104,6 +111,9 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     schema,
     graphqlSchema,
     server,
+    fieldActions: resolvedContext?.fieldActions ?? new FieldActionWatcher({
+      schema,
+    }),
     db: createQueryManagerProxy(),
   }
 }
@@ -124,10 +134,14 @@ export async function getResolvedContext(): Promise<ResolvedContext> {
   }
 
   resolvedContextPromise = createResolvedContext()
-  resolvedContext = await resolvedContextPromise
-  resolvedContextTime = now
-  resolvedContextPromise = null
-  return resolvedContext
+  try {
+    resolvedContext = await resolvedContextPromise
+    resolvedContextTime = now
+    return resolvedContext
+  }
+  finally {
+    resolvedContextPromise = null
+  }
 }
 
 // Context change

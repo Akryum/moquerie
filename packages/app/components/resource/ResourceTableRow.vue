@@ -116,13 +116,13 @@ async function toggleActive() {
           </Menu>
         </template>
         <template v-else>
-          <div v-if="col.fieldData?.array" class="flex items-center flex-wrap h-full overflow-hidden gap-1">
+          <div v-if="col.fieldData?.array" class="flex items-center h-full overflow-hidden gap-1">
             <ValuePreview
               v-for="(item, index) in instance.value[col.field as keyof typeof instance]"
               :key="index"
               :value="item"
               :type="col.fieldData?.type"
-              class="leading-tight text-xs line-clamp-2 px-1 py-0.5 border border-gray-500/10 rounded"
+              class="leading-tight text-xs line-clamp-2 px-1 py-0.5 border border-gray-500/10 rounded flex-none"
               :class="{
                 'font-mono': col.fieldData?.type === 'number' || col.field.match(/id/),
               }"
