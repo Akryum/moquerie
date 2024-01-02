@@ -39,4 +39,6 @@ export interface Config {
       scanCodeFiles: string
     }
   }
+
+  ignoredResourcesInExplorer?: string[]
 }

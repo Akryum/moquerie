@@ -1,7 +1,7 @@
-import type { ResourceSchemaType } from '@moquerie/core'
+import type { ResourceSchema, type ResourceSchemaType } from '@moquerie/core'
 
 export const useResourceTypeStore = defineStore('resourceTypes', () => {
-  const fetchQuery = useFetch('/api/resources')
+  const fetchQuery = useFetch<ResourceSchema>('/api/resources')
   const { data, refresh } = fetchQuery
   onWindowFocus(refresh)
 
@@ -11,6 +11,15 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
     }
 
     return Object.values(data.value.types)
+  })
+
+  const resourceTypesShownInExplorer = computed(() => {
+    if (data.value?.ignoredInExplorer) {
+      return resourceTypes.value.filter((type) => {
+        return !data.value?.ignoredInExplorer?.includes(type.name)
+      })
+    }
+    return resourceTypes.value
   })
 
   /**
@@ -62,6 +71,7 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
 
   return {
     resourceTypes,
+    resourceTypesShownInExplorer,
     refresh,
     wait,
     lastSelectedResourceName,

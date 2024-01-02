@@ -60,6 +60,7 @@ export type ResourceSchemaField = ResourceSchemaCommon & (
 
 export interface ResourceSchema {
   types: Record<string, ResourceSchemaType>
+  ignoredInExplorer?: string[]
 }
 
 export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSchemaType> {

@@ -5,6 +5,7 @@ import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 export async function getResourceSchema(ctx: Context) {
   const schema: ResourceSchema = {
     types: {},
+    ignoredInExplorer: ctx.config.ignoredResourcesInExplorer,
   }
 
   let graphqlSchema: ResolvedGraphQLSchema | undefined

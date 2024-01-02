@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useResourceTypeStore } from '~/stores/resourceType.js'
 import type { ResourceSchemaType } from '@moquerie/core'
+import { useResourceTypeStore } from '~/stores/resourceType.js'
 
 const props = defineProps<{
   routeName: string
@@ -42,7 +42,7 @@ defineShortcuts({
   <LinkList
     id="resource-list"
     ref="linkList"
-    :items="resourceTypeStore.resourceTypes"
+    :items="resourceTypeStore.resourceTypesShownInExplorer"
     :filter="filter"
     :selected-item="(type, route) => type.name === route.params.resourceName"
     filter-placeholder="Filter resources by name, tags..."
