@@ -3,6 +3,10 @@ const { data, refresh } = await useFetch('/api/server')
 onWindowFocus(refresh)
 
 const graphqlServer = computed(() => data.value?.routeInfos.find(item => item.type === 'graphql'))
+
+useHead({
+  title: 'Playground',
+})
 </script>
 
 <template>

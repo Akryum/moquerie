@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 const { data, error, refresh } = await useFetch('/api/graphql/schema/inspect')
 onWindowFocus(refresh)
+
+useHead({
+  title: 'Schema',
+})
 </script>
 
 <template>
