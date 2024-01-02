@@ -95,7 +95,7 @@ const colorMode = useColorMode()
 
     <AppNavItem
       v-if="hasGraphQL"
-      to="/graphql/schema"
+      to="/graphql"
       active-route="/graphql"
       icon="i-mdi-graphql"
       title="GraphQL"

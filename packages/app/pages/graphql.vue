@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+useSaveRoute({
+  key: 'graphql.lastRoute',
+  basePath: '/graphql',
+  defaultRoute: {
+    name: 'graphql-schema',
+  },
+})
+</script>
+
 <template>
   <div class="flex divide-x divide-gray-300 dark:divide-gray-700">
     <Head>

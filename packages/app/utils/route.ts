@@ -13,7 +13,13 @@ let lastRoute: SavedRoute | null = null
 
 export interface UseSaveRouteOptions {
   key: string
+  /**
+   * Path used by the menu link to detect if we need to restore the saved route.
+   */
   basePath: string
+  /**
+   * Default route to use if the saved route is not found.
+   */
   defaultRoute?: {
     name: RouteRecordName
     params?: RouteParams
