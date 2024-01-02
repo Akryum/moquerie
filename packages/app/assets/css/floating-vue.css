@@ -8,6 +8,8 @@
 /* Tooltip */
 
 .v-popper__popper.v-popper--theme-tooltip {
+  z-index: 99999999999;
+
   .v-popper__inner {
     @apply bg-white text-black border border-gray-200;
   }
