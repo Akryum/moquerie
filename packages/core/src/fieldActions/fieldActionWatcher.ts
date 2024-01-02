@@ -2,7 +2,7 @@ import { type FSWatcher, watch } from 'chokidar'
 import createJITI, { type JITI } from 'jiti'
 import path from 'pathe'
 import { getCwd } from '../util/env.js'
-import type { FieldAction } from '../types/field-action.js'
+import type { FieldAction } from '../types/fieldAction.js'
 import type { ResourceSchema } from '../types/resource.js'
 
 export interface FieldActionWatcherConfig {

@@ -121,5 +121,9 @@ const colorMode = useColorMode()
       title="Config"
       shortcuts="meta_,"
     />
+
+    <UserCurrent
+      class="mt-2"
+    />
   </nav>
 </template>
