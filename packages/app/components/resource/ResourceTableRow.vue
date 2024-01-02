@@ -123,8 +123,14 @@ async function openFieldActionFile(col: Col) {
 
             <template #popper>
               <div class="p-4">
+                <div class="font-mono text-gray-500">
+                  {{ col.field }}
+                </div>
+
                 <div class="mb-2 flex items-center gap-2">
-                  Field action
+                  <div>
+                    Field action
+                  </div>
 
                   <UButton
                     v-tooltip="`Open ${col.fieldAction.file}`"
@@ -135,13 +141,17 @@ async function openFieldActionFile(col: Col) {
                   />
                 </div>
 
-                <ResourceFieldActionPreview
+                <div
                   v-if="instance.active"
-                  :resource-name="resourceType.name"
-                  :instance-id="instance.id"
-                  :field="col.fieldData"
-                  class="px-1 py-0.5 border border-gray-500/10 rounded"
-                />
+                  class="flex mt-4"
+                >
+                  <ResourceFieldActionPreview
+                    :resource-name="resourceType.name"
+                    :instance-id="instance.id"
+                    :field="col.fieldData"
+                    class="px-4 py-2 border border-gray-500/10 rounded m-auto"
+                  />
+                </div>
                 <div v-else class="flex items-center gap-2">
                   <UIcon name="i-ph-eye-slash" class="w-4 h-4 opacity-50" />
                   <p class="text-sm text-gray-500 dark:text-gray-400">
