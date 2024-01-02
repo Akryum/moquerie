@@ -53,6 +53,7 @@
     "get-port-please": "^3.1.1",
     "graphql-yoga": "^5.0.2",
     "jiti": "^1.21.0",
+    "lru-cache": "^10.1.0",
     "nanoid": "^5.0.4",
     "pathe": "^1.1.1",
     "perfect-debounce": "^1.0.0",

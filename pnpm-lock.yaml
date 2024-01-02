@@ -146,6 +146,9 @@ importers:
       jiti:
         specifier: ^1.21.0
         version: 1.21.0
+      lru-cache:
+        specifier: ^10.1.0
+        version: 10.1.0
       nanoid:
         specifier: ^5.0.4
         version: 5.0.4
