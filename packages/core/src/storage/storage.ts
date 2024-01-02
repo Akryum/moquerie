@@ -26,6 +26,7 @@ export interface UseStorageOptions<TData> {
   location: DBLocation
   filename?: (item: TData) => string
   format?: 'js' | 'json'
+  lazyLoading?: boolean
 }
 
 export async function useStorage<TData extends { id: string }>(options: UseStorageOptions<TData>) {
@@ -110,20 +111,23 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   async function load() {
     data.length = 0
-    const promises = []
-    for (const id in manifest.files) {
-      promises.push((async () => {
-        const file = manifest.files[id]
-        try {
-          const item = await readFile(id, file)
-          data.push(item)
-        }
-        catch (e) {
-          console.error(e)
-        }
-      })())
+
+    if (!options.lazyLoading) {
+      const promises = []
+      for (const id in manifest.files) {
+        promises.push((async () => {
+          const file = manifest.files[id]
+          try {
+            const item = await readFile(id, file)
+            data.push(item)
+          }
+          catch (e) {
+            console.error(e)
+          }
+        })())
+      }
+      await Promise.all(promises)
     }
-    await Promise.all(promises)
   }
 
   await load()
@@ -251,6 +255,9 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
    * Return all items
    */
   async function findAll() {
+    if (options.lazyLoading) {
+      throw new Error('findAll() is not supported with lazyLoading')
+    }
     return data
   }
 
@@ -258,6 +265,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
    * Return item by id
    */
   async function findById(id: string) {
+    if (options.lazyLoading) {
+      const file = manifest.files[id]
+      return readFile(id, file)
+    }
     return data.find(item => item.id === id)
   }
 
