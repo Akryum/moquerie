@@ -11,7 +11,8 @@ import type { Server } from './server.js'
 import { createServer } from './server.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
-import { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
+import type { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
+import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -111,7 +112,7 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     schema,
     graphqlSchema,
     server,
-    fieldActions: resolvedContext?.fieldActions ?? new FieldActionWatcher({
+    fieldActions: resolvedContext?.fieldActions ?? await createFieldActionWatcher({
       schema,
     }),
     db: createQueryManagerProxy(),

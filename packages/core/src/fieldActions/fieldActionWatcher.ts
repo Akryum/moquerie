@@ -102,3 +102,12 @@ export class FieldActionWatcher {
     this.allActions.length = 0
   }
 }
+
+export async function createFieldActionWatcher(config: FieldActionWatcherConfig) {
+  const watcher = new FieldActionWatcher(config)
+  return new Promise<FieldActionWatcher>((resolve) => {
+    watcher.watcher.on('ready', () => {
+      resolve(watcher)
+    })
+  })
+}
