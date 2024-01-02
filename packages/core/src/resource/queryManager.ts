@@ -37,6 +37,9 @@ export interface QueryManager<TData> {
    * Delete multiple resource instances that match the predicate.
    */
   delete (predicate: (data: TData) => boolean): Promise<void>
+
+  findByInstanceId (id: string): Promise<TData | null>
+  findByInstanceIdOrThrow (id: string): Promise<TData>
 }
 
 export interface CreateQueryManagerOptions {
@@ -362,13 +365,13 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   return {
-    // findById,
-    // findByIdOrThrow,
     findMany,
     findFirst,
     findFirstOrThrow,
     create,
     update,
     delete: _delete,
+    findByInstanceId,
+    findByInstanceIdOrThrow,
   }
 }

@@ -39,6 +39,18 @@ async function toggleActive() {
     refetchAll: true,
   })
 }
+
+// Open field action file
+
+async function openFieldActionFile(col: Col) {
+  if (col.fieldAction) {
+    $fetch('/api/openInEditor', {
+      params: {
+        file: col.fieldAction.file,
+      },
+    })
+  }
+}
 </script>
 
 <template>
@@ -89,7 +101,58 @@ async function toggleActive() {
           width: `${col.size}px`,
         }"
       >
-        <template v-if="col.fieldData?.type === 'resource'">
+        <template v-if="col.fieldAction && col.fieldData">
+          <Menu
+            placement="top"
+            :delay="500"
+            :dispose-timeout="0"
+            class="w-full h-full flex-none cursor-default"
+          >
+            <template #default="{ shown }">
+              <div
+                class="w-full h-full flex"
+                :class="[
+                  shown
+                    ? 'text-primary-500'
+                    : 'opacity-50 hover:opacity-100',
+                ]"
+              >
+                <UIcon :name="shown ? 'i-ph-lightning-fill' : 'i-ph-lightning'" class="w-4 h-4 m-auto" />
+              </div>
+            </template>
+
+            <template #popper>
+              <div class="p-4">
+                <div class="mb-2 flex items-center gap-2">
+                  Field action
+
+                  <UButton
+                    v-tooltip="`Open ${col.fieldAction.file}`"
+                    icon="i-ph-file-arrow-up"
+                    variant="link"
+                    :padded="false"
+                    @click="openFieldActionFile(col)"
+                  />
+                </div>
+
+                <ResourceFieldActionPreview
+                  v-if="instance.active"
+                  :resource-name="resourceType.name"
+                  :instance-id="instance.id"
+                  :field="col.fieldData"
+                  class="px-1 py-0.5 border border-gray-500/10 rounded"
+                />
+                <div v-else class="flex items-center gap-2">
+                  <UIcon name="i-ph-eye-slash" class="w-4 h-4 opacity-50" />
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Instance is inactive, preview is not available.
+                  </p>
+                </div>
+              </div>
+            </template>
+          </Menu>
+        </template>
+        <template v-else-if="col.fieldData?.type === 'resource'">
           <Menu
             :delay="500"
             :dispose-timeout="0"

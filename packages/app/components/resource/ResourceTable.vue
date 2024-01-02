@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Col, ColData } from './tableTypes.js'
 import type { ResourceInstance, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import type { Col, ColData } from './tableTypes.js'
 
 const props = defineProps<{
   resourceName: string
@@ -29,10 +29,21 @@ defineExpose({
   scrollTop,
 })
 
-// Data
+// Resource Type
 
-const { data: resourceType, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${props.resourceName}`)
-onWindowFocus(refresh)
+const { data: resourceType, refresh: refreshResourceType } = await useFetch<ResourceSchemaType>(`/api/resources/${props.resourceName}`)
+onWindowFocus(refreshResourceType)
+
+// Field actions
+
+const { data: fieldActions, refresh: refreshFieldActions } = await useFetch(`/api/fieldActions`, {
+  query: {
+    resourceName: props.resourceName,
+  },
+})
+onWindowFocus(refreshFieldActions)
+
+// Columns
 
 const colsData: Record<string, ColData> = {}
 
@@ -43,9 +54,11 @@ const cols = computed(() => {
     for (const field in resourceType.value.fields) {
       const data = colsData[field]
       const fieldData = resourceType.value.fields[field]
+      const fieldAction = fieldActions.value?.find(fa => fa.fieldName === field)
       cols.push({
         field,
         fieldData,
+        fieldAction,
         label: field,
         size: data?.size ?? fieldData ? getDefaultColSize(fieldData) : 200,
       })

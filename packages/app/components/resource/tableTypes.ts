@@ -4,6 +4,7 @@ export interface Col {
   label: string
   field: string
   size: number
+  fieldAction?: { file: string }
   fieldData?: ResourceSchemaField
 }
 
