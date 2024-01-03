@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ResourceSchemaType } from '~/types'
+import type { ResourceSchemaType } from '@moquerie/core'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
