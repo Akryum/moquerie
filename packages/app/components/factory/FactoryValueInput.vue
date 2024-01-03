@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { ResourceFactoryValue } from '@moquerie/core'
-import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import type { ResourceFactoryValue, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType

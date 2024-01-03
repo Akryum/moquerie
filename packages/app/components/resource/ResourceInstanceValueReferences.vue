@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
 import { Tooltip, VTooltip as vTooltip } from 'floating-vue'
-import { isReferencesOpen } from './resourceInstanceValueOverlays.js'
 import type { FilterActive, ResourceInstance, ResourceInstanceReference, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import { isReferencesOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
@@ -11,11 +11,14 @@ const props = defineProps<{
   }
   modelValue: ResourceInstanceReference[] | null
   readonly?: boolean
+  showApply?: boolean
+  hasChanges?: boolean
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: ResourceInstanceReference[]]
   'close': []
+  'apply': []
 }>()
 
 // Refs
@@ -382,14 +385,27 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="flex items-center px-4" :class="[props.readonly ? 'justify-center' : 'justify-between']">
-      <UButton
-        color="gray"
-        @click="$emit('close')"
-      >
-        Close
+      <div class="flex-1 flex items-center gap-2">
+        <UButton
+          color="gray"
+          @click="$emit('close')"
+        >
+          Close
 
-        <KbShortcut keys="escape" />
-      </UButton>
+          <KbShortcut keys="escape" />
+        </UButton>
+
+        <UButton
+          v-if="showApply && !props.readonly"
+          icon="i-ph-pencil-simple"
+          :disabled="!hasChanges"
+          @click="$emit('apply')"
+        >
+          Apply changes
+
+          <KbShortcut keys="meta_enter" />
+        </UButton>
+      </div>
 
       <template v-if="!readonly">
         <div class="opacity-50 italic text-xs">

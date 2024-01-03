@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
-import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { ResourceInstance, ResourceSchemaType } from '@moquerie/core'
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
@@ -99,6 +99,9 @@ defineShortcuts({
         :resource-type="resourceType"
         :field="field"
         :autofocus="index === 0"
+        show-apply
+        :has-changes="instance && stateChanged"
+        @apply="onSubmit()"
       />
     </div>
     <!-- @TODO other types -->
@@ -107,7 +110,7 @@ defineShortcuts({
     <FormActions>
       <UButton
         color="gray"
-        :disabled="instance && !stateChanged"
+        :disabled="!instance || !stateChanged"
         @click="onCancel()"
       >
         Cancel
@@ -116,7 +119,7 @@ defineShortcuts({
       <UButton
         type="submit"
         :icon="instance ? 'i-ph-pencil-simple' : 'i-ph-plus'"
-        :disabled="instance && !stateChanged"
+        :disabled="!instance || !stateChanged"
       >
         {{ instance ? 'Update' : 'Create instance' }}
 

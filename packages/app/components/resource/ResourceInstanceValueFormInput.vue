@@ -9,10 +9,13 @@ const props = defineProps<{
   field: ResourceSchemaField
   modelValue: any
   autofocus?: boolean
+  showApply?: boolean
+  hasChanges?: boolean
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: any]
+  'apply': []
 }>()
 
 const editReferencesButton = ref<any>()
@@ -324,9 +327,12 @@ function removeArrayItem(index: number) {
       :resource-type="resourceType"
       :field="field"
       :model-value="modelValue"
+      :show-apply="showApply"
+      :has-changes="hasChanges"
       class="h-full"
       @update:model-value="$emit('update:modelValue', $event)"
       @close="isResourceRefsOpen = false"
+      @apply="$emit('apply')"
     />
   </UModal>
 </template>
