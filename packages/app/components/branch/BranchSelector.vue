@@ -45,7 +45,7 @@ async function createBranch(branch?: string) {
 const linkList = ref()
 
 defineShortcuts({
-  shift_enter: {
+  meta_enter: {
     usingInput: true,
     handler: () => {
       createBranch(linkList.value?.filter)
@@ -114,7 +114,7 @@ async function onCreateBranch(branch: string) {
                   Create branch {{ filter ? `"${filter}"` : '' }}
                 </div>
 
-                <KbShortcut keys="shift_enter" />
+                <KbShortcut keys="meta_enter" />
               </UButton>
             </template>
 
