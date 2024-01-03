@@ -96,7 +96,7 @@ defineShortcuts({
         icon="i-ph-git-branch"
         type="submit"
       >
-        Create branch
+        Create {{ state.empty ? 'empty' : '' }} branch
 
         <KbShortcut keys="enter" />
       </UButton>

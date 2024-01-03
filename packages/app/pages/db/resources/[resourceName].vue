@@ -24,7 +24,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <div v-if="resourceType" class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700">
+  <div v-if="resourceType" class="flex flex-col divide-y divide-gray-300 dark:divide-gray-800">
     <div class="px-2 h-10 flex items-center gap-2">
       <ResourceInfo :type="resourceType" />
 

@@ -119,7 +119,7 @@ const isResourceRefsOpen = ref(false)
           lineNumbers: 'off',
           folding: false,
         }"
-        class="h-[200px] border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden"
+        class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
         @update:source="update({ staticScript: $event })"
       />
     </div>

@@ -41,7 +41,7 @@
 
 .dark .v-popper__popper.v-popper--theme-dropdown {
   .v-popper__inner {
-    @apply bg-black text-white border-gray-800;
+    @apply bg-gray-900 text-white border-gray-800;
   }
 
   .v-popper__arrow-inner {

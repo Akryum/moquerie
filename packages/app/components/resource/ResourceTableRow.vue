@@ -59,7 +59,7 @@ async function openFieldActionFile(col: Col) {
     :class="[
       selected
         ? 'bg-primary-100 dark:bg-primary-900'
-        : 'hover:bg-gray-100 dark:hover:bg-gray-900',
+        : 'hover:bg-gray-100 dark:hover:bg-gray-800',
     ]"
     aria-role="button"
   >
@@ -172,7 +172,7 @@ async function openFieldActionFile(col: Col) {
               <ResourceReferencesSummary
                 :field="col.fieldData"
                 :value="instance.value[col.field as keyof typeof instance]"
-                class="border border-primary/10 px-2 py-1 rounded-lg"
+                class="border border-primary/20 px-2 py-1 rounded-lg"
                 :class="{
                   'ring-2 ring-gray-500/50': shown,
                 }"

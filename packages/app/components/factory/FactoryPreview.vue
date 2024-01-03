@@ -60,7 +60,7 @@ watch(() => props.factory, () => {
         readOnly: true,
         lineNumbers: 'off',
       }"
-      class="w-full h-full flex-1 border border-gray-300 dark:border-gray-700"
+      class="w-full h-full flex-1 border border-gray-300 dark:border-gray-800"
     />
   </div>
 </template>

@@ -3,10 +3,6 @@ import { Tooltip } from 'floating-vue'
 import type { RouteLocationRaw } from 'vue-router'
 import { NuxtLink } from '#components'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 const props = defineProps<{
   to?: string | RouteLocationRaw
   icon?: string

@@ -182,7 +182,7 @@ onUnmounted(() => {
       class="relative top-0 left-0 z-20"
       :class="{
         'pointer-events-none': dragging,
-        'border-r border-gray-300 dark:border-gray-700': orientation === 'landscape',
+        'border-r border-gray-300 dark:border-gray-800': orientation === 'landscape',
         'flex-none': fixed,
       }"
       :style="leftStyle"
@@ -204,7 +204,7 @@ onUnmounted(() => {
       class="relative bottom-0 right-0"
       :class="{
         'pointer-events-none': dragging,
-        'border-t border-gray-300 dark:border-gray-700': orientation === 'portrait',
+        'border-t border-gray-300 dark:border-gray-800': orientation === 'portrait',
         'flex-1': fixed,
       }"
       :style="rightStyle"

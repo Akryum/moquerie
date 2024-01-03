@@ -34,20 +34,25 @@ const isActive = computed(() => {
   <Tooltip
     placement="right"
     :disabled="!title && !shortcuts"
-    class=""
+    class="relative"
   >
     <component
       :is="to ? NuxtLink : 'button'"
       :to="to"
-      class="leading-[0] p-2.5 block rounded-md hover:text-primary-500 hover:bg-primary-50 hover:dark:bg-primary-950"
+      class="leading-[0] p-2.5 block hover:text-primary-500 dark:hover:text-gray-300"
       :class="[
         isActive
-          ? '!bg-primary-200 dark:!bg-primary-900 dark:text-primary-100'
-          : 'text-gray-500 dark:text-gray-300',
+          ? 'text-primary-700 dark:text-white'
+          : 'text-gray-400 dark:text-gray-500',
       ]"
     >
-      <UIcon :name="icon" class="w-5 h-5" />
+      <UIcon :name="icon" class="w-6 h-6" />
     </component>
+
+    <div
+      v-if="isActive"
+      class="absolute inset-y-2 left-0 w-[3px] rounded-r bg-primary-700 dark:bg-white"
+    />
 
     <template #popper>
       <div class="flex items-center gap-4">

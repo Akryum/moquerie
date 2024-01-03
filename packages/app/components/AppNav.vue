@@ -40,7 +40,7 @@ const colorMode = useColorMode()
 </script>
 
 <template>
-  <nav class="flex flex-col items-center p-0.5 border-r border-gray-300 dark:border-gray-700">
+  <nav class="flex flex-col items-center border-r border-gray-300 dark:border-gray-800">
     <AppNavItem
       to="/"
       active-route="/"

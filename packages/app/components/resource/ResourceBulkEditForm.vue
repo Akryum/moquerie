@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
-import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
@@ -125,7 +125,7 @@ defineShortcuts({
       ]"
     >
       <div
-        class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-md cursor-pointer text-gray-500"
+        class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer text-gray-500"
         @click="field.name in state ? removeField(field) : addField(field)"
       >
         <div class="flex-1 truncate text-sm">

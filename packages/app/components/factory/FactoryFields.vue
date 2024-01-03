@@ -55,10 +55,10 @@ function updateField(name: string, value: ResourceFactoryValue) {
 </script>
 
 <template>
-  <div class="border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm">
+  <div class="border border-gray-300 dark:border-gray-800 rounded-lg shadow-sm">
     <div
       v-if="resourceType.type === 'object' && value.children"
-      class="flex flex-col divide-y divide-gray-300 dark:divide-gray-700"
+      class="flex flex-col divide-y divide-gray-300 dark:divide-gray-800"
     >
       <FactoryField
         v-for="field of resourceType.fields"

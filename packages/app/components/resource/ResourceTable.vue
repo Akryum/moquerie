@@ -150,7 +150,7 @@ watch(() => props.selectedInstanceIds, (value) => {
     class="border-t border-gray-200 dark:border-gray-800 overflow-auto"
   >
     <!-- Headers -->
-    <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 min-w-max">
+    <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 min-w-max">
       <slot name="header-start" />
 
       <div class="w-[42px] flex-none" />

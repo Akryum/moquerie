@@ -13,7 +13,7 @@ useHead({
 </script>
 
 <template>
-  <div class="flex divide-x divide-gray-300 dark:divide-gray-700">
+  <div class="flex divide-x divide-gray-300 dark:divide-gray-800">
     <UVerticalNavigation
       :links="[
         {

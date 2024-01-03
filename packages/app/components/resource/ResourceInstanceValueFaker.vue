@@ -268,7 +268,7 @@ onMounted(() => {
             folding: false,
           }"
           :wrap-code="fakerOptionsWrapCode"
-          class="h-[50px] border border-gray-300 dark:border-gray-700"
+          class="h-[50px] border border-gray-300 dark:border-gray-800"
         />
       </UFormGroup>
 

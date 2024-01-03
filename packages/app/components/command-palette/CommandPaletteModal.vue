@@ -12,14 +12,11 @@ defineShortcuts({
 </script>
 
 <template>
-  <UModal
+  <SimpleModal
     v-model="commandPaletteStore.isOpen"
-    :ui="{
-      container: 'sm:items-start',
-    }"
   >
     <CommandPaletteContent
       @close="commandPaletteStore.isOpen = false"
     />
-  </UModal>
+  </SimpleModal>
 </template>
