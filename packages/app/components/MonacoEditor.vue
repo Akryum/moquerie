@@ -34,7 +34,7 @@ monaco.editor.defineTheme('custom-dark-theme', {
   inherit: true,
   rules: [],
   colors: {
-    'editor.background': '#1f2937',
+    'editor.background': '#111827',
     'editorLineNumber.foreground': '#6b7280',
     'editorLineNumber.activeForeground': '#d1d5db',
     'scrollbarSlider.background': '#4b5563',

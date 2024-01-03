@@ -43,7 +43,7 @@ function openFile() {
     <Title>Config - Inspect</Title>
   </Head>
 
-  <div class="w-full overflow-hidden flex items-stretch divide-x divide-gray-300 dark:divide-gray-600 dark:bg-gray-800">
+  <div class="w-full overflow-hidden flex items-stretch divide-x divide-gray-300 dark:divide-gray-600 dark:bg-gray-900">
     <div class="flex-1 flex flex-col">
       <ULink
         class="flex items-center gap-1 justify-center text-sm py-0.5 hover:underline hover:text-primary-500"

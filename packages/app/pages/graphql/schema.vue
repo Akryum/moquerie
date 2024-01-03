@@ -23,7 +23,7 @@ useHead({
         },
       ]"
       :ui="{
-        wrapper: 'h-full flex flex-col pt-2 dark:bg-gray-800',
+        wrapper: 'h-full flex flex-col pt-2 dark:bg-gray-900',
         container: 'h-full',
         base: 'h-full',
         list: {
