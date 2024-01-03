@@ -17,7 +17,12 @@ export async function getResourceInstanceStorage(resourceTypeName: string): Prom
     location: 'local',
   })
   storagePromise.set(resourceTypeName, promise)
-  const s = await promise
-  storage.set(resourceTypeName, s)
-  return s
+  try {
+    const s = await promise
+    storage.set(resourceTypeName, s)
+    return s
+  }
+  finally {
+    storagePromise.delete(resourceTypeName)
+  }
 }
