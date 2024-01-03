@@ -240,7 +240,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   // @TODO better system for reloading files using watch for example
 
-  setInterval(async () => {
+  const refreshInterval = setInterval(async () => {
     if (!writeQueue.size) {
       manifest = await readManifest()
       await load()
@@ -320,11 +320,20 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     }
   }
 
+  // Cleanup
+
+  function destroy() {
+    clearInterval(refreshInterval)
+    queueWriteManifest()
+    data.length = 0
+  }
+
   return {
     findAll,
     findById,
     save,
     remove,
+    destroy,
   }
 }
 

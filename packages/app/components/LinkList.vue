@@ -3,7 +3,7 @@ import { VTooltip as vTooltip } from 'floating-vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 const props = defineProps<{
-  id: string
+  id?: string
   items: TItem[]
   filter: (item: TItem, filterValue: string) => boolean
   selectedItem: (item: TItem, route: RouteLocationNormalizedLoaded) => boolean
@@ -14,10 +14,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  open: [item: TItem]
+  select: [item: TItem]
 }>()
 
-const filter = useLocalStorage(`link-list.${props.id}.filter`, '')
+const filter = props.id ? useLocalStorage(`link-list.${props.id}.filter`, '') : ref('')
 
 const displayedItems = computed(() => {
   if (!props.items) {
@@ -48,11 +48,11 @@ watch(displayedItems, () => {
   hoverIndex.value = index === -1 ? 0 : index
 })
 
-function openItem(item: TItem | undefined) {
+function selectItem(item: TItem | undefined) {
   if (!item) {
     return
   }
-  emit('open', item)
+  emit('select', item)
 }
 
 // Focus
@@ -66,7 +66,17 @@ function focusFilterInput() {
 
 defineExpose({
   focusFilterInput,
+  filter,
 })
+
+// Enter
+
+function onKeyEnter(event: MouseEvent) {
+  if (event.shiftKey || event.metaKey || event.ctrlKey || event.altKey) {
+    return
+  }
+  selectItem(displayedItems.value[hoverIndex.value])
+}
 </script>
 
 <template>
@@ -75,7 +85,7 @@ defineExpose({
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
-    <div class="p-1.5 flex flex-col gap-1">
+    <div class="mb-0.5 flex flex-col gap-1">
       <slot name="toolbar" />
 
       <UInput
@@ -91,7 +101,7 @@ defineExpose({
         :ui="{ trailing: { padding: { xs: 'pe-4' } }, icon: { trailing: { pointer: '' } }, ...ui?.input }"
         @keydown.up="hoverIndex = Math.max(hoverIndex - 1, 0)"
         @keydown.down="hoverIndex = Math.min(hoverIndex + 1, displayedItems.length - 1)"
-        @keydown.enter="openItem(displayedItems[hoverIndex])"
+        @keydown.enter="onKeyEnter"
         @focus="showKeyboardNavigationHints = true"
         @blur="showKeyboardNavigationHints = false"
       >
@@ -103,6 +113,8 @@ defineExpose({
       </UInput>
     </div>
 
+    <slot name="before-items" :filter="filter" />
+
     <div class="flex-1 overflow-y-auto">
       <template
         v-for="(item, index) of displayedItems"
@@ -112,6 +124,7 @@ defineExpose({
           :item="item"
           :hover="(showKeyboardNavigationHints || isHover) && hoverIndex === index"
           :show-shortcut="showKeyboardNavigationHints && hoverIndex === index"
+          :selected="selectedItem(item, route)"
           @mouseenter="hoverIndex = index"
         />
       </template>

@@ -13,10 +13,12 @@ import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
 import type { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
+import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
 
 export interface Context {
   contextWatcher: FSWatcher
   config: Config
+  settings: SettingsManager
   port: number
 }
 
@@ -50,8 +52,12 @@ async function createContext(): Promise<Context> {
 
   contextWatcher.on('all', debounce(onContextChange, 100))
 
+  // Settings
+  const settings = await createSettingsManager()
+
   return {
     contextWatcher,
+    settings,
     ...await getContextRelatedToConfig(),
   }
 }

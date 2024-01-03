@@ -51,7 +51,8 @@ defineShortcuts({
         trailing: { padding: { xs: 'pe-16' } },
       },
     }"
-    @open="openResource"
+    class="p-2"
+    @select="openResource"
   >
     <template #default="{ item, ...props }">
       <ResourceListItem
@@ -62,7 +63,7 @@ defineShortcuts({
     </template>
 
     <template #trailing>
-      <KbShortcut :keys="['meta', 'E']" />
+      <KbShortcut keys="meta_e" />
     </template>
   </LinkList>
 </template>

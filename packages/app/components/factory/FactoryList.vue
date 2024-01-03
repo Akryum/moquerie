@@ -61,7 +61,8 @@ function onOpen(factory: ResourceFactory) {
     :filter="filter"
     :selected-item="(factory, route) => factory.id === route.params.factoryId"
     filter-placeholder="Filter factories by name, tags..."
-    @open="onOpen"
+    class="p-2"
+    @select="onOpen"
   >
     <template #toolbar>
       <RadioButtonGroup

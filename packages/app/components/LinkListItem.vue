@@ -1,12 +1,25 @@
 <script lang="ts" setup>
 import { Tooltip } from 'floating-vue'
 import type { RouteLocationRaw } from 'vue-router'
+import { NuxtLink } from '#components'
+
+defineOptions({
+  inheritAttrs: false,
+})
 
 const props = defineProps<{
-  to: string | RouteLocationRaw
+  to?: string | RouteLocationRaw
   icon?: string
   hover?: boolean
+  selected?: boolean
   showShortcut?: boolean
+  ui?: {
+    button?: any
+  }
+}>()
+
+defineEmits<{
+  click: [event: MouseEvent]
 }>()
 
 const el = ref<HTMLElement | null>(null)
@@ -22,19 +35,23 @@ watch(() => props.hover, (val) => {
 </script>
 
 <template>
-  <div ref="el">
+  <div ref="el" class="my-0.5">
     <Tooltip
       placement="right"
       :delay="{ show: 300, hide: 0 }"
       :disabled="!$slots.tooltip"
     >
-      <NuxtLink
+      <component
+        :is="to ? NuxtLink : 'button'"
         :to="to"
-        class="flex items-center gap-2 px-2 py-1.5 mx-1 my-0.5 rounded"
+        class="flex items-center gap-2 px-2 py-1.5 rounded w-full"
         :class="{
           'text-primary-500 bg-primary-50 dark:bg-primary-950': hover,
+          '!bg-primary-100 dark:!bg-primary-900': selected,
         }"
         active-class="!bg-primary-100 dark:!bg-primary-900"
+        v-bind="ui?.button"
+        @click="$emit('click', $event)"
       >
         <UIcon v-if="icon" :name="icon" class="flex-none w-4 h-4 opacity-80" />
 
@@ -43,7 +60,7 @@ watch(() => props.hover, (val) => {
         </div>
 
         <KbShortcut v-if="showShortcut" :keys="['enter']" />
-      </NuxtLink>
+      </component>
 
       <template #popper>
         <slot name="tooltip" />
