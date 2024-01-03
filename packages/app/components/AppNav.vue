@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 const hasGraphQL = await useHasGraphql()
 
-const commandPaletteStore = useCommandPaletteStore()
-
 const router = useRouter()
 
 defineShortcuts({
@@ -51,17 +49,6 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
-      icon="i-ph-magnifying-glass"
-      title="Search & commands"
-      shortcuts="meta_k"
-      @click="commandPaletteStore.isOpen = true"
-    />
-
-    <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
-    </div>
-
-    <AppNavItem
       to="/db/resources"
       icon="i-ph-database"
       title="Resources"
@@ -89,10 +76,6 @@ const colorMode = useColorMode()
       shortcuts="meta_shift_h"
     />
 
-    <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
-    </div>
-
     <AppNavItem
       v-if="hasGraphQL"
       to="/graphql"
@@ -102,10 +85,6 @@ const colorMode = useColorMode()
     />
 
     <div class="flex-1 w-0" />
-
-    <div class="w-full">
-      <div class="h-px bg-gray-300 dark:bg-gray-700 mx-3 my-1" />
-    </div>
 
     <!-- Theme toggle -->
     <AppNavItem
