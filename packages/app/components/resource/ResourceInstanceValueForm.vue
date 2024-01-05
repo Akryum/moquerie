@@ -99,7 +99,7 @@ defineShortcuts({
         :resource-type="resourceType"
         :field="field"
         :autofocus="index === 0"
-        show-apply
+        :show-apply="!!instance"
         :has-changes="instance && stateChanged"
         @apply="onSubmit()"
       />
@@ -119,7 +119,7 @@ defineShortcuts({
       <UButton
         type="submit"
         :icon="instance ? 'i-ph-pencil-simple' : 'i-ph-plus'"
-        :disabled="!instance || !stateChanged"
+        :disabled="instance && !stateChanged"
       >
         {{ instance ? 'Update' : 'Create instance' }}
 
