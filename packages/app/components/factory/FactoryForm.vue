@@ -55,11 +55,14 @@ function getStateInitialValues(factory = props.factory): FactoryData {
 
 const state = ref<FactoryData>(getStateInitialValues())
 
+const stateChanged = ref(false)
+
 watch(() => props.factory, (value) => {
   state.value = getStateInitialValues(value)
+  nextTick(() => {
+    stateChanged.value = false
+  })
 })
-
-const stateChanged = ref(false)
 
 watch(state, () => {
   stateChanged.value = true

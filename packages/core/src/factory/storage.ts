@@ -1,7 +1,8 @@
+import path from 'pathe'
 import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
-import { getPrettyFilename } from '../util/fs.js'
 import type { ResourceFactory } from '../types/factory.js'
 import { projectHasTypescript } from '../util/env.js'
+import { type Storage, useStorage } from '../storage/storage.js'
 
 let storage: MergedStorage<ResourceFactory>
 let storagePromise: Promise<MergedStorage<ResourceFactory>>
@@ -15,9 +16,67 @@ export async function getFactoryStorage() {
   }
   storagePromise = useMergedStorage({
     name: 'factories',
-    filename: item => `${getPrettyFilename(item.resourceName)}/${getPrettyFilename(item.name)}.${projectHasTypescript() ? 'ts' : 'js'}`,
+    filename: item => `${item.resourceName}/${item.name}.${projectHasTypescript() ? 'ts' : 'js'}`,
     format: 'js',
+    override: {
+      repository: {
+        transform: {
+          read: async (item, file) => {
+            const id = path.basename(file).replace(/\.[jt]s$/, '')
+            return {
+              createdAt: new Date(),
+              lastUsedAt: null,
+              ...await getRepoMetaFactoryStorage().then(s => s.findById(id)),
+              id,
+              name: id,
+              location: 'repository',
+              ...item,
+            }
+          },
+          write: async (item) => {
+            const data = {
+              ...item,
+            }
+            await getRepoMetaFactoryStorage().then(s => s.save({
+              id: item.id,
+              lastUsedAt: item.lastUsedAt,
+              createdAt: item.createdAt,
+              location: item.location,
+            }))
+            delete data.id
+            delete data.name
+            delete data.createdAt
+            delete data.lastUsedAt
+            delete data.location
+            return data
+          },
+        },
+        deduplicateFiles: false,
+      },
+    },
   })
   storage = await storagePromise
   return storage
+}
+
+let metaStorage: Storage<Partial<ResourceFactory> & { id: string }>
+let metaStoragePromise: Promise<Storage<Partial<ResourceFactory> & { id: string }>>
+
+/**
+ * Store metadata about factories stored in the repository that is not explicitly stored in the factory files.
+ */
+async function getRepoMetaFactoryStorage() {
+  if (metaStorage) {
+    return metaStorage
+  }
+  if (metaStoragePromise) {
+    return metaStoragePromise
+  }
+  metaStoragePromise = useStorage({
+    name: 'factories-repo-meta',
+    format: 'json',
+    location: 'local',
+  })
+  metaStorage = await metaStoragePromise
+  return metaStorage
 }

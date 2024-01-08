@@ -8,10 +8,6 @@ export async function ensureDir(folder: string) {
   }
 }
 
-export function getPrettyFilename(text: string) {
-  return pascalCase(text.replace(/\W+/g, '_'))
-}
-
 export async function copyDir(src: string, dest: string) {
   await ensureDir(dest)
   const entries = await fs.promises.readdir(src)

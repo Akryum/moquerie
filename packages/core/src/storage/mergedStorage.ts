@@ -1,17 +1,23 @@
 import type { DBLocation } from '../types/db.js'
 import { type UseStorageOptions, useStorage } from './storage.js'
 
-export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'location'>
+export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'location'> & {
+  override?: {
+    [TLocation in DBLocation]?: Partial<Omit<UseStorageOptions<TData>, 'location'>>
+  }
+}
 
 export async function useMergedStorage<TData extends { id: string }>(options: UseMergedStorageOptions<TData>) {
   const storages = {
     local: await useStorage<TData>({
       ...options,
       location: 'local',
+      ...options.override?.local,
     }),
     repository: await useStorage<TData>({
       ...options,
       location: 'repository',
+      ...options.override?.repository,
     }),
   }
 

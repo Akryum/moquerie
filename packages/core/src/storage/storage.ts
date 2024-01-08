@@ -25,8 +25,13 @@ export interface UseStorageOptions<TData> {
   name: string
   location: DBLocation
   filename?: (item: TData) => string
+  deduplicateFiles?: boolean
   format?: 'js' | 'json'
   lazyLoading?: boolean
+  transform?: {
+    read?: (item: any, file: string) => any | Promise<any>
+    write?: (item: any, file: string) => any | Promise<any>
+  }
 }
 
 export async function useStorage<TData extends { id: string }>(options: UseStorageOptions<TData>) {
@@ -103,6 +108,9 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
       item = data.item
     }
+    if (options.transform?.read) {
+      item = await options.transform.read(item, file)
+    }
     if (item.id !== id) {
       throw new Error(`Invalid storage file ${file} - id mismatch`)
     }
@@ -153,6 +161,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     }
     const file = getFilePath(manifestData)
     let content: string
+
+    if (options.transform?.write) {
+      item = await options.transform.write(item, file)
+    }
 
     if (fileFormat === 'js') {
       let ast: any
@@ -286,16 +298,18 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
     // Deduplicate filenames
     let filename = getFilename(item)
-    const ext = path.extname(filename)
-    const files = Object.values(manifest.files)
-    let testCount = 0
-    let testFilename = filename
-    while (files.includes(testFilename)) {
-      testCount++
-      testFilename = filename.replace(ext, `-${testCount}${ext}`)
-    }
-    if (testCount > 0) {
-      filename = testFilename
+    if (options.deduplicateFiles !== false) {
+      const ext = path.extname(filename)
+      const files = Object.values(manifest.files)
+      let testCount = 0
+      let testFilename = filename
+      while (files.includes(testFilename)) {
+        testCount++
+        testFilename = filename.replace(ext, `-${testCount}${ext}`)
+      }
+      if (testCount > 0) {
+        filename = testFilename
+      }
     }
 
     manifest.files[item.id] = filename
