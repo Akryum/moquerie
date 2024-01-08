@@ -1,4 +1,4 @@
-import type { ResourceSchema, type ResourceSchemaType } from '@moquerie/core'
+import type { ResourceSchema, ResourceSchemaType } from '@moquerie/core'
 
 export const useResourceTypeStore = defineStore('resourceTypes', () => {
   const fetchQuery = useFetch<ResourceSchema>('/api/resources')

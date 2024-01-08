@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   const ctx = await getResolvedContext()
 
-  const fieldAction = ctx.fieldActions.allActions.find(fa => fa.resourceType.name === resourceName && fa.field.name === fieldName)
+  const fieldAction = ctx.fieldActions.allActions.find(fa => fa.resourceName === resourceName && fa.fieldName === fieldName)
   if (!fieldAction) {
     throw new Error(`Field action not found for resource ${resourceName} and field ${fieldName}`)
   }

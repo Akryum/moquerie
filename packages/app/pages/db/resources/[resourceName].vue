@@ -1,9 +1,24 @@
 <script lang="ts" setup>
+import type { ResourceSchemaType } from '@moquerie/core'
+
 const route = useRoute()
-const { data: resourceType, refresh } = await useFetch(`/api/resources/${route.params.resourceName}`)
+const { data: resourceType, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${route.params.resourceName}`)
 onWindowFocus(refresh)
 
+const { data: ignored, refresh: refreshIgnored } = await useFetch(`/api/resources/${route.params.resourceName}/ignored`)
+onWindowFocus(refreshIgnored)
+
 const router = useRouter()
+
+watch(ignored, (value) => {
+  if (value) {
+    router.replace({
+      name: 'db-resources',
+    })
+  }
+}, {
+  immediate: true,
+})
 
 defineShortcuts({
   meta_shift_x: {

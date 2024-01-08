@@ -42,6 +42,8 @@ export const schema = makeExecutableSchema({
 
     type Mutation {
       addHello (message: String!): [String!]!
+      removeHello (message: String!): [String!]!
+      testMutation: Boolean
     }
   `,
   resolvers: {

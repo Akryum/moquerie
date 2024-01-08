@@ -77,6 +77,12 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
+      to="/db/fieldActions"
+      icon="i-ph-lightning"
+      title="Field actions"
+    />
+
+    <AppNavItem
       v-if="hasGraphQL"
       to="/graphql"
       active-route="/graphql"

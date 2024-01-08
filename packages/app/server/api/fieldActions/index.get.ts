@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
 
   const ctx = await getResolvedContext()
   let result = ctx.fieldActions.allActions.map(fa => ({
-    resourceName: fa.resourceType.name,
-    fieldName: fa.field.name,
+    resourceName: fa.resourceName,
+    fieldName: fa.fieldName,
     file: fa.file,
   }))
 
