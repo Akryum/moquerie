@@ -51,8 +51,8 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
       floating-vue:
-        specifier: ^5.0.1
-        version: 5.0.1(vue@3.3.9)
+        specifier: ^5.0.2
+        version: 5.0.2(vue@3.3.9)
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -6158,8 +6158,8 @@ packages:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
     dev: true
 
-  /floating-vue@5.0.1(vue@3.3.9):
-    resolution: {integrity: sha512-DnW3xsFSI0Y3+0nRoxL8K+RK0GDkEb+tLxhTFSbu/y87dtB6j+/oc0FMgpAXkrKBYGfgNUcHxofgyaeaFdKznA==}
+  /floating-vue@5.0.2(vue@3.3.9):
+    resolution: {integrity: sha512-CY6emiecyIIvdoK4xYN8mDSNRWutetR+rM10mu6VGrTCqxSdvHyF6TX/zslIgXDC2eIjEkcrpAMg3Mxh724t9w==}
     peerDependencies:
       '@nuxt/kit': ^3.2.0
       vue: ^3.2.0

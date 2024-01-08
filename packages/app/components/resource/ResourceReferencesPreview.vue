@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
 import { vTooltip } from 'floating-vue'
-import type { ResourceInstance, ResourceSchemaField } from '@moquerie/core'
+import type { FilterActive, ResourceInstance, ResourceSchemaField } from '@moquerie/core'
 
 const props = defineProps<{
   field: ResourceSchemaField & {
@@ -25,9 +25,9 @@ const ids = computed(() => listOfRefs.value.map(ref => ref.__id))
 
 // Instances
 
-// const filterActive = useLocalStorage<FilterActive>('resource-reference-table-filter-active', 'active')
+const filterActive = useLocalStorage<FilterActive>('resource-reference-table-filter-active', 'active')
 
-const { data: instances, refresh: refreshReferenced } = await useFetch(`/api/resources/instances/${props.field.resourceName}/getByIds`, {
+const { data: instancesRaw, refresh: refreshReferenced } = await useFetch(`/api/resources/instances/${props.field.resourceName}/getByIds`, {
   method: 'POST',
   body: {
     ids,
@@ -36,16 +36,14 @@ const { data: instances, refresh: refreshReferenced } = await useFetch(`/api/res
 })
 onWindowFocus(refreshReferenced)
 
-// const instances = computed(() => instancesRaw.value?.filter(i => filterActive.value === 'all' || i.active === (filterActive.value === 'active')) ?? [])
+const instances = computed(() => instancesRaw.value?.filter(i => filterActive.value === 'all' || i.active === (filterActive.value === 'active')) ?? [])
 
 const firstActive = computed(() => instances.value?.find(i => i.active))
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
-    <!-- @TODO fix issue with floating-vue <Menu>: <button> closes it :( -->
-
-    <!-- <div class="flex justify-center">
+    <div class="flex justify-center pt-2">
       <RadioButtonGroup
         v-model="filterActive"
         :options="[
@@ -57,7 +55,7 @@ const firstActive = computed(() => instances.value?.find(i => i.active))
           color: 'gray',
         }"
       />
-    </div> -->
+    </div>
 
     <ResourceTable
       v-if="instances"
