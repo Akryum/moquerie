@@ -2,10 +2,8 @@ import type { QueryManagerProxy } from '../resource/queryManagerProxy.js'
 import type { ResourceSchemaField, ResourceSchemaType } from './resource.js'
 
 export interface FieldAction {
-  resourceType: ResourceSchemaType & {
-    type: 'object'
-  }
-  field: ResourceSchemaField
+  resourceName: string
+  fieldName: string
   action: (ctx: FieldActionContext) => any
   file: string
 }

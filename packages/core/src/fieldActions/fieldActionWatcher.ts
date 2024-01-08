@@ -6,7 +6,7 @@ import type { FieldAction } from '../types/fieldAction.js'
 import type { ResourceSchema } from '../types/resource.js'
 
 export interface FieldActionWatcherConfig {
-  schema: ResourceSchema
+  getSchema: () => ResourceSchema
 }
 
 export class FieldActionWatcher {
@@ -50,6 +50,10 @@ export class FieldActionWatcher {
   async upsertFieldActions(file: string) {
     try {
       const absoluteFile = path.join(getCwd(), file)
+
+      // Cleanup
+      this.allActions = this.allActions.filter(action => action.file !== file)
+
       const mod = await this.jiti(absoluteFile)
       const defaultExport = mod.default ?? mod
       if (!defaultExport) {
@@ -58,29 +62,17 @@ export class FieldActionWatcher {
       if (defaultExport.__fieldActions) {
         const actionsMap = defaultExport.__fieldActions
         for (const resourceName in actionsMap) {
-          const resourceType = this.config.schema.types[resourceName]
-          if (!resourceType) {
-            throw new Error(`Invalid field action file ${file} - unknown resource ${resourceName}`)
-          }
-          if (resourceType.type !== 'object') {
-            throw new Error(`Invalid field action file ${file} - resource ${resourceName} is not an object`)
-          }
           const actions = actionsMap[resourceName]
           for (const fieldName in actions) {
-            const field = resourceType.fields[fieldName]
-            if (!field) {
-              throw new Error(`Invalid field action file ${file} - unknown field ${resourceName}.${fieldName}`)
-            }
-
-            const existingIndex = this.allActions.findIndex(action => action.resourceType === resourceType && action.field === field)
+            const existingIndex = this.allActions.findIndex(action => action.resourceName === resourceName && action.fieldName === fieldName)
             if (existingIndex !== -1) {
               this.allActions.splice(existingIndex, 1)
             }
 
             const action = actions[fieldName]
             this.allActions.push({
-              resourceType,
-              field,
+              resourceName,
+              fieldName,
               action,
               file,
             })

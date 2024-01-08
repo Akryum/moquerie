@@ -119,7 +119,7 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     graphqlSchema,
     server,
     fieldActions: resolvedContext?.fieldActions ?? await createFieldActionWatcher({
-      schema,
+      getSchema: () => resolvedContext?.schema ?? schema,
     }),
     db: createQueryManagerProxy(),
   }

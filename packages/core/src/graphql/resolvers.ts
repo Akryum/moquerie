@@ -28,12 +28,12 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
 
   // Field actions
   for (const fieldAction of ctx.fieldActions.allActions) {
-    const { resourceType, field, action } = fieldAction
-    if (!resolvers[resourceType.name]) {
-      resolvers[resourceType.name] = {}
+    const { resourceName, fieldName, action } = fieldAction
+    if (!resolvers[resourceName]) {
+      resolvers[resourceName] = {}
     }
-    const r = resolvers[resourceType.name] as Record<string, ISchemaLevelResolver<any, any>>
-    r[field.name] = (parent, input) => action({
+    const r = resolvers[resourceName] as Record<string, ISchemaLevelResolver<any, any>>
+    r[fieldName] = (parent, input) => action({
       parent,
       input,
       db: ctx.db,
