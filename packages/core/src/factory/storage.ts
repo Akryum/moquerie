@@ -23,12 +23,14 @@ export async function getFactoryStorage() {
         transform: {
           read: async (item, file) => {
             const id = path.basename(file).replace(/\.[jt]s$/, '')
+            const resourceName = path.basename(path.dirname(file))
             return {
               createdAt: new Date(),
               lastUsedAt: null,
               ...await getRepoMetaFactoryStorage().then(s => s.findById(id)),
               id,
               name: id,
+              resourceName,
               location: 'repository',
               ...item,
             }
@@ -45,6 +47,7 @@ export async function getFactoryStorage() {
             }))
             delete data.id
             delete data.name
+            delete data.resourceName
             delete data.createdAt
             delete data.lastUsedAt
             delete data.location
