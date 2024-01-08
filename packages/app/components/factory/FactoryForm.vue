@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
-import type { ResourceFactory } from '@moquerie/core'
+import type { ResourceFactory, ResourceSchemaType } from '@moquerie/core'
 import type { FactoryData } from './formTypes.js'
 import { useTagModel } from '~/utils/form.js'
 
@@ -29,12 +29,12 @@ const fakerLocaleOptions = computed(() => {
   ]
 })
 
-const { data: resourceType, refresh } = await useFetch(() => `/api/resources/${props.resourceName}`)
+const { data: resourceType, refresh } = await useFetch<ResourceSchemaType>(() => `/api/resources/${props.resourceName}/`)
 onWindowFocus(refresh)
 
 function getStateInitialValues(factory = props.factory): FactoryData {
   return {
-    name: factory?.name ?? `${props.resourceName} factory`,
+    name: factory?.name ?? `${props.resourceName}Factory`,
     location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
     description: factory?.description ?? '',
     tags: factory?.tags ? structuredClone(toRaw(factory.tags)) : [],
@@ -111,43 +111,54 @@ async function onSubmit() {
     return
   }
 
-  let factory: ResourceFactory
+  try {
+    let factory: ResourceFactory
 
-  if (props.factory) {
-    // Update factory
-    factory = await $fetch(`/api/factories/update`, {
-      method: 'PATCH',
-      body: {
-        id: props.factory.id,
-        ...state.value,
-      },
-    })
+    if (props.factory) {
+      // Update factory
+      factory = await $fetch(`/api/factories/update`, {
+        method: 'PATCH',
+        body: {
+          id: props.factory.id,
+          ...state.value,
+        },
+      })
+      toast.add({
+        id: 'factory-updated',
+        title: 'Factory updated!',
+        icon: 'i-ph-check-circle',
+        color: 'green',
+      })
+    }
+    else {
+      // Create factory
+      factory = await $fetch(`/api/factories/create`, {
+        method: 'POST',
+        body: state.value,
+      })
+      toast.add({
+        id: 'factory-created',
+        title: 'Factory created!',
+        icon: 'i-ph-check-circle',
+        color: 'green',
+      })
+    }
+
+    emit('complete', factory)
+
+    factoryStore.refreshFactories()
+
+    state.value = getStateInitialValues(factory)
+  }
+  catch (e: any) {
     toast.add({
-      id: 'factory-updated',
-      title: 'Factory updated!',
-      icon: 'i-ph-check-circle',
-      color: 'green',
+      id: 'factory-error',
+      title: 'Error',
+      description: e.message,
+      icon: 'i-ph-x-circle',
+      color: 'red',
     })
   }
-  else {
-    // Create factory
-    factory = await $fetch(`/api/factories/create`, {
-      method: 'POST',
-      body: state.value,
-    })
-    toast.add({
-      id: 'factory-created',
-      title: 'Factory created!',
-      icon: 'i-ph-check-circle',
-      color: 'green',
-    })
-  }
-
-  emit('complete', factory)
-
-  factoryStore.refreshFactories()
-
-  state.value = getStateInitialValues(factory)
 }
 
 // Shortcuts
@@ -250,7 +261,11 @@ defineShortcuts({
           @submit="onSubmit()"
         >
           <UFormGroup name="name" label="Factory name" required>
-            <UInput v-model="state.name" autofocus />
+            <UInput
+              v-model="state.name"
+              autofocus
+              placeholder="Examples: NewUserWithMessages, getNewUser, createEmptyItem"
+            />
           </UFormGroup>
 
           <UFormGroup name="location" label="Location">

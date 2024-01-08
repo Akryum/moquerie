@@ -30,7 +30,10 @@ export async function useMergedStorage<TData extends { id: string }>(options: Us
     return data
   }
 
-  async function findById(id: string) {
+  async function findById(id: string, location?: DBLocation) {
+    if (location) {
+      return storages[location].findById(id)
+    }
     const localData = await storages.local.findById(id)
     if (localData) {
       return localData
