@@ -45,7 +45,7 @@
   }
 
   .v-popper__arrow-inner {
-    @apply border-black;
+    @apply border-gray-900;
   }
 
   .v-popper__arrow-outer {
