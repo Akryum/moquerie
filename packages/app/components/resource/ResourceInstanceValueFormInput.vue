@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Dropdown, Menu, Tooltip, VTooltip as vTooltip } from 'floating-vue'
+import { Dropdown, Menu, Tooltip, vTooltip } from 'floating-vue'
 import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 
 // @TODO Handle required/non-null fields

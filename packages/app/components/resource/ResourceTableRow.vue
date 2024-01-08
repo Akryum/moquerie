@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Menu, VTooltip as vTooltip } from 'floating-vue'
+import { Menu, vTooltip } from 'floating-vue'
 import type { ResourceInstance, ResourceSchemaType } from '@moquerie/core'
 import type { Col } from './tableTypes.js'
 

@@ -33,7 +33,7 @@
     "@vueuse/nuxt": "^10.6.1",
     "@vueuse/router": "^10.7.0",
     "envinfo": "^7.11.0",
-    "floating-vue": "2.0.0-beta.24",
+    "floating-vue": "^5.0.1",
     "graphql": "^16.8.1",
     "jiti": "^1.21.0",
     "launch-editor": "^2.6.1",
