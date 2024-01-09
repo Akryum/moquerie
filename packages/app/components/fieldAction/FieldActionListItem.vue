@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { vTooltip } from 'floating-vue'
+import { Tooltip, vTooltip } from 'floating-vue'
 
 const props = defineProps<{
   resourceName: string
   fieldName: string
   file: string
+  code: string
 }>()
 
 async function openFile() {
@@ -18,11 +19,15 @@ async function openFile() {
 
 <template>
   <div class="flex items-center gap-2 px-6 py-1">
-    <div class="font-mono">
+    <Tooltip class="font-mono" placement="right-start">
       <span
         class="opacity-50"
       >{{ resourceName }}.</span><span>{{ fieldName }}</span>
-    </div>
+
+      <template #popper>
+        <pre>{{ code }}</pre>
+      </template>
+    </Tooltip>
 
     <UButton
       v-tooltip="`Open ${file}`"

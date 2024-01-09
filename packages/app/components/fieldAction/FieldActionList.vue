@@ -6,6 +6,7 @@ const props = defineProps<{
 const { data, refresh } = await useFetch('/api/fieldActions', {
   query: {
     resourceName: props.resourceName,
+    getCode: true,
   },
 })
 onWindowFocus(refresh)
@@ -41,6 +42,7 @@ const actions = computed(() => {
         :resource-name="props.resourceName"
         :field-name="item.fieldName"
         :file="item.file"
+        :code="item.code"
       />
     </div>
   </div>

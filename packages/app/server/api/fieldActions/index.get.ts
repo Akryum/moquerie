@@ -1,13 +1,14 @@
 import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
-  const { resourceName } = getQuery(event)
+  const { resourceName, getCode } = getQuery(event)
 
   const ctx = await getResolvedContext()
   let result = ctx.fieldActions.allActions.map(fa => ({
     resourceName: fa.resourceName,
     fieldName: fa.fieldName,
     file: fa.file,
+    code: getCode ? fa.action.toString() : undefined,
   }))
 
   if (resourceName) {
