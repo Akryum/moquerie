@@ -192,7 +192,7 @@ defineShortcuts({
       </div>
     </div>
 
-    <FormActions>
+    <FormActions class="bottom-0">
       <UButton
         color="gray"
         @click="onCancel()"

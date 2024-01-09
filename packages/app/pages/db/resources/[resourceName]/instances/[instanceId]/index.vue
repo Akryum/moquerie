@@ -285,6 +285,10 @@ async function onSubmitInstance(value: any) {
 
   <UModal
     v-model="showBulkEditModal"
+    :ui="{
+      base: 'overflow-visible',
+      container: 'sm:items-start',
+    }"
   >
     <ResourceBulkEditForm
       v-if="resourceType"
