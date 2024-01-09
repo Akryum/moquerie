@@ -1,8 +1,9 @@
 import path from 'pathe'
+import glob from 'fast-glob'
 import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
 import type { ResourceFactory } from '../types/factory.js'
 import { projectHasTypescript } from '../util/env.js'
-import { type Storage, useStorage } from '../storage/storage.js'
+import { type Storage, type StorageManifest, useStorage } from '../storage/storage.js'
 
 let storage: MergedStorage<ResourceFactory>
 let storagePromise: Promise<MergedStorage<ResourceFactory>>
@@ -22,14 +23,15 @@ export async function getFactoryStorage() {
       repository: {
         transform: {
           read: async (item, file) => {
-            const id = path.basename(file).replace(/\.[jt]s$/, '')
             const resourceName = path.basename(path.dirname(file))
+            const name = path.basename(file).replace(/\.[jt]s$/, '')
+            const id = `${resourceName}-${name}`
             return {
               createdAt: new Date(),
               lastUsedAt: null,
               ...await getRepoMetaFactoryStorage().then(s => s.findById(id)),
               id,
-              name: id,
+              name,
               resourceName,
               location: 'repository',
               ...item,
@@ -57,6 +59,29 @@ export async function getFactoryStorage() {
               }
             }
             return data
+          },
+        },
+        manifest: {
+          read: async (folder) => {
+            const manifest: StorageManifest = {
+              version: '0.0.1',
+              files: {},
+            }
+            const files = await glob([
+              '**/*.js',
+              '**/*.ts',
+            ], {
+              cwd: folder,
+            })
+            for (const file of files) {
+              const resourceName = path.basename(path.dirname(file))
+              const id = `${resourceName}-${path.basename(file).replace(/\.[jt]s$/, '')}`
+              manifest.files[id] = file
+            }
+            return manifest
+          },
+          write: () => {
+            // Do not write to disk
           },
         },
         deduplicateFiles: false,

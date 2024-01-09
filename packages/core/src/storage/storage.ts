@@ -11,12 +11,13 @@ import { getCwd } from '../util/env.js'
 import { createExportedVariable } from '../ast/exportVariable.js'
 import { ensureDir } from '../util/fs.js'
 import { generateAstFromObject } from '../ast/objectToAst.js'
+import type { Awaitable } from '../util/types.js'
 import { getLocalDbFolder, getRepositoryDbFolder } from './path.js'
 
 const manifestVersion = '0.0.1'
 const storageVersion = '0.0.1'
 
-interface Manifest {
+export interface StorageManifest {
   version: string
   files: Record<string, string>
 }
@@ -44,8 +45,12 @@ export interface UseStorageOptions<TData> {
    * Transform items before reading or writing them to disk.
    */
   transform?: {
-    read?: (item: any, file: string) => TData | Promise<TData>
-    write?: (item: TData, file: string) => any | Promise<any>
+    read?: (item: any, file: string) => Awaitable<TData>
+    write?: (item: TData, file: string) => Awaitable<any>
+  }
+  manifest?: {
+    read?: (folder: string) => Awaitable<StorageManifest>
+    write?: (folder: string, manifest: StorageManifest) => Awaitable<void>
   }
 }
 
@@ -67,6 +72,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   })
 
   async function readManifest() {
+    if (options.manifest?.read) {
+      return options.manifest.read(folder)
+    }
+
     if (!fs.existsSync(manifestFile)) {
       return {
         version: manifestVersion,
@@ -75,7 +84,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     }
 
     const data = await fs.promises.readFile(manifestFile, 'utf8')
-    const manifestResult: Manifest = JSON.parse(data)
+    const manifestResult: StorageManifest = JSON.parse(data)
 
     if (manifestResult.version !== manifestVersion) {
       throw new Error(`Invalid manifest version ${manifestResult.version} - migration not implemented yet`)
@@ -162,6 +171,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   })
 
   async function writeManifest() {
+    if (options.manifest?.write) {
+      return options.manifest.write(folder, manifest)
+    }
+
     await fs.promises.writeFile(manifestFile, JSON.stringify(manifest, null, 2))
   }
 

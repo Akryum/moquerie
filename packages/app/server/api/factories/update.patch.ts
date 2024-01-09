@@ -24,7 +24,7 @@ export default defineEventHandler<{ body: ResourceFactory }>(async (event) => {
         throw new Error(`Factyory with name "${name}" already exists in repository`)
       }
       await storage.remove(factory.id)
-      body.id = factory.id = name
+      body.id = factory.id = `${body.resourceName ?? factory.resourceName}-${name}`
     }
   }
   Object.assign(factory, body)
