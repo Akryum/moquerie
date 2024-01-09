@@ -51,6 +51,11 @@ export async function getFactoryStorage() {
             delete data.createdAt
             delete data.lastUsedAt
             delete data.location
+            for (const key in data) {
+              if (data[key] === undefined || data[key] === null || data[key] === '') {
+                delete data[key]
+              }
+            }
             return data
           },
         },
