@@ -165,7 +165,7 @@ async function onSubmitInstance(value: any) {
   >
     <div class="flex flex-col gap-4 items-center">
       <div class="flex flex-col gap-2 items-center">
-        <div class="bg-primary-100 dark:bg-primary-900 rounded-full px-4 py-2 text-primary-500 font-bold">
+        <div class="bg-primary-100 dark:bg-primary-900 rounded-full px-4 py-2 text-primary-500 dark:text-primary-300 font-bold">
           {{ instanceIds.length }}
         </div>
         <div>Selected instances</div>
