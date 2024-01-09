@@ -108,7 +108,7 @@ const colorMode = useColorMode()
     />
 
     <UserCurrent
-      class="mt-2"
+      class="my-2 flex-none"
     />
   </nav>
 </template>
