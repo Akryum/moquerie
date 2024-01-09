@@ -179,7 +179,7 @@ function removeArrayItem(index: number) {
           </template>
         </Dropdown>
 
-        <Tooltip v-if="field.array">
+        <Tooltip v-if="field.array && field.type !== 'resource'">
           <UButton
             icon="i-ph-plus"
             color="gray"
