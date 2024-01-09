@@ -13,11 +13,17 @@ const emit = defineEmits<{
   submit: [value: any]
 }>()
 
+const { data: defaultValues } = await useFetch('/api/factories/defaultValues', {
+  query: {
+    resourceName: props.resourceType.name,
+  },
+})
+
 function getInitialState() {
   return {
     comment: props.instance?.comment ?? '',
     tags: props.instance?.tags ?? [],
-    value: structuredClone(toRaw(props.instance?.value ?? {})),
+    value: structuredClone(toRaw(props.instance?.value ?? defaultValues.value ?? {})),
   }
 }
 

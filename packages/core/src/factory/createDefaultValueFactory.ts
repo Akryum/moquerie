@@ -4,6 +4,7 @@ import { autoSelectFakerGenerator } from './fakerAutoSelect.js'
 
 export interface CreateDefaultValueFactoryOptions {
   resourceType: ResourceSchemaType
+  randomRefs?: boolean
 }
 
 export function createDefaultValueFactory(options: CreateDefaultValueFactoryOptions): ResourceFactoryValue {
@@ -19,7 +20,7 @@ export function createDefaultValueFactory(options: CreateDefaultValueFactoryOpti
         children[key] = {
           generateType: 'resourceReference',
           resourceTypeName: field.resourceName,
-          resourceRandom: true,
+          resourceRandom: options.randomRefs !== false,
         }
         continue
       }
