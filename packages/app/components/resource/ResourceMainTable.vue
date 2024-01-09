@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 import type { FilterActive, ResourceInstance } from '@moquerie/core'
+import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
   resourceName: string
@@ -16,10 +16,13 @@ watch(filterActive, () => {
   table.value?.scrollTop()
 })
 
+const searchText = useLocalStorage<string>('resource-main-table-search-text', '')
+
 watchEffect(() => {
   instanceStore.fetchInstances({
     resourceName: props.resourceName,
     filterActive: filterActive.value,
+    searchText: searchText.value,
   })
 })
 
@@ -102,6 +105,12 @@ defineShortcuts({
       <!-- Toolbar -->
       <div class="flex p-2 gap-2 items-center">
         <div class="flex-1" />
+
+        <UInput
+          v-model="searchText"
+          icon="i-ph-magnifying-glass"
+          placeholder="Search comment, tags, values..."
+        />
 
         <RadioButtonGroup
           v-model="filterActive"

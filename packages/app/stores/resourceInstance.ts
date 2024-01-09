@@ -4,6 +4,7 @@ import type { FilterActive, ResourceInstance } from '@moquerie/core'
 export interface FetchInstancesOptions {
   resourceName: string
   filterActive?: FilterActive
+  searchText?: string
 }
 
 export interface FetchInstanceOptions {
