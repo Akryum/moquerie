@@ -29,5 +29,24 @@ function onComplete(data: ResourceFactory) {
     :resource-name="$route.params.resourceName as string"
     :factory="factory"
     @complete="onComplete"
-  />
+  >
+    <template #before-form>
+      <div>
+        <UButton
+          icon="i-ph-plus-circle"
+          :to="{
+            name: 'db-resources-resourceName-create',
+            params: {
+              resourceName: $route.params.resourceName,
+            },
+            query: {
+              factory: factory.id,
+            },
+          }"
+        >
+          Generate instances with this factory
+        </UButton>
+      </div>
+    </template>
+  </FactoryForm>
 </template>

@@ -33,12 +33,6 @@ function openFactorySelectMenu() {
   }, 300) // Timeout to takeover focus from other autofocus elements
 }
 
-onMounted(async () => {
-  if (!manual.value) {
-    openFactorySelectMenu()
-  }
-})
-
 // Generate
 
 const factoryDbLocation = ref<DBLocation>('local')
@@ -56,6 +50,16 @@ watchEffect(() => {
 })
 
 const selectedFactory = ref<ResourceFactory | undefined>()
+
+if (route.query.factory) {
+  selectedFactory.value = factoryStore.factories.find(f => f.id === route.query.factory)
+}
+
+onMounted(async () => {
+  if (!manual.value && !selectedFactory.value) {
+    openFactorySelectMenu()
+  }
+})
 
 const genererateCount = ref(1)
 
