@@ -15,7 +15,7 @@ export async function getFactoryStorage() {
     return storagePromise
   }
   storagePromise = useMergedStorage({
-    name: 'factories',
+    path: 'factories',
     filename: item => `${item.resourceName}/${item.name}.${projectHasTypescript() ? 'ts' : 'js'}`,
     format: 'js',
     override: {
@@ -36,7 +36,7 @@ export async function getFactoryStorage() {
             }
           },
           write: async (item) => {
-            const data = {
+            const data: Partial<ResourceFactory> = {
               ...item,
             }
             await getRepoMetaFactoryStorage().then(s => s.save({
@@ -51,7 +51,7 @@ export async function getFactoryStorage() {
             delete data.createdAt
             delete data.lastUsedAt
             delete data.location
-            for (const key in data) {
+            for (const key of Object.keys(data) as Array<keyof typeof data>) {
               if (data[key] === undefined || data[key] === null || data[key] === '') {
                 delete data[key]
               }
@@ -81,7 +81,7 @@ async function getRepoMetaFactoryStorage() {
     return metaStoragePromise
   }
   metaStoragePromise = useStorage({
-    name: 'factories-repo-meta',
+    path: 'factories-repo-meta',
     format: 'json',
     location: 'local',
   })

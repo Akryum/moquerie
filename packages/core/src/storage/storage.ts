@@ -22,15 +22,30 @@ interface Manifest {
 }
 
 export interface UseStorageOptions<TData> {
-  name: string
+  /**
+   * Path relative to the computed location.
+   */
+  path: string
   location: DBLocation
+  /**
+   * Customize the item file names. By default: `${id}.${format}`
+   */
   filename?: (item: TData) => string
+  /**
+   * Deduplicate file names by adding '-1', '-2', etc. before the extension.
+   */
   deduplicateFiles?: boolean
   format?: 'js' | 'json'
+  /**
+   * Do not load all items initially.
+   */
   lazyLoading?: boolean
+  /**
+   * Transform items before reading or writing them to disk.
+   */
   transform?: {
-    read?: (item: any, file: string) => any | Promise<any>
-    write?: (item: any, file: string) => any | Promise<any>
+    read?: (item: any, file: string) => TData | Promise<TData>
+    write?: (item: TData, file: string) => any | Promise<any>
   }
 }
 
@@ -40,7 +55,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   const baseFolder = options.location === 'local'
     ? getLocalDbFolder()
     : getRepositoryDbFolder()
-  const folder = path.join(baseFolder, options.name)
+  const folder = path.join(baseFolder, options.path)
   const manifestFile = path.join(folder, 'manifest.json')
 
   await ensureDir(folder)
