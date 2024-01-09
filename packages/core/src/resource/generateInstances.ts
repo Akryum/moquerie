@@ -1,6 +1,7 @@
 import { createInstanceFromFactory } from '../factory/createInstanceFromFactory.js'
 import type { ResourceSchemaType } from '../types/resource.js'
 import type { ResourceFactory } from '../types/factory.js'
+import { getFactoryStorage } from '../factory/storage.js'
 import { getResourceInstanceStorage } from './storage.js'
 
 export interface GenerateResourceInstancesOptions {
@@ -25,5 +26,12 @@ export async function generateResourceInstances(options: GenerateResourceInstanc
     instances.push(instance)
     await storage?.save(instance)
   }
+
+  const factoryStorage = await getFactoryStorage()
+  await factoryStorage.save({
+    ...factory,
+    lastUsedAt: new Date(),
+  })
+
   return instances
 }

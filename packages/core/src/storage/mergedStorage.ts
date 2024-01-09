@@ -7,7 +7,7 @@ export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'loc
   }
 }
 
-export async function useMergedStorage<TData extends { id: string }>(options: UseMergedStorageOptions<TData>) {
+export async function useMergedStorage<TData extends { id: string, location: DBLocation }>(options: UseMergedStorageOptions<TData>) {
   const storages = {
     local: await useStorage<TData>({
       ...options,
@@ -48,7 +48,10 @@ export async function useMergedStorage<TData extends { id: string }>(options: Us
     return repositoryData
   }
 
-  async function save(item: TData, location: DBLocation) {
+  async function save(item: TData, location?: DBLocation) {
+    if (location == null) {
+      location = item.location
+    }
     for (const key of Object.keys(storages) as DBLocation[]) {
       if (key === location) {
         continue
@@ -75,4 +78,4 @@ export async function useMergedStorage<TData extends { id: string }>(options: Us
   }
 }
 
-export type MergedStorage<TData extends { id: string }> = Awaited<ReturnType<typeof useMergedStorage<TData>>>
+export type MergedStorage<TData extends { id: string, location: DBLocation }> = Awaited<ReturnType<typeof useMergedStorage<TData>>>
