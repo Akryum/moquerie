@@ -318,7 +318,7 @@ defineShortcuts({
           </UFormGroup>
 
           <UFormGroup name="description" label="Description" hint="What does the factory do?">
-            <UInput v-model="state.description" />
+            <UTextarea v-model="state.description" autoresize :rows="1" />
           </UFormGroup>
 
           <UFormGroup name="tags" label="Factory tags" hint="Separate tags with commas">
