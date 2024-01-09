@@ -3,6 +3,10 @@ import { useRouteQuery } from '@vueuse/router'
 import type { DBLocation, ResourceFactory } from '@moquerie/core'
 import LinkList from '../LinkList.vue'
 
+const route = useRoute()
+
+const resourceName = computed(() => String(route.params.resourceName))
+
 // Location
 
 const location = useRouteQuery<DBLocation>('factoryLocation', 'local')
@@ -13,17 +17,22 @@ function onClickOnLocationButton() {
   linkList.value?.focusFilterInput()
 }
 
+// Count
+
+const { data: counts, refresh: refreshCounts } = await useFetch('/api/factories/count', {
+  query: {
+    resourceName,
+  },
+})
+onWindowFocus(refreshCounts)
+
 // Factories
-
-const route = useRoute()
-
-const resourceName = computed(() => route.params.resourceName)
 
 const factoryStore = useFactoryStore()
 
 watchEffect(() => {
   factoryStore.fetchFactories({
-    resourceName: resourceName.value as string,
+    resourceName: resourceName.value,
     location: location.value,
   })
 })
@@ -76,10 +85,12 @@ function onOpen(factory: ResourceFactory) {
           {
             value: 'local',
             label: 'Local',
+            count: counts?.local,
           },
           {
             value: 'repository',
             label: 'Repository',
+            count: counts?.repository,
           },
         ]"
         @update:model-value="onClickOnLocationButton()"

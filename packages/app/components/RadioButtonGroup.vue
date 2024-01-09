@@ -3,6 +3,7 @@ interface Option {
   value: TValue
   label: string
   icon?: string
+  count?: number
 }
 
 defineProps<{
@@ -42,6 +43,9 @@ defineEmits<{
         class="w-4 h-4 flex-none"
       />
       {{ option.label }}
+      <span v-if="option.count != null" class="text-xs font-mono opacity-70">
+        {{ option.count }}
+      </span>
     </UButton>
   </UButtonGroup>
 </template>
