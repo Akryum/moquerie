@@ -48,6 +48,12 @@ const routes = computed(() => [
     label: 'Database > History',
     shortcuts: [metaSymbol.value, '⇧', 'H'],
   },
+  {
+    id: '_route.db.fieldActions',
+    to: '/db/fieldActions',
+    icon: 'i-ph-lightning',
+    label: 'Database > Field actions',
+  },
   ...hasGraphQL.value
     ? [
         {
