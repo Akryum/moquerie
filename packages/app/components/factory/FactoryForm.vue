@@ -14,7 +14,7 @@ const emit = defineEmits<{
   complete: [ResourceFactory]
 }>()
 
-const { data: fakerLocales } = await useFetch('/api/faker/locales')
+const { data: fakerLocales } = await useFetch<Record<string, { name: string, faker: string }>>('/api/faker/locales')
 
 const fakerLocaleOptions = computed(() => {
   return [
@@ -23,7 +23,7 @@ const fakerLocaleOptions = computed(() => {
       value: undefined,
     },
     ...Object.keys(fakerLocales.value ?? {}).map(key => ({
-      label: fakerLocales.value?.[key].name,
+      label: fakerLocales.value![key].name,
       value: key,
     })),
   ]

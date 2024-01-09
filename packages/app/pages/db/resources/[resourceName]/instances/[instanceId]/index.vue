@@ -139,12 +139,12 @@ defineShortcuts({
 
 // Update value
 
-async function onSubmitValue(value: any) {
+async function onSubmitInstance(value: any) {
   await instanceStore.updateInstance({
     resourceName: resourceName(),
     instanceId: instanceIds.value[0],
     data: {
-      value,
+      ...value,
     },
   })
 
@@ -265,13 +265,12 @@ async function onSubmitValue(value: any) {
       </VerticalButton>
     </div>
 
-    <div v-if="resourceType" class="p-2">
-      <ResourceInstanceValueForm
-        :resource-type="resourceType"
-        :instance="instanceStore.instance"
-        @submit="onSubmitValue"
-      />
-    </div>
+    <ResourceInstanceValueForm
+      v-if="resourceType"
+      :resource-type="resourceType"
+      :instance="instanceStore.instance"
+      @submit="onSubmitInstance"
+    />
   </div>
 
   <ConfirmModal

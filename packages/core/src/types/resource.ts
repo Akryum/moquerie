@@ -1,6 +1,6 @@
 export type ResourceSchemaCommon = {
   name: string
-  tags: readonly string[]
+  tags: string[]
   description?: string
   nonNull: boolean
   isDeprecated: boolean

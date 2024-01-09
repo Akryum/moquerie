@@ -14,7 +14,11 @@ const emit = defineEmits<{
 }>()
 
 function getInitialState() {
-  return structuredClone(toRaw(props.instance?.value ?? {}))
+  return {
+    comment: props.instance?.comment ?? '',
+    tags: props.instance?.tags ?? [],
+    value: structuredClone(toRaw(props.instance?.value ?? {})),
+  }
 }
 
 const state = ref<any>(getInitialState())
@@ -34,6 +38,8 @@ watch(() => props.instance, async () => {
     stateChanged.value = false
   }
 })
+
+const tags = useTagModel(state.value, 'tags')
 
 // Cancel
 
@@ -88,59 +94,70 @@ defineShortcuts({
   <UForm
     :state="state"
     :validate="validate"
-    class="flex flex-col gap-4"
     @submit="onSubmit()"
   >
-    <div v-if="resourceType.type === 'object'" class="flex flex-col items-stretch gap-2">
-      <ResourceInstanceValueFormInput
-        v-for="([key, field], index) in Object.entries(resourceType.fields)"
-        :key="key"
-        v-model="state[field.name]"
-        :resource-type="resourceType"
-        :field="field"
-        :autofocus="index === 0"
-        :show-apply="!!instance"
-        :has-changes="instance && stateChanged"
-        @apply="onSubmit()"
-      />
+    <div class="flex flex-col gap-4 border-b border-gray-200 dark:border-gray-800 p-2">
+      <UFormGroup name="comment" label="Comment" hint="Add notes on this instance">
+        <UTextarea v-model="state.comment" autoresize :rows="1" />
+      </UFormGroup>
+
+      <UFormGroup name="tags" label="Tags" hint="Separate tags with commas">
+        <UInput v-model="tags" placeholder="tag1, tag2, tag3" />
+      </UFormGroup>
     </div>
-    <!-- @TODO other types -->
 
-    <!-- @TODO sticky actions bar with focus scroll + offset -->
-    <FormActions>
-      <UButton
-        color="gray"
-        :disabled="!instance || !stateChanged"
-        @click="onCancel()"
-      >
-        Cancel
-      </UButton>
+    <div class="flex flex-col gap-4 p-2">
+      <div v-if="resourceType.type === 'object'" class="flex flex-col items-stretch gap-4">
+        <ResourceInstanceValueFormInput
+          v-for="([key, field], index) in Object.entries(resourceType.fields)"
+          :key="key"
+          v-model="state.value[field.name]"
+          :resource-type="resourceType"
+          :field="field"
+          :autofocus="index === 0"
+          :show-apply="!!instance"
+          :has-changes="instance && stateChanged"
+          @apply="onSubmit()"
+        />
+      </div>
+      <!-- @TODO other types -->
 
-      <UButton
-        type="submit"
-        :icon="instance ? 'i-ph-pencil-simple' : 'i-ph-plus'"
-        :disabled="instance && !stateChanged"
-      >
-        {{ instance ? 'Update' : 'Create instance' }}
-
-        <KbShortcut keys="meta_enter" />
-      </UButton>
-
-      <div class="flex-1" />
-
-      <Dropdown>
+      <!-- @TODO sticky actions bar with focus scroll + offset -->
+      <FormActions>
         <UButton
           color="gray"
-          variant="ghost"
-          icon="i-ph-code"
-        />
+          :disabled="!instance || !stateChanged"
+          @click="onCancel()"
+        >
+          Cancel
+        </UButton>
 
-        <template #popper>
-          <div class="p-6 overflow-auto max-w-[400px] max-h-[400px] text-xs">
-            <pre class="break-all whitespace-pre-wrap">{{ state }}</pre>
-          </div>
-        </template>
-      </Dropdown>
-    </FormActions>
+        <UButton
+          type="submit"
+          :icon="instance ? 'i-ph-pencil-simple' : 'i-ph-plus'"
+          :disabled="instance && !stateChanged"
+        >
+          {{ instance ? 'Update' : 'Create instance' }}
+
+          <KbShortcut keys="meta_enter" />
+        </UButton>
+
+        <div class="flex-1" />
+
+        <Dropdown>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-ph-code"
+          />
+
+          <template #popper>
+            <div class="p-6 overflow-auto max-w-[400px] max-h-[400px] text-xs">
+              <pre class="break-all whitespace-pre-wrap">{{ state }}</pre>
+            </div>
+          </template>
+        </Dropdown>
+      </FormActions>
+    </div>
   </UForm>
 </template>

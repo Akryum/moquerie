@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { Tooltip } from 'floating-vue'
 import SuperJSON from 'superjson'
+import type { DBLocation, ResourceFactory, ResourceInstance } from '@moquerie/core'
 import { isAnyOpen } from './resourceInstanceValueOverlays.js'
-import type { DBLocation } from '@moquerie/core'
-import type { ResourceFactory } from '@moquerie/core'
-import type { ResourceInstance } from '@moquerie/core'
 
 const props = defineProps<{
   resourceName: string
@@ -126,7 +124,7 @@ async function createInstance(value: any) {
       method: 'POST',
       body: {
         resourceName: props.resourceName,
-        value,
+        ...value,
       },
     })) as ResourceInstance
 
