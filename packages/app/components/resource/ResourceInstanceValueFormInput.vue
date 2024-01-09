@@ -192,6 +192,8 @@ function removeArrayItem(index: number) {
             Add new item
           </template>
         </Tooltip>
+
+        <slot name="hint-end" />
       </div>
     </template>
 

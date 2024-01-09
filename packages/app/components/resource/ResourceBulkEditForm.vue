@@ -47,6 +47,21 @@ function removeField(field: ResourceSchemaField) {
   delete state.value[field.name]
 }
 
+const filter = ref('')
+
+const fields = computed(() => {
+  if (props.resourceType.type !== 'object') {
+    return
+  }
+
+  let result = Object.values(props.resourceType.fields)
+  if (filter) {
+    const reg = new RegExp(filter.value, 'i')
+    result = result.filter(field => field.name.match(reg) || field.description?.match(reg) || field.tags.some(tag => tag.match(reg)))
+  }
+  return result
+})
+
 // Cancel
 
 async function onCancel() {
@@ -114,8 +129,17 @@ defineShortcuts({
     class="flex flex-col gap-1"
     @submit="onSubmit"
   >
+    <div class="pb-2">
+      <UInput
+        v-model="filter"
+        icon="i-ph-funnel"
+        placeholder="Filter fields..."
+        autofocus
+      />
+    </div>
+
     <div
-      v-for="field in resourceType.fields"
+      v-for="field in fields"
       :key="field.name"
       class="p-1 rounded-md border"
       :class="[
@@ -125,8 +149,9 @@ defineShortcuts({
       ]"
     >
       <div
+        v-if="!(field.name in state)"
         class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer text-gray-500"
-        @click="field.name in state ? removeField(field) : addField(field)"
+        @click="addField(field)"
       >
         <div class="flex-1 truncate text-sm">
           <template v-if="!(field.name in state)">
@@ -152,7 +177,18 @@ defineShortcuts({
           :resource-type="resourceType"
           :field="field"
           autofocus
-        />
+        >
+          <template #hint-end>
+            <UButton
+              color="gray"
+              variant="link"
+              icon="i-ph-minus"
+              :padded="false"
+              :aria-label="`Remove '${field.name}' field from bulk edit`"
+              @click="removeField(field)"
+            />
+          </template>
+        </ResourceInstanceValueFormInput>
       </div>
     </div>
 
