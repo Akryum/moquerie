@@ -11,7 +11,7 @@ const props = defineProps<{
 const route = useRoute()
 const router = useRouter()
 
-const manual = ref(false)
+const manual = useLocalStorage('db.instance.create.manual', false)
 
 const error = ref<any>()
 
@@ -53,6 +53,7 @@ const selectedFactory = ref<ResourceFactory | undefined>()
 
 if (route.query.factory) {
   selectedFactory.value = factoryStore.factories.find(f => f.id === route.query.factory)
+  manual.value = false
 }
 
 onMounted(async () => {
