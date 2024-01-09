@@ -1,3 +1,5 @@
+import type { fakerLocales } from '../factory/fakerLocales.js'
+
 export interface Config {
   /**
    * Options for the API server
@@ -40,5 +42,13 @@ export interface Config {
     }
   }
 
+  /**
+   * Those resource types will not appear in the resource database explorer in the UI.
+   */
   ignoredResourcesInExplorer?: string[]
+
+  /**
+   * Locale used by all calls to faker when not specified. Default is English.
+   */
+  defaultFakerLocale?: keyof typeof fakerLocales
 }
