@@ -14,5 +14,5 @@ export function getLocalDbFolder() {
 
 export function getRepositoryDbFolder() {
   const cwd = getCwd()
-  return path.join(cwd, '.moquerie', 'db')
+  return path.join(cwd, '.moquerie')
 }
