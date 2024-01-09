@@ -220,11 +220,6 @@ function removeArrayItem(index: number) {
       </template>
 
       <template #popper>
-        <div class="p-2 flex items-center gap-2 justify-center text-gray-500">
-          <UIcon name="i-ph-mouse" class="w-4 h-4" />
-          Click to edit references
-        </div>
-
         <ResourceReferencesPreview
           :field="field"
           :value="modelValue"
