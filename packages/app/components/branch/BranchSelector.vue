@@ -70,7 +70,6 @@ async function onCreateBranch(branch: string) {
       v-model:shown="shown"
       placement="bottom"
       auto-size="min"
-      :dispose-timeout="0"
     >
       <Tooltip
         :disabled="shown"
