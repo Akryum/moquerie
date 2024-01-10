@@ -39,10 +39,17 @@ export type MessageType =
 export type Mutation = {
   __typename?: 'Mutation';
   addHello: Array<Scalars['String']['output']>;
+  removeHello: Array<Scalars['String']['output']>;
+  testMutation?: Maybe<Scalars['Boolean']['output']>;
 };
 
 
 export type MutationAddHelloArgs = {
+  message: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveHelloArgs = {
   message: Scalars['String']['input'];
 };
 
@@ -170,6 +177,8 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addHello?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationAddHelloArgs, 'message'>>;
+  removeHello?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationRemoveHelloArgs, 'message'>>;
+  testMutation?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
