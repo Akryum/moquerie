@@ -6,7 +6,4 @@ export default defineConfig({
       scanCodeFiles: './src/**/*.ts',
     },
   },
-  ignoredResourcesInExplorer: [
-    'Mutation',
-  ],
 })

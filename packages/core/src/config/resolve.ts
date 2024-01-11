@@ -6,5 +6,11 @@ export async function resolveConfig() {
   return loadConfig<Config>({
     name: 'moquerie',
     cwd: getCwd(),
+    defaults: {
+      ignoredResourcesInExplorer: [
+        'Mutation',
+        'Subscription',
+      ],
+    },
   })
 }
