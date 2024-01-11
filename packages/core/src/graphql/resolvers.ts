@@ -1,5 +1,6 @@
 import type { IResolvers, ISchemaLevelResolver } from '@graphql-tools/utils'
 import { getResolvedContext } from '../context.js'
+import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 
 export async function createGraphQLResolvers(): Promise<IResolvers> {
   const resolvers: IResolvers = {}
@@ -17,6 +18,13 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
           for (const key in resourceType.fields) {
             r[key] = {
               subscribe: () => ctx.pubSubs.graphql.subscribe(key),
+              resolve: async (payload: any) => {
+                if (!(key in payload)) {
+                  throw new Error(`Payload does not contain key "${key}": ${JSON.stringify(payload, null, 2)}}`)
+                }
+                const data = await hydrateResourceInstanceReferences(payload)
+                return data[key]
+              },
             }
           }
 

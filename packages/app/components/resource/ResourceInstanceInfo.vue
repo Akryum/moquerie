@@ -8,6 +8,22 @@ const props = defineProps<{
 
 const factoryStore = useFactoryStore()
 const factory = props.instance.factoryId ? await factoryStore.fetchFactory(props.instance.factoryId) : null
+
+// Copy ref
+
+const toast = useToast()
+const { copy } = useClipboard()
+function copyRef() {
+  copy(`{
+  "__resourceName": "${props.instance.resourceName}",
+  "__id": "${props.instance.id}"
+}`)
+
+  toast.add({
+    title: 'Reference copied',
+    icon: 'i-ph-clipboard',
+  })
+}
 </script>
 
 <template>
@@ -16,7 +32,15 @@ const factory = props.instance.factoryId ? await factoryStore.fetchFactory(props
       <div class="flex items-center gap-1">
         <UIcon name="i-ph-database" class="w-4 h-4 flex-none" />
         <span>{{ instance.resourceName }}</span>
-        <span class="text-primary-500 break-all">{{ instance.id }}</span>
+        <span class="text-primary-500 break-all truncate">{{ instance.id }}</span>
+        <UButton
+          variant="link"
+          :padded="false"
+          icon="i-ph-clipboard"
+          @click="copyRef()"
+        >
+          Copy ref
+        </UButton>
       </div>
       <div class="flex items-center gap-1 truncate">
         <UIcon name="i-ph-calendar-blank" class="w-4 h-4 flex-none" />

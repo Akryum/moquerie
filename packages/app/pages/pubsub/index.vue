@@ -104,14 +104,14 @@ function removeHistoryItem(item: HistoryItem) {
 </script>
 
 <template>
-  <div class="flex flex-col h-full p-8 gap-8">
-    <h1 class="text-xl flex items-center gap-2">
+  <div class="flex flex-col h-full p-4 gap-4">
+    <h1 class="text-xl flex items-center gap-2 p-4">
       <UIcon name="i-ph-broadcast" class="w-5 h-5 flex-none text-primary-500" />
       Publish to a channel
     </h1>
 
     <div class="flex h-full flex-1 gap-8">
-      <div class="flex flex-col gap-4 max-w-[600px] flex-1 h-full overflow-y-auto">
+      <div class="flex flex-col gap-4 max-w-[600px] flex-1 h-full overflow-y-auto p-4">
         <UFormGroup
           label="Type"
         >
@@ -172,7 +172,7 @@ function removeHistoryItem(item: HistoryItem) {
       </div>
 
       <!-- History -->
-      <div class="flex flex-col flex-1 gap-2 overflow-y-auto pl-0 max-w-[800px]">
+      <div class="flex flex-col flex-1 gap-2 overflow-y-auto p-4 pl-0 max-w-[800px]">
         <Tooltip
           v-for="(item, index) in history"
           :key="index"

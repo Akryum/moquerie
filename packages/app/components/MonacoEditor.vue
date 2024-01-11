@@ -109,11 +109,6 @@ onMounted(() => {
     model,
   })
 
-  // Disable command palette
-  editor.addCommand(monaco.KeyCode.F1, () => {
-    // Do nothing
-  })
-
   // // Handle inside a modal with transition
 
   // setTimeout(() => {

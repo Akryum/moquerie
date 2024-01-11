@@ -33,6 +33,10 @@ export const schema = makeExecutableSchema({
       type: MessageType!
     }
 
+    type Simple {
+      id: ID!
+    }
+
     type Query {
       hello: String
       manyHellos: [String!]!
@@ -49,6 +53,7 @@ export const schema = makeExecutableSchema({
     type Subscription {
       helloAdded: String!
       helloRemoved: String!
+      simpleAdded: Simple!
     }
   `,
   resolvers: {
