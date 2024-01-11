@@ -357,7 +357,7 @@ defineShortcuts({
           :key="index"
           placement="left-start"
         >
-          <div class="flex items-center gap-2 p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
+          <div class="flex items-center gap-2 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800/80">
             <UIcon name="i-ph-clock-clockwise" class="w-6 h-6 flex-none opacity-50" />
             <div class="flex-1 truncate">
               <span class="opacity-50">{{ item.type }}:</span>{{ item.channel }}
