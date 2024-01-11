@@ -40,7 +40,7 @@ watch(() => props.hover, (val) => {
       <component
         :is="to ? NuxtLink : 'button'"
         :to="to"
-        class="flex items-center gap-2 px-2 py-1.5 rounded w-full"
+        class="flex items-center gap-2 px-2 py-1.5 rounded w-full text-left"
         :class="{
           'text-primary-500 bg-primary-50 dark:bg-primary-950': hover,
           '!bg-primary-100 dark:!bg-primary-900': selected,

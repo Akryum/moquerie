@@ -3,7 +3,12 @@ import type { ResourceSchemaType } from '@moquerie/core'
 import { useResourceTypeStore } from '~/stores/resourceType.js'
 
 const props = defineProps<{
-  routeName: string
+  routeName?: string
+  resourceName?: string
+}>()
+
+const emit = defineEmits<{
+  'update:resourceName': [resourceName: string]
 }>()
 
 const resourceTypeStore = useResourceTypeStore()
@@ -16,12 +21,16 @@ function filter(type: ResourceSchemaType, filterValue: string) {
 const router = useRouter()
 
 function openResource(resource: ResourceSchemaType) {
-  router.push({
-    name: props.routeName,
-    params: {
-      resourceName: resource.name,
-    },
-  })
+  emit('update:resourceName', resource.name)
+
+  if (props.routeName) {
+    router.push({
+      name: props.routeName,
+      params: {
+        resourceName: resource.name,
+      },
+    })
+  }
 }
 
 // Shortcut
@@ -44,7 +53,7 @@ defineShortcuts({
     ref="linkList"
     :items="resourceTypeStore.resourceTypesShownInExplorer"
     :filter="filter"
-    :selected-item="(type, route) => type.name === route.params.resourceName"
+    :selected-item="(type, route) => resourceName !== undefined ? type.name === resourceName : type.name === route.params.resourceName"
     filter-placeholder="Filter resources by name, tags..."
     :ui="{
       input: {
@@ -59,6 +68,7 @@ defineShortcuts({
         :resource-type="item"
         :route-name="routeName"
         v-bind="props"
+        @click="$emit('update:resourceName', item.name)"
       />
     </template>
 

@@ -3,7 +3,7 @@ import type { ResourceSchemaType } from '@moquerie/core'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
-  routeName: string
+  routeName?: string
 }>()
 
 const icon = computed(() => {
@@ -22,12 +22,12 @@ const icon = computed(() => {
 
 <template>
   <LinkListItem
-    :to="{
+    :to="routeName ? {
       name: routeName,
       params: {
         resourceName: resourceType.name,
       },
-    }"
+    } : undefined"
     :icon="icon"
   >
     <div class="text-sm truncate">

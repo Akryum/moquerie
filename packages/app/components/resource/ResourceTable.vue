@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   select: [instance: ResourceInstance]
+  activate: [instance: ResourceInstance]
   selectMultiple: [instances: ResourceInstance[]]
 }>()
 
@@ -177,6 +178,7 @@ watch(() => props.selectedInstanceIds, (value) => {
         :dim="dimInactiveInstances && !instance.active"
         class="last:!border-b border-gray-200 dark:border-gray-800"
         @click="onRowClick(instance, $event)"
+        @dblclick="emit('activate', instance)"
       >
         <template #start>
           <slot name="row-start" :instance="instance" />

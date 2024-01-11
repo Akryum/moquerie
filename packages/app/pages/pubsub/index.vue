@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ResourceInstance } from '@moquerie/core'
 import { Tooltip, vTooltip } from 'floating-vue'
 import * as monaco from 'monaco-editor'
 
@@ -74,13 +75,6 @@ async function publish() {
   }
 }
 
-defineShortcuts({
-  meta_enter: {
-    usingInput: true,
-    handler: publish,
-  },
-})
-
 let editor: monaco.editor.IStandaloneCodeEditor | undefined
 
 function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
@@ -97,6 +91,32 @@ function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
 
 function formatCode() {
   editor?.getAction('editor.action.formatDocument')?.run()
+}
+
+// Insert ref
+
+const selectRefShown = ref(false)
+
+function insertRef(resource: ResourceInstance) {
+  selectRefShown.value = false
+  if (editor) {
+    // Insert reference to instance
+    const selection = editor.getSelection() ?? new monaco.Selection(1, 1, 1, 1)
+    editor.executeEdits('user', [
+      {
+        range: selection,
+        text: JSON.stringify({
+          __resourceName: resource.resourceName,
+          __id: resource.id,
+        }, null, 2),
+        forceMoveMarkers: true,
+      },
+    ])
+    formatCode()
+    setTimeout(() => {
+      editor?.focus()
+    }, 500)
+  }
 }
 
 // History
@@ -123,10 +143,20 @@ function removeHistoryItem(item: HistoryItem) {
     history.value.splice(index, 1)
   }
 }
+
+// Shortcut
+
+defineShortcuts({
+  meta_enter: {
+    usingInput: true,
+    handler: publish,
+    whenever: [() => !selectRefShown.value],
+  },
+})
 </script>
 
 <template>
-  <div class="flex flex-col h-full p-4 gap-4">
+  <div class="flex flex-col h-full p-4">
     <h1 class="text-xl flex items-center gap-2 p-4">
       <UIcon name="i-ph-broadcast" class="w-5 h-5 flex-none text-primary-500" />
       Publish to a channel
@@ -165,13 +195,23 @@ function removeHistoryItem(item: HistoryItem) {
           label="Payload"
         >
           <template #hint>
-            <UButton
-              v-tooltip="'Format code'"
-              icon="i-ph-brackets-curly"
-              variant="link"
-              :padded="false"
-              @click="formatCode()"
-            />
+            <div class="flex items-center gap-1">
+              <UButton
+                v-tooltip="'Format code'"
+                icon="i-ph-brackets-curly"
+                variant="link"
+                :padded="false"
+                @click="formatCode()"
+              />
+
+              <UButton
+                v-tooltip="'Insert reference to instance'"
+                icon="i-ph-database"
+                variant="link"
+                :padded="false"
+                @click="selectRefShown = true"
+              />
+            </div>
           </template>
 
           <MonacoEditor
@@ -253,5 +293,19 @@ function removeHistoryItem(item: HistoryItem) {
         </Tooltip>
       </div>
     </div>
+
+    <UModal
+      v-model="selectRefShown"
+      :ui="{
+        width: 'sm:w-[calc(100vw-200px)] sm:max-w-[1200px]',
+        height: 'sm:h-[calc(100vh-200px)] sm:max-h-[600px]',
+      }"
+    >
+      <ResourceSelect
+        class="h-full"
+        @cancel="selectRefShown = false"
+        @select="insertRef"
+      />
+    </UModal>
   </div>
 </template>
