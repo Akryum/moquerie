@@ -54,6 +54,33 @@ export function defineConfig(config: Config): Config {
 
 monaco.editor.getModels().forEach(m => m.dispose())
 monaco.editor.createModel(embeddedTypes, 'typescript', monaco.Uri.parse('file:///node_modules/moquerie/config.d.ts'))
+
+// Auto-completion
+
+monaco.languages.registerCompletionItemProvider('json', {
+  provideCompletionItems(model, position) {
+    const word = model.getWordUntilPosition(position)
+    const range = {
+      startLineNumber: position.lineNumber,
+      endLineNumber: position.lineNumber,
+      startColumn: word.startColumn,
+      endColumn: word.endColumn,
+    }
+
+    return {
+      suggestions: [
+        {
+          label: 'Reference to a resource',
+          documentation: 'Reference a resource instance with its resource name and instance id',
+          kind: monaco.languages.CompletionItemKind.Function,
+          insertText: '{ "__resourceName": "$1", "__id": "$2" }',
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range,
+        },
+      ],
+    }
+  },
+})
 </script>
 
 <script lang="ts" setup>

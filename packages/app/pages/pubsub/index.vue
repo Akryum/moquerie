@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Tooltip } from 'floating-vue'
+import { Tooltip, vTooltip } from 'floating-vue'
 import * as monaco from 'monaco-editor'
 
 useHead({
@@ -81,10 +81,22 @@ defineShortcuts({
   },
 })
 
-function onEditorSetup(editor: monaco.editor.IStandaloneCodeEditor) {
-  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-    publish()
+let editor: monaco.editor.IStandaloneCodeEditor | undefined
+
+function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
+  editor = _editor
+  editor.addAction({
+    id: 'publish',
+    label: 'Publish to channel',
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+    run: () => {
+      publish()
+    },
   })
+}
+
+function formatCode() {
+  editor?.getAction('editor.action.formatDocument')?.run()
 }
 
 // History
@@ -152,6 +164,16 @@ function removeHistoryItem(item: HistoryItem) {
         <UFormGroup
           label="Payload"
         >
+          <template #hint>
+            <UButton
+              v-tooltip="'Format code'"
+              icon="i-ph-brackets-curly"
+              variant="link"
+              :padded="false"
+              @click="formatCode()"
+            />
+          </template>
+
           <MonacoEditor
             v-model:source="payload"
             filename="pubsub-payload.json"
