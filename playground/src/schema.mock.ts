@@ -9,17 +9,20 @@ export default defineFieldActions({
   },
 
   Mutation: {
-    addHello: async ({ input, db }) => {
+    addHello: async ({ input, db, pubsub }) => {
       const query = await db.Query.findFirst()
       const manyHellos = query?.manyHellos ?? []
       manyHellos.push(input.message)
       await db.Query.update({
         manyHellos,
       })
+      pubsub.graphql.publish('helloAdded', {
+        helloAdded: input.message,
+      })
       return manyHellos
     },
 
-    removeHello: async ({ input, db }) => {
+    removeHello: async ({ input, db, pubsub }) => {
       const query = await db.Query.findFirst()
       const manyHellos = query?.manyHellos ?? []
       const index = manyHellos.indexOf(input.message)
@@ -29,6 +32,9 @@ export default defineFieldActions({
           manyHellos,
         })
       }
+      pubsub.graphql.publish('helloRemoved', {
+        helloRemoved: input.message,
+      })
       return manyHellos
     },
 

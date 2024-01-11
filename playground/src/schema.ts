@@ -45,6 +45,11 @@ export const schema = makeExecutableSchema({
       removeHello (message: String!): [String!]!
       testMutation: Boolean
     }
+
+    type Subscription {
+      helloAdded: String!
+      helloRemoved: String!
+    }
   `,
   resolvers: {
     Query: {

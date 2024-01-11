@@ -37,8 +37,6 @@ monaco.editor.defineTheme('custom-dark-theme', {
     'editor.background': '#111827',
     'editorLineNumber.foreground': '#6b7280',
     'editorLineNumber.activeForeground': '#d1d5db',
-    'scrollbarSlider.background': '#4b5563',
-    'scrollbarSlider.hoverBackground': '#9f1239',
   },
 })
 
@@ -72,6 +70,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:source': [source: string]
+  'setup': [editor: monaco.editor.IStandaloneCodeEditor]
 }>()
 
 const colorMode = useColorMode()
@@ -105,6 +104,7 @@ onMounted(() => {
     },
     automaticLayout: true,
     contextmenu: false,
+    tabSize: 2,
     ...props.options,
     model,
   })
@@ -247,6 +247,8 @@ onMounted(() => {
     editor.dispose()
     model.dispose()
   })
+
+  emit('setup', editor)
 })
 </script>
 

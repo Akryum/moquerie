@@ -34,6 +34,12 @@ defineShortcuts({
       router.push('/db/history')
     },
   },
+  'meta_shift_p': {
+    usingInput: true,
+    handler: () => {
+      router.push('/pubsub')
+    },
+  },
 })
 
 const colorMode = useColorMode()
@@ -74,6 +80,13 @@ const colorMode = useColorMode()
       icon="i-ph-clock-clockwise"
       title="History"
       shortcuts="meta_shift_h"
+    />
+
+    <AppNavItem
+      to="/pubsub"
+      icon="i-ph-broadcast"
+      title="PubSub (Realtime publications)"
+      shortcuts="meta_shift_p"
     />
 
     <AppNavItem

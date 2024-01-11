@@ -13,6 +13,16 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
     if (!resourceType.array) {
       const r = resolvers[resourceName] = {} as Record<any, any>
       if (resourceType.type === 'object') {
+        if (resourceType.name === 'Subscription') {
+          for (const key in resourceType.fields) {
+            r[key] = {
+              subscribe: () => ctx.pubSubs.graphql.subscribe(key),
+            }
+          }
+
+          continue
+        }
+
         for (const key in resourceType.fields) {
           r[key] = async () => {
             const { db } = await getResolvedContext()
@@ -37,6 +47,7 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
       parent,
       input,
       db: ctx.db,
+      pubsub: ctx.pubSubs,
     })
   }
 

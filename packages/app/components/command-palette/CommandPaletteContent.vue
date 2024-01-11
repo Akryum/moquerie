@@ -49,6 +49,13 @@ const routes = computed(() => [
     shortcuts: [metaSymbol.value, '⇧', 'H'],
   },
   {
+    id: '_route.pubsub',
+    to: '/pubsub',
+    icon: 'i-ph-broadcast',
+    label: 'PubSub (Realtime publications)',
+    shortcuts: [metaSymbol.value, '⇧', 'P'],
+  },
+  {
     id: '_route.db.fieldActions',
     to: '/db/fieldActions',
     icon: 'i-ph-lightning',

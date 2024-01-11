@@ -14,6 +14,7 @@ import { type QueryManagerProxy, createQueryManagerProxy } from './resource/quer
 import type { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
+import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -94,6 +95,8 @@ export interface ResolvedContext {
   fieldActions: FieldActionWatcher
   // @TODO type
   db: QueryManagerProxy
+  // @TODO type
+  pubSubs: PubSubs
 }
 
 let resolvedContext: ResolvedContext
@@ -122,6 +125,7 @@ async function createResolvedContext(): Promise<ResolvedContext> {
       getSchema: () => resolvedContext?.schema ?? schema,
     }),
     db: createQueryManagerProxy(),
+    pubSubs: resolvedContext?.pubSubs ?? await createPubSubs(),
   }
 }
 
