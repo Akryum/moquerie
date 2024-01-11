@@ -107,6 +107,9 @@ const { metaSymbol } = useShortcuts()
 
 function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
   editor = _editor
+
+  // Publish shortcut
+
   editor.addAction({
     id: 'publish',
     label: 'Publish to channel',
@@ -115,6 +118,19 @@ function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
       publish()
     },
   })
+
+  // Insert resource ref shortcut
+
+  editor.addAction({
+    id: 'insert-ref',
+    label: 'Insert a resource reference',
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyG],
+    run: () => {
+      selectRefShown.value = true
+    },
+  })
+
+  // Decoration for resource instance references
 
   const decorationCollection = editor.createDecorationsCollection()
 
@@ -280,13 +296,19 @@ defineShortcuts({
                 @click="formatCode()"
               />
 
-              <UButton
-                v-tooltip="'Insert reference to instance'"
-                icon="i-ph-database"
-                variant="link"
-                :padded="false"
-                @click="selectRefShown = true"
-              />
+              <Tooltip class="leading-[0]">
+                <UButton
+                  icon="i-ph-database"
+                  variant="link"
+                  :padded="false"
+                  @click="selectRefShown = true"
+                />
+
+                <template #popper>
+                  <div>Insert reference to instance</div>
+                  <KbShortcut keys="meta_g" />
+                </template>
+              </Tooltip>
             </div>
           </template>
 
