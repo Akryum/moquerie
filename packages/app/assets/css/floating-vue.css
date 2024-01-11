@@ -11,11 +11,11 @@
   z-index: 99999999999;
 
   .v-popper__inner {
-    @apply bg-white text-black border border-gray-200;
+    @apply bg-gray-100 text-black border border-gray-200 shadow-lg;
   }
   
   .v-popper__arrow-inner {
-    @apply border-white visible;
+    @apply border-gray-100 visible;
   }
   
   .v-popper__arrow-outer {
@@ -24,15 +24,15 @@
 
   .dark & {
     .v-popper__inner {
-      @apply bg-black text-white border-gray-800;
+      @apply bg-gray-800 text-white border-gray-700;
     }
   
     .v-popper__arrow-inner {
-      @apply border-black;
+      @apply border-gray-800;
     }
   
     .v-popper__arrow-outer {
-      @apply border-gray-800;
+      @apply border-gray-700;
     }
   }
 }
