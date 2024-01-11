@@ -77,22 +77,6 @@ async function publish() {
 
 let editor: monaco.editor.IStandaloneCodeEditor | undefined
 
-function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
-  editor = _editor
-  editor.addAction({
-    id: 'publish',
-    label: 'Publish to channel',
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
-    run: () => {
-      publish()
-    },
-  })
-}
-
-function formatCode() {
-  editor?.getAction('editor.action.formatDocument')?.run()
-}
-
 // Insert ref
 
 const selectRefShown = ref(false)
@@ -117,6 +101,98 @@ function insertRef(resource: ResourceInstance) {
       editor?.focus()
     }, 500)
   }
+}
+
+const { metaSymbol } = useShortcuts()
+
+function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
+  editor = _editor
+  editor.addAction({
+    id: 'publish',
+    label: 'Publish to channel',
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+    run: () => {
+      publish()
+    },
+  })
+
+  const decorationCollection = editor.createDecorationsCollection()
+
+  function updateDecorations() {
+    if (!editor) {
+      return
+    }
+
+    decorationCollection.clear()
+
+    const decorations: monaco.editor.IModelDeltaDecoration[] = []
+    const model = editor.getModel()
+    if (!model) {
+      return
+    }
+
+    // Search for code with object of the form { __resourceName: '...', __id: '...' }
+    const reg = /{[\s\n]*"__resourceName"[\s\n]*:[\s\n]*"([^"]+)"[\s\n]*,[\s\n]*"__id"[\s\n]*:[\s\n]*"([^"]+)"[\s\n]*}/g
+    const text = editor.getValue()
+    let match
+    // eslint-disable-next-line no-cond-assign
+    while (match = reg.exec(text)) {
+      // const resourceName = match[1]
+      const positionStart = model.getPositionAt(match.index)
+      const positionEnd = model.getPositionAt(match.index + match[0].length)
+      decorations.push({
+        range: new monaco.Range(
+          positionStart.lineNumber,
+          positionStart.column,
+          positionEnd.lineNumber,
+          positionEnd.column,
+        ),
+        options: {
+          isWholeLine: false,
+          after: {
+            content: '  ',
+            inlineClassName: 'moquerie-code-editor-resource-ref-icon',
+          },
+          inlineClassName: 'moquerie-code-editor-resource-ref',
+          hoverMessage: {
+            value: `<b>${metaSymbol.value} + click</b> to select another resource instance`,
+            supportHtml: true,
+          },
+        },
+      })
+    }
+
+    decorationCollection.append(decorations)
+  }
+
+  editor.onDidChangeModelContent(() => {
+    updateDecorations()
+  })
+  updateDecorations()
+
+  editor.onMouseUp(({ event }) => {
+    if (!event.metaKey && !event.ctrlKey) {
+      return
+    }
+
+    if (!editor) {
+      return
+    }
+    const selection = editor.getSelection()
+    if (!selection) {
+      return
+    }
+    const decorations = editor.getDecorationsInRange(selection)
+    const refDecoration = decorations?.find(d => d.options.inlineClassName === 'moquerie-code-editor-resource-ref')
+    if (refDecoration) {
+      editor.setSelection(refDecoration.range)
+      selectRefShown.value = true
+    }
+  })
+}
+
+function formatCode() {
+  editor?.getAction('editor.action.formatDocument')?.run()
 }
 
 // History
@@ -309,3 +385,15 @@ defineShortcuts({
     </UModal>
   </div>
 </template>
+
+<style>
+.moquerie-code-editor-resource-ref,
+.moquerie-code-editor-resource-ref-icon {
+  @apply bg-primary-500/20 dark:bg-primary-900/30 cursor-pointer;
+}
+
+.moquerie-code-editor-resource-ref-icon {
+  @apply bg-no-repeat bg-center;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzhiNWNmNiIgZD0ibTIyNy4zMSA3My4zN2wtNDQuNjgtNDQuNjlhMTYgMTYgMCAwIDAtMjIuNjMgMEwzNi42OSAxNTJBMTUuODYgMTUuODYgMCAwIDAgMzIgMTYzLjMxVjIwOGExNiAxNiAwIDAgMCAxNiAxNmg0NC42OWExNS44NiAxNS44NiAwIDAgMCAxMS4zMS00LjY5TDIyNy4zMSA5NmExNiAxNiAwIDAgMCAwLTIyLjYzWk05Mi42OSAyMDhINDh2LTQ0LjY5bDg4LTg4TDE4MC42OSAxMjBaTTE5MiAxMDguNjhMMTQ3LjMxIDY0bDI0LTI0TDIxNiA4NC42OFoiLz48L3N2Zz4=);
+}
+</style>
