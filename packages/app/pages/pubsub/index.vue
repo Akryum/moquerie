@@ -89,6 +89,16 @@ function onEditorSetup(editor: monaco.editor.IStandaloneCodeEditor) {
 
 // History
 
+const searchHistory = useLocalStorage('pubsub.publish.history.search', '')
+
+const filteredHistoryItems = computed(() => {
+  if (!searchHistory.value) {
+    return history.value
+  }
+  const reg = new RegExp(searchHistory.value, 'i')
+  return history.value.filter(item => reg.test(item.channel) || reg.test(item.type) || reg.test(item.payload))
+})
+
 function applyHistoryItem(item: HistoryItem) {
   type.value = item.type
   channel.value = item.channel
@@ -111,7 +121,7 @@ function removeHistoryItem(item: HistoryItem) {
     </h1>
 
     <div class="flex h-full flex-1 gap-8">
-      <div class="flex flex-col gap-4 max-w-[600px] flex-1 h-full overflow-y-auto p-4">
+      <div class="flex flex-col gap-4 max-w-[600px] flex-1 h-full overflow-y-auto p-4 pr-2">
         <UFormGroup
           label="Type"
         >
@@ -135,6 +145,7 @@ function removeHistoryItem(item: HistoryItem) {
           <UInputMenu
             v-model="channel"
             :options="channels ?? []"
+            autofocus
           />
         </UFormGroup>
 
@@ -172,9 +183,17 @@ function removeHistoryItem(item: HistoryItem) {
       </div>
 
       <!-- History -->
-      <div class="flex flex-col flex-1 gap-2 overflow-y-auto p-4 pl-0 max-w-[800px]">
+      <div class="flex flex-col flex-1 gap-2 overflow-y-auto p-4 pl-2 max-w-[800px]">
+        <div>
+          <UInput
+            v-model="searchHistory"
+            placeholder="Search history"
+            icon="i-ph-magnifying-glass"
+          />
+        </div>
+
         <Tooltip
-          v-for="(item, index) in history"
+          v-for="(item, index) in filteredHistoryItems"
           :key="index"
           placement="left-start"
         >
