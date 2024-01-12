@@ -39,5 +39,32 @@ export default defineFieldActions({
     },
 
     testMutation: () => true,
+
+    addSimple: async ({ input, db, pubsub }) => {
+      const simple = await db.Simple.create({
+        id: input.id,
+      })
+
+      // Publish resource instance value
+
+      // Either pass the value directly if it comes from `db`:
+      // pubsub.graphql.publish('simpleAdded', {
+      //   simpleAdded: simple,
+      // })
+
+      // Or pass the reference:
+      pubsub.graphql.publish('simpleAdded', {
+        simpleAdded: await db.Simple.reference.findFirst(s => s.id === simple.id),
+      })
+
+      // This will not work as we lose the hidden flag:
+      // pubsub.graphql.publish('simpleAdded', {
+      //   simpleAdded: {
+      //     ...simple,
+      //   },
+      // })
+
+      return simple
+    },
   },
 })

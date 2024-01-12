@@ -5,7 +5,7 @@ import { createResourceInstance } from './createInstance.js'
 import { findResourceInstanceById } from './find.js'
 import { findAllResourceInstances } from './findAll.js'
 import { removeResourceInstanceById } from './remove.js'
-import { createResourceInstanceReference } from './resourceReference.js'
+import { addInstanceValueTag, createResourceInstanceReference } from './resourceReference.js'
 import { updateResourceInstanceById } from './update.js'
 
 /**
@@ -37,9 +37,29 @@ export interface QueryManager<TData> {
    * Delete multiple resource instances that match the predicate.
    */
   delete (predicate: (data: TData) => boolean): Promise<void>
+  /**
+   * Utilities to reference other resource instances.
+   */
+  reference: ReferenceManager<TData>
 
   findByInstanceId (id: string): Promise<TData | null>
   findByInstanceIdOrThrow (id: string): Promise<TData>
+}
+
+export interface ReferenceManager<TData> {
+  /**
+   * Returns a reference to a resource instance.
+   * @param id Instance id.
+   */
+  get (instanceId: string): ResourceInstanceReference
+  /**
+   * Find multiple resource instances that match the predicate and return references to them.
+   */
+  findMany (predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference[]>
+  /**
+   * Find first resource instance that matches the predicate and return a reference to it.
+   */
+  findFirst (predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference | null>
 }
 
 export interface CreateQueryManagerOptions {
@@ -149,6 +169,8 @@ async function deserializeInstanceValue<TData>(instance: ResourceInstance, deser
       result[key] = value
     }
   }
+
+  addInstanceValueTag(result, instance.resourceName, instance.id)
 
   return result as TData
 }
@@ -308,12 +330,19 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
     return instance
   }
 
-  async function findMany(predicate?: (data: TData) => boolean): Promise<TData[]> {
+  async function _findMany(predicate?: (data: TData) => boolean) {
     const instances = await findAllResourceInstances(options.resourceName, {
       filterActive: 'active',
     })
-    const values = await Promise.all(instances.map(i => deserializeInstanceValue<TData>(i)))
-    return predicate ? values.filter(predicate) : values
+    const result = await Promise.all(instances.map(async i => ({
+      instance: i,
+      value: await deserializeInstanceValue<TData>(i),
+    })))
+    return predicate ? result.filter(r => predicate(r.value)) : result
+  }
+
+  async function findMany(predicate?: (data: TData) => boolean): Promise<TData[]> {
+    return (await _findMany(predicate)).map(r => r.value)
   }
 
   async function findFirst(predicate?: (data: TData) => boolean): Promise<TData | null> {
@@ -364,6 +393,26 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
     await Promise.all(selected.map(r => removeResourceInstanceById(options.resourceName, r.instance.id)))
   }
 
+  /* Reference manager */
+
+  const reference: ReferenceManager<TData> = {
+    get(instanceId: string): ResourceInstanceReference {
+      return createResourceInstanceReference(options.resourceName, instanceId)
+    },
+
+    async findFirst(predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference | null> {
+      const instance = (await _findMany(predicate))[0]?.instance
+      if (instance) {
+        return createResourceInstanceReference(instance.resourceName, instance.id)
+      }
+      return null
+    },
+
+    async findMany(predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference[]> {
+      return (await _findMany(predicate)).map(r => createResourceInstanceReference(r.instance.resourceName, r.instance.id))
+    },
+  }
+
   return {
     findMany,
     findFirst,
@@ -371,6 +420,7 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
     create,
     update,
     delete: _delete,
+    reference,
     findByInstanceId,
     findByInstanceIdOrThrow,
   }

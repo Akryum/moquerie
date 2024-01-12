@@ -48,6 +48,7 @@ export const schema = makeExecutableSchema({
       addHello (message: String!): [String!]!
       removeHello (message: String!): [String!]!
       testMutation: Boolean
+      addSimple (id: String!): Simple!
     }
 
     type Subscription {

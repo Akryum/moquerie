@@ -33,3 +33,55 @@ export async function hydrateResourceInstanceReferences(value: any): Promise<any
     return value
   }
 }
+
+/**
+ * Tag object added to the instance values when they are retrieved with the `db` API.
+ * This allows tracking the resource name and instance ID of the value.
+ */
+export const instanceValueRefSymbol = Symbol('instanceValueRef')
+
+export interface InstanceValueTag {
+  [instanceValueRefSymbol]: {
+    resourceName: string
+    instanceId: string
+  }
+}
+
+export function hasInstanceValueTag(value: any): value is InstanceValueTag {
+  return typeof value === 'object' && value !== null && instanceValueRefSymbol in value
+}
+
+export function addInstanceValueTag(value: any, resourceName: string, instanceId: string) {
+  Object.defineProperty(value, instanceValueRefSymbol, {
+    enumerable: false,
+    value: {
+      resourceName,
+      instanceId,
+    },
+  })
+}
+
+/**
+ * Transform resource instance values contained to instance references.
+ * The values must come from the `db` API so they have the necessary tags.
+ */
+export function serializeToReferences(value: any): any {
+  if (Array.isArray(value)) {
+    return Promise.all(value.map(item => serializeToReferences(item)))
+  }
+  else if (value && typeof value === 'object') {
+    if (hasInstanceValueTag(value)) {
+      return createResourceInstanceReference(value[instanceValueRefSymbol].resourceName, value[instanceValueRefSymbol].instanceId)
+    }
+    else {
+      const result: Record<string, any> = {}
+      for (const key in value) {
+        result[key] = serializeToReferences(value[key])
+      }
+      return result
+    }
+  }
+  else {
+    return value
+  }
+}
