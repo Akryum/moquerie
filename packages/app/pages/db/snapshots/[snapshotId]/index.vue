@@ -40,21 +40,34 @@ defineShortcuts({
 
 // Edit
 
-const showEdit = ref(false)
+const editShown = ref(false)
 
 defineShortcuts({
   F2: {
     usingInput: true,
     handler: () => {
-      showEdit.value = true
+      editShown.value = true
     },
   },
 })
 
 function onEditComplete() {
-  showEdit.value = false
+  editShown.value = false
   snapshotStore.refreshSnapshot()
 }
+
+// Import to DB
+
+const importToDbSown = ref(false)
+
+defineShortcuts({
+  meta_i: {
+    usingInput: true,
+    handler: () => {
+      importToDbSown.value = true
+    },
+  },
+})
 </script>
 
 <template>
@@ -70,7 +83,7 @@ function onEditComplete() {
             icon="i-ph-pencil"
             color="gray"
             variant="ghost"
-            @click="showEdit = true"
+            @click="editShown = true"
           />
 
           <template #popper>
@@ -90,6 +103,19 @@ function onEditComplete() {
           <template #popper>
             <div>Delete snapshot</div>
             <KbShortcut keys="meta_delete" />
+          </template>
+        </Tooltip>
+
+        <Tooltip>
+          <UButton
+            icon="i-ph-arrow-u-up-right"
+            @click="importToDbSown = true"
+          >
+            Import to DB
+          </UButton>
+
+          <template #popper>
+            <KbShortcut keys="meta_i" />
           </template>
         </Tooltip>
       </div>
@@ -115,13 +141,25 @@ function onEditComplete() {
     </ConfirmModal>
 
     <UModal
-      v-model="showEdit"
+      v-model="editShown"
     >
       <SnapshotForm
         :snapshot="snapshot"
         class="p-4"
-        @cancel="showEdit = false"
+        @cancel="editShown = false"
         @complete="onEditComplete"
+      />
+    </UModal>
+
+    <UModal
+      v-model="importToDbSown"
+    >
+      <SnapshotImport
+        :snapshot="snapshot"
+        class="p-4"
+        @cancel="importToDbSown = false"
+        @branch-create="importToDbSown = false"
+        @overwrite="importToDbSown = false"
       />
     </UModal>
   </div>

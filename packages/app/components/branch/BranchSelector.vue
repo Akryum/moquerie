@@ -2,7 +2,9 @@
 import { Dropdown, Tooltip } from 'floating-vue'
 import { isBranchesOpen } from './branchOverlays.js'
 
-const { data: currentBranch, refresh: refreshCurrentBranch } = useFetch('/api/branches/current')
+const { data: currentBranch, refresh: refreshCurrentBranch } = useFetch('/api/branches/current', {
+  key: 'currentBranch',
+})
 onWindowFocus(refreshCurrentBranch)
 
 const { data: branches, refresh: refreshBranches } = useFetch('/api/branches')

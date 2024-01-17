@@ -29,6 +29,10 @@ onWindowFocus(refresh)
 
 const selectedIds = ref<string[]>([])
 
+watch(resourceName, () => {
+  selectedIds.value = []
+})
+
 const resourcesConfirmRemoveShown = ref(false)
 
 async function removeResources() {
@@ -102,7 +106,7 @@ async function onSelectNewResources(resourceIds: Record<string, string[]>) {
   <div class="flex-1 h-0 flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
     <div class="p-2 flex items-center gap-2">
       <UButton
-        variant="soft"
+        color="gray"
         icon="i-ph-plus-circle"
         @click="resourcesSelectShown = true"
       >
@@ -113,8 +117,7 @@ async function onSelectNewResources(resourceIds: Record<string, string[]>) {
 
       <UButton
         :disabled="!selectedIds.length"
-        color="red"
-        variant="soft"
+        color="gray"
         icon="i-ph-minus-circle"
         @click="resourcesConfirmRemoveShown = true"
       >
