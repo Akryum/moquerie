@@ -160,18 +160,59 @@ const factoryCommands = computed(() => factories.value?.map(f => ({
   to: `/db/factories/${f.resourceName}/view/${f.id}`,
 })) ?? [])
 
+// Snapshots
+
+const snapshotCommands = [
+  {
+    id: '_route.db.snapshots.create',
+    icon: 'i-ph-plus',
+    label: 'Create snapshot',
+    to: '/db/snapshots/create',
+  },
+]
+
+// Branches
+
+const { data: branches } = useFetch('/api/branches', {
+  key: 'branches',
+})
+
+const resourceInstanceStore = useResourceInstanceStore()
+
+const branchCommands = computed(() => branches.value?.map(branch => ({
+  id: `branch.${branch}`,
+  icon: 'i-ph-git-branch',
+  label: branch,
+  click: async () => {
+    await $fetch('/api/branches/current', {
+      method: 'POST',
+      body: {
+        branch,
+      },
+    })
+    await refreshNuxtData('currentBranch')
+    resourceInstanceStore.refreshInstances()
+    resourceInstanceStore.refreshInstance()
+  },
+})) ?? [])
+
 // Final command list
 
 const groups = computed(() => [
   { key: 'routes', commands: routes.value, label: 'Views' },
   { key: 'resources', commands: [createResourceCommand.value, ...resourceInstancesViewCommands.value], label: 'Resources' },
   { key: 'factories', commands: [createFactoryCommand.value, ...factoryCommands.value], label: 'Factories' },
+  { key: 'snapshots', commands: snapshotCommands, label: 'Snapshots' },
+  { key: 'branches', commands: branchCommands.value, label: 'Branches' },
 ])
 
 const router = useRouter()
 
 function onSelect(command: any) {
-  if (command.to) {
+  if (command.click) {
+    command.click()
+  }
+  else if (command.to) {
     router.push(command.to)
   }
   emit('close')

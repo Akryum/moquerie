@@ -7,7 +7,9 @@ const { data: currentBranch, refresh: refreshCurrentBranch } = useFetch('/api/br
 })
 onWindowFocus(refreshCurrentBranch)
 
-const { data: branches, refresh: refreshBranches } = useFetch('/api/branches')
+const { data: branches, refresh: refreshBranches } = useFetch('/api/branches', {
+  key: 'branches',
+})
 onWindowFocus(refreshBranches)
 
 const shown = isBranchesOpen
@@ -31,7 +33,7 @@ async function switchToBranch(branch: string) {
       branch,
     },
   })
-  refreshCurrentBranch()
+  await refreshNuxtData('currentBranch')
   resourceInstanceStore.refreshInstances()
   resourceInstanceStore.refreshInstance()
 }
@@ -62,7 +64,7 @@ defineShortcuts({
 async function onCreateBranch(branch: string) {
   createShown.value = false
   await switchToBranch(branch)
-  await refreshBranches()
+  await refreshNuxtData('branches')
 }
 </script>
 

@@ -8,6 +8,13 @@ defineShortcuts({
       commandPaletteStore.isOpen = !commandPaletteStore.isOpen
     },
   },
+
+  escape: {
+    usingInput: true,
+    handler: () => {
+      commandPaletteStore.isOpen = false
+    },
+  },
 })
 </script>
 
