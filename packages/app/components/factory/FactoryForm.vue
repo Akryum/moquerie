@@ -58,10 +58,12 @@ const state = ref<FactoryData>(getStateInitialValues())
 const stateChanged = ref(false)
 
 watch(() => props.factory, (value) => {
-  state.value = getStateInitialValues(value)
-  nextTick(() => {
-    stateChanged.value = false
-  })
+  if (!stateChanged.value) {
+    state.value = getStateInitialValues(value)
+    nextTick(() => {
+      stateChanged.value = false
+    })
+  }
 })
 
 watch(state, () => {

@@ -33,8 +33,12 @@ const state = ref<FormData>(getInitialValues())
 const stateChanged = ref(false)
 
 watch(() => props.snapshot, () => {
-  state.value = getInitialValues()
-  stateChanged.value = false
+  if (!stateChanged.value) {
+    state.value = getInitialValues()
+    nextTick(() => {
+      stateChanged.value = false
+    })
+  }
 })
 
 watch(state, () => {
