@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { DatabaseSnapshot } from '@moquerie/core'
 import { Tooltip } from 'floating-vue'
 
 useHead({
@@ -51,9 +52,16 @@ defineShortcuts({
   },
 })
 
-function onEditComplete() {
+function onEditComplete(snapshot: DatabaseSnapshot) {
   editShown.value = false
   snapshotStore.refreshSnapshot()
+  router.push({
+    ...route,
+    query: {
+      ...route.query,
+      snapshotLocation: snapshot.location,
+    },
+  })
 }
 
 // Import to DB
