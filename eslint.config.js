@@ -1,10 +1,13 @@
 import antfu from '@antfu/eslint-config'
 
-export default await antfu({
+const config = await antfu({
   ignores: [
-    '**/generated/',
+    '**/generated',
   ],
+}, {
   rules: {
     curly: ['error', 'all'],
   },
 })
+
+export default config

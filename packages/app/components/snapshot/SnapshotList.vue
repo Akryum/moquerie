@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRouteQuery } from '@vueuse/router'
-import type { DBLocation, DatabaseSnapshot, ResourceFactory } from '@moquerie/core'
+import type { DBLocation, DatabaseSnapshot } from '@moquerie/core'
 import LinkList from '../LinkList.vue'
 
 const route = useRoute()

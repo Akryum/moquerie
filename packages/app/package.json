@@ -1,5 +1,6 @@
 {
   "name": "@moquerie/app",
+  "type": "module",
   "version": "0.0.0",
   "description": "Nuxt app frontend for moquerie",
   "author": {
@@ -13,13 +14,15 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module",
   "exports": {
     "./*": "./*"
   },
   "scripts": {
     "build": "nuxt prepare && nuxt build",
     "dev": "nuxt prepare && nuxt dev --dotenv .env.playground"
+  },
+  "peerDependencies": {
+    "@moquerie/core": "workspace:^"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
@@ -45,8 +48,5 @@
     "pinia": "^2.1.7",
     "superjson": "^2.2.1",
     "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "@moquerie/core": "workspace:^"
   }
 }

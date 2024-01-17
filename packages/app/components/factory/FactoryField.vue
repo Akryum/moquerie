@@ -1,8 +1,7 @@
 <script lang="ts">
 import { Dropdown, vTooltip } from 'floating-vue'
+import type { ResourceFactoryValue, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 import { isAnyOpen } from '../resource/resourceInstanceValueOverlays.js'
-import type { ResourceFactoryValue } from '@moquerie/core'
-import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 
 export const selectedField = ref<string | null>(null)
 </script>

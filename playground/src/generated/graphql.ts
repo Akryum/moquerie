@@ -39,6 +39,7 @@ export type MessageType =
 export type Mutation = {
   __typename?: 'Mutation';
   addHello: Array<Scalars['String']['output']>;
+  addSimple: Simple;
   removeHello: Array<Scalars['String']['output']>;
   testMutation?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -46,6 +47,11 @@ export type Mutation = {
 
 export type MutationAddHelloArgs = {
   message: Scalars['String']['input'];
+};
+
+
+export type MutationAddSimpleArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -59,6 +65,18 @@ export type Query = {
   hello?: Maybe<Scalars['String']['output']>;
   manyHellos: Array<Scalars['String']['output']>;
   manyHellosCount: Scalars['Int']['output'];
+};
+
+export type Simple = {
+  __typename?: 'Simple';
+  id: Scalars['ID']['output'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  helloAdded: Scalars['String']['output'];
+  helloRemoved: Scalars['String']['output'];
+  simpleAdded: Simple;
 };
 
 export type User = {
@@ -148,7 +166,9 @@ export type ResolversTypes = {
   MessageType: MessageType;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  Simple: ResolverTypeWrapper<Simple>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Subscription: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -160,7 +180,9 @@ export type ResolversParentTypes = {
   Message: Message;
   Mutation: {};
   Query: {};
+  Simple: Simple;
   String: Scalars['String']['output'];
+  Subscription: {};
   User: User;
 };
 
@@ -177,6 +199,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addHello?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationAddHelloArgs, 'message'>>;
+  addSimple?: Resolver<ResolversTypes['Simple'], ParentType, ContextType, RequireFields<MutationAddSimpleArgs, 'id'>>;
   removeHello?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationRemoveHelloArgs, 'message'>>;
   testMutation?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 };
@@ -186,6 +209,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   manyHellos?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   manyHellosCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+};
+
+export type SimpleResolvers<ContextType = any, ParentType extends ResolversParentTypes['Simple'] = ResolversParentTypes['Simple']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  helloAdded?: SubscriptionResolver<ResolversTypes['String'], "helloAdded", ParentType, ContextType>;
+  helloRemoved?: SubscriptionResolver<ResolversTypes['String'], "helloRemoved", ParentType, ContextType>;
+  simpleAdded?: SubscriptionResolver<ResolversTypes['Simple'], "simpleAdded", ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -201,6 +235,8 @@ export type Resolvers<ContextType = any> = {
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Simple?: SimpleResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

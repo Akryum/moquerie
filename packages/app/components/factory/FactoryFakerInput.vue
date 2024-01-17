@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import * as monaco from 'monaco-editor'
 import { Dropdown } from 'floating-vue'
-import type { ResourceFactoryValue } from '@moquerie/core'
-import type { ResourceSchemaType } from '@moquerie/core'
+import type { ResourceFactoryValue, ResourceSchemaType } from '@moquerie/core'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType

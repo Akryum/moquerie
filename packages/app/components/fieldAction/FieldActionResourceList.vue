@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useResourceTypeStore } from '~/stores/resourceType.js'
-
 const { data, refresh } = await useFetch('/api/fieldActions/counts')
 onWindowFocus(refresh)
 

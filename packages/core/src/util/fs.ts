@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'pathe'
-import { pascalCase } from 'scule'
 
 export async function ensureDir(folder: string) {
   if (!fs.existsSync(folder)) {

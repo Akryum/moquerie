@@ -1,8 +1,8 @@
 {
   "name": "moquerie-playground",
+  "type": "module",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "pnpm run codegen && pnpm run build && pnpm run start",
     "build": "tsc",
