@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'pathe'
 import { getSnapshotFolder, getSnapshotStorage } from '@moquerie/core'
 import SuperJSON from 'superjson'
-import { copyDir, ensureDir } from '@moquerie/core/util'
+import { copyDir } from '@moquerie/core/util'
 
 export default defineEventHandler(async (event) => {
   const { id, location, description, tags } = await readBody(event)
