@@ -10,6 +10,7 @@ const props = defineProps<{
   selected?: boolean
   selectedIds?: string[]
   dim?: boolean
+  readonly?: boolean
 }>()
 
 const scrollEl = ref<HTMLElement | null>(null)
@@ -30,6 +31,10 @@ onMounted(() => {
 const instanceStore = useResourceInstanceStore()
 
 async function toggleActive() {
+  if (props.readonly) {
+    return
+  }
+
   await instanceStore.updateInstance({
     resourceName: props.resourceType.name,
     instanceId: props.instance.id,
@@ -83,7 +88,10 @@ async function openFieldActionFile(col: Col) {
 
         <!-- Active -->
         <Tooltip
-          class="w-[42px] opacity-50 hover:opacity-100 flex-none cursor-pointer"
+          class="w-[42px] opacity-50 hover:opacity-100 flex-none"
+          :class="{
+            'cursor-pointer': !readonly,
+          }"
           aria-role="button"
           aria-label="Toggle active"
           @click.stop="toggleActive()"
@@ -96,7 +104,7 @@ async function openFieldActionFile(col: Col) {
 
           <template #popper>
             <div>{{ instance.active ? 'Active' : 'Inactive' }}</div>
-            <div class="text-sm opacity-50">
+            <div v-if="!readonly" class="text-sm opacity-50">
               Click to set to {{ instance.active ? 'inactive' : 'active' }}
             </div>
           </template>
@@ -105,7 +113,7 @@ async function openFieldActionFile(col: Col) {
         <!-- Comment -->
         <Tooltip
           :disabled="!instance.comment"
-          class="w-[42px] opacity-50 hover:opacity-100 flex-none cursor-pointer"
+          class="w-[42px] opacity-50 hover:opacity-100 flex-none"
           :class="{
             'pointer-events-none': !instance.comment,
           }"
@@ -132,7 +140,7 @@ async function openFieldActionFile(col: Col) {
         <!-- Tags -->
         <Tooltip
           :disabled="!instance.tags.length"
-          class="w-[42px] opacity-50 hover:opacity-100 flex-none cursor-pointer"
+          class="w-[42px] opacity-50 hover:opacity-100 flex-none"
           :class="{
             'pointer-events-none': !instance.tags.length,
           }"

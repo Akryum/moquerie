@@ -242,10 +242,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
       content = prettyPrint(ast, { tabWidth: 2 }).code
     }
     else if (fileFormat === 'json') {
-      content = SuperJSON.stringify({
+      content = JSON.stringify(SuperJSON.serialize({
         version: storageVersion,
         item,
-      })
+      }), null, 2)
     }
 
     // Write
@@ -263,7 +263,10 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   async function removeFiles() {
     pendingRemovalFiles.forEach((file) => {
-      fs.unlinkSync(getFilePath(file))
+      const resolvedPath = getFilePath(file)
+      if (fs.existsSync(resolvedPath)) {
+        fs.unlinkSync(resolvedPath)
+      }
     })
   }
 
@@ -376,6 +379,8 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     save,
     remove,
     destroy,
+    folder,
+    manifest,
   }
 }
 

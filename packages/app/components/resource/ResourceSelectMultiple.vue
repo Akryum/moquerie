@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import type { FilterActive, ResourceInstance } from '@moquerie/core'
 
+type ResourceIdsByType = Record<string, string[]>
+
+const props = defineProps<{
+  resources?: ResourceIdsByType
+}>()
+
 const emit = defineEmits<{
   cancel: []
-  select: [instance: ResourceInstance]
+  select: [resources: ResourceIdsByType]
 }>()
 
 const resourceName = useLocalStorage('resource-select-resource-name', '')
@@ -28,15 +34,52 @@ watchEffect(() => {
   })
 })
 
-const selectedInstance = shallowRef<ResourceInstance | null>(null)
+// Selected ids
 
-function select(instance?: ResourceInstance) {
-  if (instance) {
-    selectedInstance.value = instance
+const selectedResources = ref(structuredClone(toRaw(props.resources)) ?? {})
+
+watch(() => props.resources, () => {
+  selectedResources.value = structuredClone(toRaw(props.resources)) ?? {}
+})
+
+const totalCount = computed(() => countItemsInRecordOfArrays(selectedResources.value))
+
+function toggleSelection(instance: ResourceInstance) {
+  let selectedIds = selectedResources.value[resourceName.value]
+
+  if (!selectedIds) {
+    selectedIds = selectedResources.value[resourceName.value] = []
   }
 
-  if (selectedInstance.value) {
-    emit('select', selectedInstance.value)
+  if (selectedIds.includes(instance.id)) {
+    selectedIds.splice(selectedIds.indexOf(instance.id), 1)
+  }
+  else {
+    selectedIds.push(instance.id)
+  }
+}
+
+// Utils
+
+async function selectAll(resourceName?: string) {
+  const ids = await $fetch('/api/resources/ids')
+  if (resourceName) {
+    selectedResources.value[resourceName] = ids[resourceName]
+  }
+  else {
+    selectedResources.value = ids
+  }
+}
+
+function selectNone() {
+  selectedResources.value = {}
+}
+
+// Submit
+
+function select() {
+  if (totalCount.value) {
+    emit('select', selectedResources.value)
   }
 }
 
@@ -71,15 +114,15 @@ defineShortcuts({
 
       <div class="flex items-center justify-center gap-2 text-gray-500">
         <UIcon name="i-ph-database" class="w-4 h-4 flex-none" />
-        Select resource instance
+        Select resource instances
       </div>
 
       <div class="flex-1 flex justify-end">
         <UButton
-          :disabled="!selectedInstance"
+          :disabled="!totalCount"
           @click="select()"
         >
-          Select instance
+          Select {{ totalCount }} instance{{ totalCount <= 1 ? '' : 's' }}
 
           <KbShortcut keys="meta_enter" />
         </UButton>
@@ -90,7 +133,13 @@ defineShortcuts({
       <div class="w-[200px] flex-none">
         <ResourceList
           v-model:resource-name="resourceName"
-        />
+        >
+          <template #item-trailing="{ item }">
+            <div v-if="selectedResources[item.name]?.length" class="text-xs font-bold text-white bg-primary-500 px-1 rounded ml-auto">
+              {{ selectedResources[item.name].length }}
+            </div>
+          </template>
+        </ResourceList>
       </div>
 
       <div v-if="resourceName" class="flex flex-col flex-1 w-0 h-full">
@@ -124,12 +173,50 @@ defineShortcuts({
           :key="resourceName"
           :resource-name="resourceName"
           :instances="instanceStore.instances"
-          :selected-instance-ids="[selectedInstance?.id].filter(Boolean) as string[]"
+          :selected-instance-ids="selectedResources[resourceName]"
           :dim-inactive-instances="filterActive === 'all'"
-          @select="selectedInstance = $event"
-          @activate="select($event)"
+          @select="toggleSelection($event)"
+          @select-multiple="selectedResources[resourceName] = $event.map(i => i.id)"
         />
       </div>
+    </div>
+
+    <div class="flex items-center gap-2 p-2 border-t border-gray-100 dark:border-gray-800">
+      <div class="flex-1" />
+
+      <UButton
+        color="gray"
+        variant="ghost"
+        @click="selectAll(resourceName)"
+      >
+        Select all {{ resourceName }}
+      </UButton>
+
+      <UButton
+        color="gray"
+        variant="ghost"
+        @click="selectAll(resourceName)"
+      >
+        Unselect all {{ resourceName }}
+      </UButton>
+
+      <div class="w-px h-4 bg-gray-200 dark:bg-gray-800" />
+
+      <UButton
+        color="gray"
+        variant="ghost"
+        @click="selectAll()"
+      >
+        Select all
+      </UButton>
+
+      <UButton
+        color="gray"
+        variant="ghost"
+        @click="selectNone()"
+      >
+        Select none
+      </UButton>
     </div>
   </div>
 </template>

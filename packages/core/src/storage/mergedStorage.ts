@@ -75,6 +75,7 @@ export async function useMergedStorage<TData extends { id: string, location: DBL
     findById,
     save,
     remove,
+    ...storages,
   }
 }
 

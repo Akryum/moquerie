@@ -8,6 +8,7 @@ const props = defineProps<{
   selectedInstanceIds?: string[]
   dimInactiveInstances?: boolean
   emptyPlaceholder?: string
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -176,6 +177,7 @@ watch(() => props.selectedInstanceIds, (value) => {
         :selected="selectedInstanceIds?.includes(instance.id)"
         :selected-ids="selectedInstanceIds"
         :dim="dimInactiveInstances && !instance.active"
+        :readonly="readonly"
         class="last:!border-b border-gray-200 dark:border-gray-800"
         @click="onRowClick(instance, $event)"
         @dblclick="emit('activate', instance)"

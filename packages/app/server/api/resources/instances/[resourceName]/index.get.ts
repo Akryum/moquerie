@@ -1,5 +1,5 @@
 import SuperJSON from 'superjson'
-import { findAllResourceInstances, isResourceInstanceReference } from '@moquerie/core'
+import { findAllResourceInstances } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
   const { resourceName } = getRouterParams(event)
@@ -20,26 +20,13 @@ export default defineEventHandler(async (event) => {
     list = list.slice(0, 100)
   }
 
-  list = list.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  list = list.sort((a, b) => {
+    const timeA = a.createdAt.getTime()
+    const timeB = b.createdAt.getTime()
+    if (timeA === timeB) {
+      return a.id.localeCompare(b.id)
+    }
+    return timeB - timeA
+  })
   return SuperJSON.stringify(list)
 })
-
-function searchInValue(reg: RegExp, value: any): boolean {
-  if (Array.isArray(value)) {
-    return value.some(item => searchInValue(reg, item))
-  }
-  else if (typeof value === 'string') {
-    return !!value.match(reg)
-  }
-  else if (value && typeof value === 'object') {
-    if (isResourceInstanceReference(value)) {
-      return false
-    }
-    for (const key in value) {
-      if (searchInValue(reg, value[key])) {
-        return true
-      }
-    }
-  }
-  return false
-}

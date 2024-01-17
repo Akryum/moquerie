@@ -2,7 +2,8 @@ import fs from 'node:fs'
 import path from 'pathe'
 import { getLocalDbFolder } from '../storage/path.js'
 import { copyDir, ensureDir } from '../util/fs.js'
-import { getCurrentBranch, resourceInstancesFolders } from './storage.js'
+import { resourceInstancesFolders } from './storage.js'
+import { getCurrentBranchFolder } from './branch.js'
 
 export interface CreateBranchOptions {
   /**
@@ -30,7 +31,7 @@ export async function createBranch(options: CreateBranchOptions) {
 
   if (!options.empty) {
     // Copy files from current branch
-    const currentBranchFolder = path.join(getLocalDbFolder(), ...resourceInstancesFolders, getCurrentBranch())
+    const currentBranchFolder = getCurrentBranchFolder()
     const newBranchFolder = path.join(getLocalDbFolder(), ...resourceInstancesFolders, options.name)
     await copyDir(currentBranchFolder, newBranchFolder)
   }

@@ -21,7 +21,7 @@ export default defineEventHandler<{ body: ResourceFactory }>(async (event) => {
       // Use name as id
       const name = body.name ?? factory.name
       if (await storage.findById(name, 'repository')) {
-        throw new Error(`Factyory with name "${name}" already exists in repository`)
+        throw new Error(`Factory with name "${name}" already exists in repository`)
       }
       await storage.remove(factory.id)
       body.id = factory.id = `${body.resourceName ?? factory.resourceName}-${name}`

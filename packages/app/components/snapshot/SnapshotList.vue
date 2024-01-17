@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { useRouteQuery } from '@vueuse/router'
-import type { DBLocation, ResourceFactory } from '@moquerie/core'
+import type { DBLocation, DatabaseSnapshot, ResourceFactory } from '@moquerie/core'
 import LinkList from '../LinkList.vue'
 
 const route = useRoute()
 
-const resourceName = computed(() => String(route.params.resourceName))
-
 // Location
 
-const location = useRouteQuery<DBLocation>('factoryLocation', 'local')
+const location = useRouteQuery<DBLocation>('snapshotLocation', 'local')
 
 const linkList = ref<InstanceType<typeof LinkList> | null>(null)
 
@@ -17,32 +15,24 @@ function onClickOnLocationButton() {
   linkList.value?.focusFilterInput()
 }
 
-// Count
+// Snapshots
 
-const { data: counts, refresh: refreshCounts } = await useFetch('/api/factories/count', {
-  query: {
-    resourceName,
-  },
-})
-onWindowFocus(refreshCounts)
-
-// Factories
-
-const factoryStore = useFactoryStore()
+const snapshotStore = useSnapshotStore()
 
 watchEffect(() => {
-  factoryStore.fetchFactories({
-    resourceName: resourceName.value,
+  snapshotStore.fetchSnapshots({
     location: location.value,
   })
 })
 
 // Filter
 
-function filter(item: ResourceFactory, filterValue: string): boolean {
-  return item.name.toLowerCase().includes(filterValue)
+function filter(item: DatabaseSnapshot, filterValue: string): boolean {
+  return item.id.toLowerCase().includes(filterValue)
     || item.tags.some(tag => tag.toLowerCase().includes(filterValue))
     || item.description?.toLowerCase().includes(filterValue)
+    || item.author.name.toLowerCase().includes(filterValue)
+    || item.author.email?.toLowerCase().includes(filterValue)
     || false
 }
 
@@ -50,12 +40,12 @@ function filter(item: ResourceFactory, filterValue: string): boolean {
 
 const router = useRouter()
 
-function onOpen(factory: ResourceFactory) {
+function onOpen(snapshot: DatabaseSnapshot) {
   router.push({
-    name: 'db-factories-resourceName-view-factoryId',
+    name: 'db-snapshots-snapshotId',
     params: {
       ...route.params,
-      factoryId: factory.id,
+      snapshotId: snapshot.id,
     },
     query: {
       ...route.query,
@@ -66,16 +56,30 @@ function onOpen(factory: ResourceFactory) {
 
 <template>
   <LinkList
-    id="factory-list"
+    id="snapshot-list"
     ref="linkList"
-    :items="factoryStore.factories"
+    :items="snapshotStore.snapshots"
     :filter="filter"
-    :selected-item="(factory, route) => factory.id === route.params.factoryId"
-    filter-placeholder="Filter factories by name, tags..."
+    :selected-item="(item, route) => item.id === route.params.snapshotId"
+    filter-placeholder="Filter snapshots by name, tags..."
     class="p-2"
     @select="onOpen"
   >
     <template #toolbar>
+      <UButton
+        :to="{
+          name: 'db-snapshots-create',
+          query: {
+            ...$route.query,
+          },
+        }"
+        icon="i-ph-plus"
+        block
+        :disabled="$route.name === 'db-snapshots-create'"
+      >
+        Create snapshot
+      </UButton>
+
       <RadioButtonGroup
         v-model="location"
         :button-attrs="{
@@ -87,12 +91,12 @@ function onOpen(factory: ResourceFactory) {
           {
             value: 'local',
             label: 'Local',
-            count: counts?.local,
+            count: snapshotStore.counts.local,
           },
           {
             value: 'repository',
             label: 'Repository',
-            count: counts?.repository,
+            count: snapshotStore.counts.repository,
           },
         ]"
         @update:model-value="onClickOnLocationButton()"
@@ -100,8 +104,8 @@ function onOpen(factory: ResourceFactory) {
     </template>
 
     <template #default="{ item, ...props }">
-      <FactoryListItem
-        :factory="item"
+      <SnapshotListItem
+        :snapshot="item"
         v-bind="props"
       />
     </template>

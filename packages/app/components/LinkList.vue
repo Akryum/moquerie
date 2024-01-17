@@ -128,6 +128,16 @@ function onKeyEnter(event: MouseEvent) {
           @mouseenter="hoverIndex = index"
         />
       </template>
+
+      <template v-if="!displayedItems.length">
+        <slot v-if="!filter" name="empty" />
+
+        <slot v-else name="no-results">
+          <div class="p-4 text-center opacity-50 text-sm">
+            No results
+          </div>
+        </slot>
+      </template>
     </div>
   </div>
 </template>

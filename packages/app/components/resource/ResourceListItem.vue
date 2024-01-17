@@ -30,8 +30,11 @@ const icon = computed(() => {
     } : undefined"
     :icon="icon"
   >
-    <div class="text-sm truncate">
-      {{ resourceType.name }}
+    <div class="flex items-center">
+      <div class="text-sm truncate">
+        {{ resourceType.name }}
+      </div>
+      <slot name="trailing" />
     </div>
 
     <template #tooltip>

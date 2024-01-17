@@ -1,18 +1,20 @@
 <script lang="ts" setup>
-import type { ResourceFactory } from '@moquerie/core'
+import type { DatabaseSnapshot } from '@moquerie/core'
 
-defineProps<{
-  factory: ResourceFactory
+const props = defineProps<{
+  snapshot: DatabaseSnapshot
 }>()
+
+const ago = useTimeAgo(() => props.snapshot.date)
 </script>
 
 <template>
   <LinkListItem
     :to="{
-      name: 'db-factories-resourceName-view-factoryId',
+      name: 'db-snapshots-snapshotId',
       params: {
         ...$route.params,
-        factoryId: factory.id,
+        snapshotId: snapshot.id,
       },
       query: {
         ...$route.query,
@@ -21,20 +23,17 @@ defineProps<{
   >
     <div class="h-[40px] flex flex-col items-stretch justify-center">
       <div class="text-sm leading-tight truncate">
-        {{ factory.name }}
+        {{ snapshot.id }}
       </div>
-      <div
-        v-if="factory.description"
-        class="text-xs opacity-50 leading-tight truncate"
-      >
-        {{ factory.description }}
+      <div class="text-xs opacity-50 leading-tight truncate">
+        {{ snapshot.description || ago }}
       </div>
     </div>
 
     <template #tooltip>
       <div class="flex flex-col gap-1">
-        <FactoryInfo
-          :factory="factory"
+        <SnapshotInfo
+          :snapshot="snapshot"
         />
       </div>
     </template>

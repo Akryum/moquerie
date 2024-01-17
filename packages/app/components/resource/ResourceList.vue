@@ -5,6 +5,7 @@ import { useResourceTypeStore } from '~/stores/resourceType.js'
 const props = defineProps<{
   routeName?: string
   resourceName?: string
+  filterList?: (types: ResourceSchemaType[]) => ResourceSchemaType[]
 }>()
 
 const emit = defineEmits<{
@@ -51,7 +52,7 @@ defineShortcuts({
   <LinkList
     id="resource-list"
     ref="linkList"
-    :items="resourceTypeStore.resourceTypesShownInExplorer"
+    :items="filterList ? filterList(resourceTypeStore.resourceTypesShownInExplorer) : resourceTypeStore.resourceTypesShownInExplorer"
     :filter="filter"
     :selected-item="(type, route) => resourceName !== undefined ? type.name === resourceName : type.name === route.params.resourceName"
     filter-placeholder="Filter resources by name, tags..."
@@ -69,7 +70,11 @@ defineShortcuts({
         :route-name="routeName"
         v-bind="props"
         @click="$emit('update:resourceName', item.name)"
-      />
+      >
+        <template #trailing>
+          <slot name="item-trailing" :item="item" />
+        </template>
+      </ResourceListItem>
     </template>
 
     <template #trailing>

@@ -396,7 +396,7 @@ defineShortcuts({
       v-model="selectRefShown"
       :ui="{
         width: 'sm:w-[calc(100vw-200px)] sm:max-w-[1200px]',
-        height: 'sm:h-[calc(100vh-200px)] sm:max-h-[600px]',
+        height: 'sm:h-[calc(100vh-200px)] sm:max-h-[900px]',
       }"
     >
       <ResourceSelect
