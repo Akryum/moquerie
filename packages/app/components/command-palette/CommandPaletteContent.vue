@@ -9,6 +9,10 @@ const emit = defineEmits<{
 const { metaSymbol } = useShortcuts()
 const route = useRoute()
 
+// Recent commands
+
+const recentCommands = useLocalStorage<any[]>('recentCommands', [])
+
 // Routes
 
 const hasGraphQL = await useHasGraphql()
@@ -199,6 +203,7 @@ const branchCommands = computed(() => branches.value?.map(branch => ({
 // Final command list
 
 const groups = computed(() => [
+  { key: 'recent', commands: recentCommands.value, label: 'Recent' },
   { key: 'routes', commands: routes.value, label: 'Views' },
   { key: 'resources', commands: [createResourceCommand.value, ...resourceInstancesViewCommands.value], label: 'Resources' },
   { key: 'factories', commands: [createFactoryCommand.value, ...factoryCommands.value], label: 'Factories' },
@@ -215,6 +220,12 @@ function onSelect(command: any) {
   else if (command.to) {
     router.push(command.to)
   }
+
+  recentCommands.value = [
+    command,
+    ...recentCommands.value.filter(c => c.id !== command.id),
+  ].slice(0, 10)
+
   emit('close')
 }
 
@@ -240,6 +251,7 @@ onMounted(() => {
         includeMatches: true,
       },
     }"
+    class="max-h-[600px]"
     @update:model-value="onSelect"
     @close="$emit('close')"
   />
