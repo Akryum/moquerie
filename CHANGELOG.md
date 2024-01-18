@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.1...v0.0.2)
+
+### 🩹 Fixes
+
+- **app:** Release files ([22c66d0](https://github.com/Akryum/moquerie/commit/22c66d0))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.1
 
 
