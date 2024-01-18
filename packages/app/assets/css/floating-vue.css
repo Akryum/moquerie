@@ -52,3 +52,10 @@
     @apply border-gray-800;
   }
 }
+
+
+/* Prevent scrollbar on body */
+
+body {
+  overflow: hidden;
+}
