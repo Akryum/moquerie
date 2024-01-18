@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.3...v0.0.4)
+
+### 🚀 Enhancements
+
+- Allow RegExp in ignoredResourcesInExplorer ([2fa3693](https://github.com/Akryum/moquerie/commit/2fa3693))
+- Favorite resources ([22c5872](https://github.com/Akryum/moquerie/commit/22c5872))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.3
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.2...v0.0.3)

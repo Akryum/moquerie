@@ -59,6 +59,16 @@ export type MutationRemoveHelloArgs = {
   message: Scalars['String']['input'];
 };
 
+export type MutationAPayload = {
+  __typename?: 'MutationAPayload';
+  id: Scalars['ID']['output'];
+};
+
+export type MutationBPayload = {
+  __typename?: 'MutationBPayload';
+  id: Scalars['ID']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<User>;
@@ -165,6 +175,8 @@ export type ResolversTypes = {
   Message: ResolverTypeWrapper<Message>;
   MessageType: MessageType;
   Mutation: ResolverTypeWrapper<{}>;
+  MutationAPayload: ResolverTypeWrapper<MutationAPayload>;
+  MutationBPayload: ResolverTypeWrapper<MutationBPayload>;
   Query: ResolverTypeWrapper<{}>;
   Simple: ResolverTypeWrapper<Simple>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -179,6 +191,8 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Message: Message;
   Mutation: {};
+  MutationAPayload: MutationAPayload;
+  MutationBPayload: MutationBPayload;
   Query: {};
   Simple: Simple;
   String: Scalars['String']['output'];
@@ -202,6 +216,16 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   addSimple?: Resolver<ResolversTypes['Simple'], ParentType, ContextType, RequireFields<MutationAddSimpleArgs, 'id'>>;
   removeHello?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationRemoveHelloArgs, 'message'>>;
   testMutation?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+};
+
+export type MutationAPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationAPayload'] = ResolversParentTypes['MutationAPayload']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationBPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationBPayload'] = ResolversParentTypes['MutationBPayload']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -234,6 +258,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  MutationAPayload?: MutationAPayloadResolvers<ContextType>;
+  MutationBPayload?: MutationBPayloadResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Simple?: SimpleResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
