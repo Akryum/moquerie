@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { ResourceSchemaType } from '@moquerie/core'
-import { useResourceTypeStore } from '~/stores/resourceType.js'
 
 const props = defineProps<{
   routeName?: string
@@ -18,6 +17,20 @@ function filter(type: ResourceSchemaType, filterValue: string) {
   return type.name.toLowerCase().includes(filterValue)
     || type.tags.some(tag => tag.toLowerCase().includes(filterValue))
 }
+
+const showOnlyFavorites = useLocalStorage<boolean>('showOnlyFavorites', false)
+
+const { isFavorite, count: favoriteCount } = await useFavoriteResources()
+
+const resources = computed(() => {
+  let list = resourceTypeStore.resourceTypesShownInExplorer
+  if (showOnlyFavorites.value) {
+    list = list.filter(type => isFavorite(type.name))
+  }
+  return list
+})
+
+// Open resource
 
 const router = useRouter()
 
@@ -52,7 +65,7 @@ defineShortcuts({
   <LinkList
     id="resource-list"
     ref="linkList"
-    :items="filterList ? filterList(resourceTypeStore.resourceTypesShownInExplorer) : resourceTypeStore.resourceTypesShownInExplorer"
+    :items="filterList ? filterList(resources) : resources"
     :filter="filter"
     :selected-item="(type, route) => resourceName !== undefined ? type.name === resourceName : type.name === route.params.resourceName"
     filter-placeholder="Filter resources by name, tags..."
@@ -64,6 +77,21 @@ defineShortcuts({
     class="p-2"
     @select="openResource"
   >
+    <template #toolbar>
+      <RadioButtonGroup
+        v-model="showOnlyFavorites"
+        :options="[
+          { label: 'All', value: false, count: (filterList ? filterList(resourceTypeStore.resourceTypesShownInExplorer) : resourceTypeStore.resourceTypesShownInExplorer).length },
+          { label: 'Favorites', value: true, count: favoriteCount },
+        ]"
+        :button-attrs="{
+          color: 'gray',
+          size: 'xs',
+          block: true,
+        }"
+      />
+    </template>
+
     <template #default="{ item, ...props }">
       <ResourceListItem
         :resource-type="item"

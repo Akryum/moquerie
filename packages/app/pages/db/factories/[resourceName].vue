@@ -3,10 +3,12 @@ import type { ResourceSchemaType } from '@moquerie/core'
 
 const route = useRoute()
 
-const { data, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${route.params.resourceName}`)
+const resourceName = computed(() => String(route.params.resourceName))
+
+const { data, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${resourceName.value}`)
 onWindowFocus(refresh)
 
-const { data: ignored, refresh: refreshIgnored } = await useFetch(`/api/resources/${route.params.resourceName}/ignored`)
+const { data: ignored, refresh: refreshIgnored } = await useFetch(`/api/resources/${resourceName.value}/ignored`)
 onWindowFocus(refreshIgnored)
 
 const router = useRouter()

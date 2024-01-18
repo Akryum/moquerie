@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import type { ResourceSchemaType } from '@moquerie/core'
+import { Tooltip } from 'floating-vue'
 
 const route = useRoute()
-const { data: resourceType, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${route.params.resourceName}`)
+
+const resourceName = computed(() => String(route.params.resourceName))
+
+const { data: resourceType, refresh } = await useFetch<ResourceSchemaType>(`/api/resources/${resourceName.value}`)
 onWindowFocus(refresh)
 
-const { data: ignored, refresh: refreshIgnored } = await useFetch(`/api/resources/${route.params.resourceName}/ignored`)
+const { data: ignored, refresh: refreshIgnored } = await useFetch(`/api/resources/${resourceName.value}/ignored`)
 onWindowFocus(refreshIgnored)
 
 const router = useRouter()
+
+// If the resource is ignored, redirect to the resources page
 
 watch(ignored, (value) => {
   if (value) {
@@ -19,6 +25,21 @@ watch(ignored, (value) => {
 }, {
   immediate: true,
 })
+
+// Favorite
+
+const { isFavorite, toggleFavorite } = await useFavoriteResources()
+
+defineShortcuts({
+  meta_f: {
+    usingInput: true,
+    handler: () => {
+      toggleFavorite(resourceName.value)
+    },
+  },
+})
+
+// New instance
 
 defineShortcuts({
   meta_shift_x: {
@@ -44,6 +65,21 @@ defineShortcuts({
       <ResourceInfo :type="resourceType" />
 
       <div class="flex-1" />
+
+      <Tooltip>
+        <UButton
+          :icon="isFavorite(resourceName) ? 'i-ph-star-fill' : 'i-ph-star'"
+          color="gray"
+          @click="toggleFavorite(resourceName)"
+        />
+
+        <template #popper>
+          <div>
+            {{ isFavorite(resourceName) ? 'Remove from favorites' : 'Add to favorites' }}
+          </div>
+          <KbShortcut keys="meta_f" />
+        </template>
+      </Tooltip>
 
       <UButton
         v-if="$route.name !== 'db-resources-resourceName-create'"
