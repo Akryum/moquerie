@@ -14,7 +14,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "types": "./index.d.mts",
   "exports": {
     ".": {
       "types": "./index.d.mts",
@@ -22,6 +21,7 @@
     },
     "./*": "./*"
   },
+  "types": "./index.d.mts",
   "files": [
     ".output",
     "start.mjs"
