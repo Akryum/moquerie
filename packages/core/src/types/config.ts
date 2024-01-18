@@ -45,7 +45,7 @@ export interface Config {
   /**
    * Those resource types will not appear in the resource database explorer in the UI.
    */
-  ignoredResourcesInExplorer?: string[]
+  ignoredResourcesInExplorer?: Array<string | RegExp>
 
   /**
    * Locale used by all calls to faker when not specified. Default is English.

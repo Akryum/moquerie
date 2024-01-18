@@ -56,6 +56,14 @@ export const schema = makeExecutableSchema({
       helloRemoved: String!
       simpleAdded: Simple!
     }
+
+    type MutationAPayload {
+      id: ID!
+    }
+
+    type MutationBPayload {
+      id: ID!
+    }
   `,
   resolvers: {
     Query: {

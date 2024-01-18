@@ -1,7 +1,10 @@
 import type { ResourceSchema, ResourceSchemaType } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export const useResourceTypeStore = defineStore('resourceTypes', () => {
-  const fetchQuery = useFetch<ResourceSchema>('/api/resources')
+  const fetchQuery = useFetch<ResourceSchema>('/api/resources', {
+    transform: (data: any) => SuperJSON.parse<ResourceSchema>(data),
+  })
   const { data, refresh } = fetchQuery
   onWindowFocus(refresh)
 
@@ -16,7 +19,15 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
   const resourceTypesShownInExplorer = computed(() => {
     if (data.value?.ignoredInExplorer) {
       return resourceTypes.value.filter((type) => {
-        return !data.value?.ignoredInExplorer?.includes(type.name)
+        return !data.value?.ignoredInExplorer?.some((filter) => {
+          if (typeof filter === 'string') {
+            return filter === type.name
+          }
+          else if (filter instanceof RegExp) {
+            return filter.test(type.name)
+          }
+          return false
+        })
       })
     }
     return resourceTypes.value
