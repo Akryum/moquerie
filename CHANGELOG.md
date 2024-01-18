@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.2...v0.0.3)
+
+### 🩹 Fixes
+
+- Force version bump ([169554a](https://github.com/Akryum/moquerie/commit/169554a))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.2
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.1...v0.0.2)
