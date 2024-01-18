@@ -24,7 +24,7 @@
   "types": "./index.d.mts",
   "files": [
     ".output",
-    "start.mjs"
+    "index.mjs"
   ],
   "scripts": {
     "build": "nuxt prepare && nuxt build",
