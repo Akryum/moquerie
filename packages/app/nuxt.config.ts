@@ -44,6 +44,8 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    preset: 'node',
+    serveStatic: true,
     devServer: {
       watch: [
         './node_modules/@moquerie/core/**',
@@ -52,6 +54,7 @@ export default defineNuxtConfig({
     rollupConfig: {
       external: [
         /@moquerie/,
+        'graphql',
       ],
     },
   },

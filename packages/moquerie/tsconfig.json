@@ -8,7 +8,7 @@
       "DOM"
     ],
     "useDefineForClassFields": true,
-    "module": "Node16",
+    "module": "NodeNext",
     "moduleResolution": "Node16",
     "resolveJsonModule": true,
     "types": [

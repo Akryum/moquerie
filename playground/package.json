@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "prepare": "pnpm run codegen",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "moquerie": "moquerie"
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.0",

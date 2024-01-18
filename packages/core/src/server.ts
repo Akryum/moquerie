@@ -2,6 +2,7 @@ import type { Server as HTTPServer } from 'node:http'
 import { createServer as createHttpServer } from 'node:http'
 import type { Application } from 'express'
 import express from 'express'
+import colors from 'picocolors'
 import type { Context } from './context.js'
 import type { ServerRouteInfo } from './types/server.js'
 
@@ -20,7 +21,7 @@ async function listen(context: Context, expressApp: Application) {
   await new Promise<void>((resolve) => {
     httpServer.listen(context.port, () => {
       // eslint-disable-next-line no-console
-      console.log(`Listening on port ${context.port}`)
+      console.log(`API available at ${colors.blue(`http://localhost:${context.port}/`)}`)
       resolve()
     })
   })

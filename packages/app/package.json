@@ -14,15 +14,30 @@
   "publishConfig": {
     "access": "public"
   },
+  "types": "./index.d.mts",
   "exports": {
+    ".": {
+      "types": "./index.d.mts",
+      "default": "./index.mjs"
+    },
     "./*": "./*"
   },
+  "files": [
+    ".output",
+    "start.mjs"
+  ],
   "scripts": {
     "build": "nuxt prepare && nuxt build",
     "dev": "nuxt prepare && nuxt dev --dotenv .env.playground"
   },
   "peerDependencies": {
-    "@moquerie/core": "workspace:^"
+    "@moquerie/core": "workspace:^",
+    "graphql": ">15"
+  },
+  "peerDependenciesMeta": {
+    "graphql": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",

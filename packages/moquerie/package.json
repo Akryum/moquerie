@@ -31,12 +31,18 @@
   },
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
+  "bin": {
+    "moquerie": "./bin.mjs"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "dev": "tsc --watch"
   },
   "dependencies": {
     "@moquerie/app": "workspace:^",
-    "@moquerie/core": "workspace:^"
+    "@moquerie/core": "workspace:^",
+    "citty": "^0.1.5",
+    "listhen": "^1.5.6",
+    "picocolors": "^1.0.0"
   }
 }
