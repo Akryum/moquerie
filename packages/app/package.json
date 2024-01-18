@@ -1,7 +1,7 @@
 {
   "name": "@moquerie/app",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Nuxt app frontend for moquerie",
   "author": {
     "name": "Guillaume Chau"
