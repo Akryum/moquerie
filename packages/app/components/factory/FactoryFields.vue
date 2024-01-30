@@ -62,11 +62,26 @@ const flatFields = computed(() => {
   return result
 })
 
+const MIN_COUNT_TO_ENABLE_SEARCH = 10
+
+const searchField = useLocalStorage('form-search-field', '')
+
+const filteredFields = computed(() => {
+  const result = flatFields.value
+
+  if (result.length > MIN_COUNT_TO_ENABLE_SEARCH && searchField.value) {
+    const reg = new RegExp(searchField.value, 'i')
+    return result.filter(field => reg.test(field.fullKey))
+  }
+
+  return result
+})
+
 defineShortcuts({
   shift_arrowup: {
     usingInput: true,
     handler: () => {
-      const values = flatFields.value
+      const values = filteredFields.value
       const index = values.findIndex(field => field.fullKey === selectedField.value)
       if (index > 0) {
         selectedField.value = values[index - 1].fullKey
@@ -76,7 +91,7 @@ defineShortcuts({
   shift_arrowdown: {
     usingInput: true,
     handler: () => {
-      const values = flatFields.value
+      const values = filteredFields.value
       const index = values.findIndex(field => field.fullKey === selectedField.value)
       if (index < values.length - 1) {
         selectedField.value = values[index + 1].fullKey
@@ -95,8 +110,20 @@ function updateField(flatField: FlatField, value: ResourceFactoryField) {
 <template>
   <div class="border border-gray-300 dark:border-gray-800 rounded-lg shadow-sm">
     <div class="flex flex-col">
+      <div
+        v-if="flatFields.length > MIN_COUNT_TO_ENABLE_SEARCH"
+        class="flex items-center justify-center gap-2 p-2"
+      >
+        <UInput
+          v-model="searchField"
+          icon="i-ph-magnifying-glass"
+          placeholder="Search field..."
+          size="xs"
+        />
+      </div>
+
       <FactoryField
-        v-for="flatField of flatFields"
+        v-for="flatField of filteredFields"
         :key="flatField.fullKey"
         :flat-field="flatField"
         :root-resource-type="resourceType"

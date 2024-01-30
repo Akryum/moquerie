@@ -96,6 +96,23 @@ defineShortcuts({
     whenever: [() => !isAnyOpen.value],
   },
 })
+
+// Search
+
+const MIN_COUNT_TO_ENABLE_SEARCH = 10
+
+const searchField = useLocalStorage('form-search-field', '')
+
+const filteredFields = computed(() => {
+  const result = Object.entries(props.resourceType.fields)
+
+  if (result.length > MIN_COUNT_TO_ENABLE_SEARCH && searchField.value) {
+    const reg = new RegExp(searchField.value, 'i')
+    return result.filter(([key]) => reg.test(key))
+  }
+
+  return result
+})
 </script>
 
 <template>
@@ -116,8 +133,20 @@ defineShortcuts({
 
     <div class="flex flex-col gap-4 p-2">
       <div class="flex flex-col items-stretch gap-4">
+        <div
+          v-if="Object.keys(resourceType.fields).length > MIN_COUNT_TO_ENABLE_SEARCH"
+          class="flex items-center justify-center gap-2 p-2"
+        >
+          <UInput
+            v-model="searchField"
+            icon="i-ph-magnifying-glass"
+            placeholder="Search field..."
+            size="xs"
+          />
+        </div>
+
         <ResourceInstanceValueFormInput
-          v-for="([key, field], index) in Object.entries(resourceType.fields)"
+          v-for="([key, field], index) in filteredFields"
           :key="key"
           v-model="state.value[field.name]"
           :resource-type="resourceType"
