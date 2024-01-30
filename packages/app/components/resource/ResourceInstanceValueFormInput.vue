@@ -204,7 +204,7 @@ function removeArrayItem(index: number) {
     <template v-if="field.type === 'resource'">
       <template v-if="childResourceType?.inline">
         <MonacoEditor
-          :filename="`field-${resourceType.name}-edit.js`"
+          :filename="`field-${resourceType.name}-${field.name}-inline-edit.js`"
           :source="JSON.stringify(modelValue, null, 2)"
           :options="{
             language: 'json',

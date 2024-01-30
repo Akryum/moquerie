@@ -269,7 +269,7 @@ async function openFieldActionFile(col: Col) {
 
               <template #popper>
                 <MonacoEditor
-                  :filename="`field-${resourceType.name}-edit.js`"
+                  :filename="`field-${resourceType.name}-${col.field}-inline-view.js`"
                   :source="JSON.stringify(instance.value[col.field as keyof typeof instance], null, 2)"
                   :options="{
                     language: 'json',

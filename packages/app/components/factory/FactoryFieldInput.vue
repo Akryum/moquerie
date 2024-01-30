@@ -252,7 +252,7 @@ const pickOneRandom = computed({
       <template v-else>
         <UFormGroup label="JavaScript code">
           <MonacoEditor
-            :filename="`field-${resourceType.name}-edit.js`"
+            :filename="`field-${resourceType.name}-${flatField.fullKey}-other-edit.js`"
             :source="flatField.factoryField.rawCode ?? ''"
             :options="{
               language: 'javascript',
@@ -327,7 +327,7 @@ const pickOneRandom = computed({
 
         <UFormGroup v-else-if="flatField.factoryField.dbFn && !pickOneRandom" label="Parameters">
           <MonacoEditor
-            :filename="`field-${resourceType.name}-edit.js`"
+            :filename="`field-${resourceType.name}-${flatField.fullKey}-dbParams-edit.js`"
             :source="flatField.factoryField.dbParams ?? ''"
             :options="{
               language: 'javascript',
