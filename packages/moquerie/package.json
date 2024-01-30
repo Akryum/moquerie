@@ -1,7 +1,7 @@
 {
   "name": "moquerie",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Create API & backend mocks with ease",
   "author": {
     "name": "Guillaume Chau"

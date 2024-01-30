@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- Monaco editor filenames not distinct ([383b9dc](https://github.com/Akryum/moquerie/commit/383b9dc))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.5
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.4...v0.0.5)
