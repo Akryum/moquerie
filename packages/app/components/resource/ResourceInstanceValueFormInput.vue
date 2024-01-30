@@ -7,6 +7,7 @@ import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 const props = defineProps<{
   resourceType: ResourceSchemaType
   field: ResourceSchemaField
+  childResourceType?: ResourceSchemaType
   modelValue: any
   autofocus?: boolean
   showApply?: boolean
@@ -129,8 +130,11 @@ function removeArrayItem(index: number) {
       <div class="mb-0.5 flex items-center gap-2 group-hover:text-primary-500 group-focus-within:text-primary-500">
         <span>{{ field.name }}</span>
 
-        <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
-        <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-database" />
+        <ResourceFieldInfoIcons
+          :field="field"
+          :resource-type="resourceType"
+          :child-resource-type="childResourceType"
+        />
       </div>
     </template>
 
@@ -197,38 +201,54 @@ function removeArrayItem(index: number) {
       </div>
     </template>
 
-    <Menu
-      v-if="field.type === 'resource'"
-      placement="left"
-      :delay="500"
-      :dispose-timeout="0"
-      :triggers="['hover']"
-    >
-      <template #default="{ shown, hide }">
-        <UButton
-          ref="editReferencesButton"
-          color="gray"
-          block
-          :class="{
-            'ring-2 ring-gray-500/50': shown,
+    <template v-if="field.type === 'resource'">
+      <template v-if="childResourceType?.inline">
+        <MonacoEditor
+          :filename="`field-${resourceType.name}-edit.js`"
+          :source="JSON.stringify(modelValue, null, 2)"
+          :options="{
+            language: 'json',
+            lineNumbers: 'off',
+            folding: false,
+            wordWrap: 'on',
           }"
-          @click="hide({ skipDelay: true });isResourceRefsOpen = true"
-        >
-          <ResourceReferencesSummary
-            :field="field"
-            :value="modelValue"
-          />
-        </UButton>
-      </template>
-
-      <template #popper>
-        <ResourceReferencesPreview
-          :field="field"
-          :value="modelValue"
-          class="max-w-[600px] min-h-[200px] max-h-[600px]"
+          class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
+          @update:source="$emit('update:modelValue', JSON.parse($event))"
         />
       </template>
-    </Menu>
+      <Menu
+        v-else
+        placement="left"
+        :delay="500"
+        :dispose-timeout="0"
+        :triggers="['hover']"
+      >
+        <template #default="{ shown, hide }">
+          <UButton
+            ref="editReferencesButton"
+            color="gray"
+            block
+            :class="{
+              'ring-2 ring-gray-500/50': shown,
+            }"
+            @click="hide({ skipDelay: true });isResourceRefsOpen = true"
+          >
+            <ResourceReferencesSummary
+              :field="field"
+              :value="modelValue"
+            />
+          </UButton>
+        </template>
+
+        <template #popper>
+          <ResourceReferencesPreview
+            :field="field"
+            :value="modelValue"
+            class="max-w-[600px] min-h-[200px] max-h-[600px]"
+          />
+        </template>
+      </Menu>
+    </template>
 
     <template v-else>
       <div v-if="field.array" class="flex flex-col gap-1">

@@ -19,6 +19,8 @@ const { data: defaultValues } = await useFetch('/api/factories/defaultValues', {
   },
 })
 
+const resourceTypeStore = useResourceTypeStore()
+
 function getInitialState() {
   return {
     comment: props.instance?.comment ?? '',
@@ -119,6 +121,7 @@ defineShortcuts({
           :key="key"
           v-model="state.value[field.name]"
           :resource-type="resourceType"
+          :child-resource-type="field.type === 'resource' ? resourceTypeStore.getResourceType(field.resourceName) : undefined"
           :field="field"
           :autofocus="index === 0"
           :show-apply="!!instance"

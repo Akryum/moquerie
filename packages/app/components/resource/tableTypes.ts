@@ -1,4 +1,4 @@
-import type { ResourceSchemaField } from '@moquerie/core'
+import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
 
 export interface Col {
   label: string
@@ -6,6 +6,7 @@ export interface Col {
   size: number
   fieldAction?: { file: string }
   fieldData?: ResourceSchemaField
+  childResourceType?: ResourceSchemaType
 }
 
 export interface ColData {

@@ -249,6 +249,41 @@ async function openFieldActionFile(col: Col) {
           </template>
           <template v-else-if="col.fieldData?.type === 'resource'">
             <Menu
+              v-if="col.childResourceType?.inline"
+              :delay="500"
+              :dispose-timeout="0"
+              popper-class="!z-[10002]"
+            >
+              <template #default="{ shown }">
+                <div
+                  class="flex items-center gap-1 border border-primary/20 px-2 py-1 rounded-lg text-xs"
+
+                  :class="{
+                    'ring-2 ring-gray-500/50': shown,
+                  }"
+                >
+                  <UIcon name="i-ph-brackets-curly" class="w-4 h-4 flex-none" />
+                  Inline
+                </div>
+              </template>
+
+              <template #popper>
+                <MonacoEditor
+                  :filename="`field-${resourceType.name}-edit.js`"
+                  :source="JSON.stringify(instance.value[col.field as keyof typeof instance], null, 2)"
+                  :options="{
+                    language: 'json',
+                    lineNumbers: 'off',
+                    folding: false,
+                    wordWrap: 'on',
+                    readOnly: true,
+                  }"
+                  class="w-[300px] h-[200px]"
+                />
+              </template>
+            </Menu>
+            <Menu
+              v-else
               :delay="500"
               :dispose-timeout="0"
               popper-class="!z-[10002]"

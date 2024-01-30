@@ -33,6 +33,8 @@ defineExpose({
 
 // Resource Type
 
+const resourceTypeStore = useResourceTypeStore()
+
 const { data: resourceType, refresh: refreshResourceType } = await useFetch<ResourceSchemaType>(`/api/resources/${props.resourceName}`)
 onWindowFocus(refreshResourceType)
 
@@ -63,6 +65,7 @@ const cols = computed(() => {
         fieldAction,
         label: field,
         size: data?.size ?? fieldData ? getDefaultColSize(fieldData) : 200,
+        childResourceType: fieldData.type === 'resource' ? resourceTypeStore.getResourceType(fieldData.resourceName) : undefined,
       })
     }
   }
