@@ -214,7 +214,11 @@ interface SerializeContext {
 
 /**
  * Create or update referenced resource instances.
+ * @param resourceName Name of the resource type.
  * @param valueId Id of object, should correspond to the idFields of the resource type.
+ * @param data Object to serialize.
+ * @param serializeContext Context used to prevent infinite recursion.
+ * @param createOptions Options used to create the resource instance.
  */
 async function serializeInstanceValue<TType extends ResourceSchemaType>(
   resourceName: string,

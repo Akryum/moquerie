@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Dropdown, vTooltip } from 'floating-vue'
+import { Dropdown } from 'floating-vue'
 import type { ResourceFactoryField, ResourceSchemaType } from '@moquerie/core'
 import { isAnyOpen } from '../resource/resourceInstanceValueOverlays.js'
 import type { FlatField } from './formTypes.js'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ResourceFactoryField, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import type { ResourceFactoryField, ResourceSchemaType } from '@moquerie/core'
 import type { FlatField } from './formTypes.js'
 
 const props = defineProps<{

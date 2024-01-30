@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker'
-import { raw } from 'express'
 import type { ResourceFactory, ResourceFactoryContext, ResourceFactoryFn } from '../types/factory.js'
 import { getResolvedContext } from '../context.js'
 import type { Awaitable } from '../util/types.js'

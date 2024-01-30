@@ -92,11 +92,11 @@ defineShortcuts({
       />
     </template>
 
-    <template #default="{ item, ...props }">
+    <template #default="{ item, ...slotProps }">
       <ResourceListItem
         :resource-type="item"
         :route-name="routeName"
-        v-bind="props"
+        v-bind="slotProps"
         @click="$emit('update:resourceName', item.name)"
       >
         <template #trailing>

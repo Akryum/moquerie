@@ -74,7 +74,7 @@ export default defineFactory({}, () => ({}))`)
     return args
   }
 
-  function generateAstField(fieldName: string, field: ResourceFactoryField, parentField: ResourceFactoryField | null): namedTypes.CallExpression | namedTypes.ObjectExpression | namedTypes.Identifier | namedTypes.Literal | namedTypes.ArrayExpression | namedTypes.ArrowFunctionExpression {
+  function generateAstField(fieldName: string, field: ResourceFactoryField, _parentField: ResourceFactoryField | null): namedTypes.CallExpression | namedTypes.ObjectExpression | namedTypes.Identifier | namedTypes.Literal | namedTypes.ArrayExpression | namedTypes.ArrowFunctionExpression {
     let resultAst: any
     if (field.type === 'faker') {
       if (!field.fakerFn) {
