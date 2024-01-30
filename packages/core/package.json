@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@babel/parser": "^7.23.6",
-    "@faker-js/faker": "^8.3.1",
+    "@faker-js/faker": "^8.4.0",
     "@graphql-tools/code-file-loader": "^8.0.3",
     "@graphql-tools/graphql-file-loader": "^8.0.0",
     "@graphql-tools/json-file-loader": "^8.0.0",
@@ -64,7 +64,7 @@
     "jiti": "^1.21.0",
     "lru-cache": "^10.1.0",
     "nanoid": "^5.0.4",
-    "pathe": "^1.1.1",
+    "pathe": "^1.1.2",
     "perfect-debounce": "^1.0.0",
     "picocolors": "^1.0.0",
     "recast": "^0.23.4",
