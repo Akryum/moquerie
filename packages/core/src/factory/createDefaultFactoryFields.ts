@@ -51,6 +51,12 @@ export async function createDefaultFactoryFields(options: CreateDefaultValueFact
         value: typeField.values[0].value,
       }
     }
+    else if (typeField.type === 'number') {
+      factoryField = {
+        type: 'other',
+        value: 0,
+      }
+    }
     else {
       const result = autoSelectFakerGenerator({
         name: key,
