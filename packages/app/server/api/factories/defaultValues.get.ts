@@ -1,5 +1,6 @@
 import type { ResourceFactory } from '@moquerie/core'
-import { createDefaultValueFactory, createInstanceFromFactory, getResolvedContext } from '@moquerie/core'
+import { createDefaultFactoryFields, createInstanceFromFactory, getCurrentUser, getResolvedContext, serializeFactory } from '@moquerie/core'
+import { printCode } from '@moquerie/core/util'
 
 export default defineEventHandler<{ query: { resourceName: string } }>(async (event) => {
   const { resourceName } = getQuery(event)
@@ -8,30 +9,35 @@ export default defineEventHandler<{ query: { resourceName: string } }>(async (ev
   if (!resourceType) {
     throw new Error(`Resource ${resourceName} not found`)
   }
-  const defaultValueFactory = createDefaultValueFactory({
+  const defaultFields = await createDefaultFactoryFields({
     resourceType,
     randomRefs: false,
   })
   const factory: ResourceFactory = {
     id: 'default-preview',
-    createdAt: new Date(),
-    lastUsedAt: null,
-    applyTags: [],
-    createPrompts: [],
-    createValue: defaultValueFactory,
-    location: 'local',
-    name: 'default values',
+    name: 'default preview',
+    file: '',
     resourceName,
-    tags: [],
-  }
-  const instance = await createInstanceFromFactory({
-    resourceType,
-    factory: {
-      ...factory,
-      fakerSeed: undefined,
+    location: 'local',
+    lastUsedAt: null,
+    info: {
+      createdAt: new Date(),
+      applyTags: [],
+      createPrompts: [],
+      tags: [],
+      author: await getCurrentUser(),
     },
-    factoryDataContext: {},
-    skipEnforceUnique: true,
+    fields: defaultFields,
+  }
+
+  const ast = await serializeFactory(factory)
+  ast.program.body = ast.program.body.filter(node => node.type !== 'ImportDeclaration')
+  const inlineCode = printCode(ast)
+
+  const instance = await createInstanceFromFactory({
+    factory,
+    inlineCode,
+    save: false,
   })
   return instance.value
 })

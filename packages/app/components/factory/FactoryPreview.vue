@@ -49,6 +49,13 @@ watch(() => props.factory, () => {
           <pre class="max-w-[300px] p-4 text-xs whitespace-pre-wrap text-red-500">{{ error.data?.message ?? error.message }}</pre>
         </template>
       </Dropdown>
+
+      <UButton
+        icon="i-ph-arrows-clockwise"
+        :padded="false"
+        variant="link"
+        @click="fetchPreview()"
+      />
     </div>
 
     <MonacoEditor

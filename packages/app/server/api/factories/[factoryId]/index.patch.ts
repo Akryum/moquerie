@@ -1,21 +1,22 @@
 import { nanoid } from 'nanoid'
 import { getFactoryStorage } from '@moquerie/core'
-import type { ResourceFactory } from '@moquerie/core'
+import type { FactoryData } from '@/components/factory/formTypes.js'
 
-export default defineEventHandler<{ body: ResourceFactory }>(async (event) => {
+export default defineEventHandler<{ body: FactoryData }>(async (event) => {
+  const { factoryId } = getRouterParams(event)
   const body = await readBody(event)
   const storage = await getFactoryStorage()
 
-  const factory = await storage.findById(body.id)
+  const factory = await storage.findById(factoryId)
   if (!factory) {
-    throw new Error(`Factory ${body.id} not found`)
+    throw new Error(`Factory ${factoryId} not found`)
   }
 
   if (factory.location !== body.location) {
     if (body.location === 'local') {
       // Override id with random one
       await storage.remove(factory.id)
-      body.id = factory.id = nanoid()
+      factory.id = `${body.resourceName ?? factory.resourceName}-${nanoid()}`
     }
     else if (body.location === 'repository') {
       // Use name as id
@@ -24,7 +25,7 @@ export default defineEventHandler<{ body: ResourceFactory }>(async (event) => {
         throw new Error(`Factory with name "${name}" already exists in repository`)
       }
       await storage.remove(factory.id)
-      body.id = factory.id = `${body.resourceName ?? factory.resourceName}-${name}`
+      factory.id = `${body.resourceName ?? factory.resourceName}-${name}`
     }
   }
   Object.assign(factory, body)

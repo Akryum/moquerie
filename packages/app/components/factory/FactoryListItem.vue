@@ -24,10 +24,10 @@ defineProps<{
         {{ factory.name }}
       </div>
       <div
-        v-if="factory.description"
+        v-if="factory.info.description"
         class="text-xs opacity-50 leading-tight truncate"
       >
-        {{ factory.description }}
+        {{ factory.info.description }}
       </div>
     </div>
 

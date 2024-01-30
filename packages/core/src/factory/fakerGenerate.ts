@@ -1,6 +1,6 @@
 import type { Faker } from '@faker-js/faker'
 import { runValueCode } from '../util/vm.js'
-import { get } from '../util/get.js'
+import { get } from '../util/object.js'
 
 export interface GenerateValueFromFakerOptions {
   factory: string

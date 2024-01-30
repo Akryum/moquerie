@@ -13,31 +13,29 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
     // Root types
     if (!resourceType.array) {
       const r = resolvers[resourceName] = {} as Record<any, any>
-      if (resourceType.type === 'object') {
-        if (resourceType.name === 'Subscription') {
-          for (const key in resourceType.fields) {
-            r[key] = {
-              subscribe: () => ctx.pubSubs.graphql.subscribe(key),
-              resolve: async (payload: any) => {
-                if (!(key in payload)) {
-                  throw new Error(`Payload does not contain key "${key}": ${JSON.stringify(payload, null, 2)}}`)
-                }
-                const data = await hydrateResourceInstanceReferences(payload)
-                return data[key]
-              },
-            }
+      if (resourceType.name === 'Subscription') {
+        for (const key in resourceType.fields) {
+          r[key] = {
+            subscribe: () => ctx.pubSubs.graphql.subscribe(key),
+            resolve: async (payload: any) => {
+              if (!(key in payload)) {
+                throw new Error(`Payload does not contain key "${key}": ${JSON.stringify(payload, null, 2)}}`)
+              }
+              const data = await hydrateResourceInstanceReferences(payload)
+              return data[key]
+            },
           }
-
-          continue
         }
 
-        for (const key in resourceType.fields) {
-          r[key] = async () => {
-            const { db } = await getResolvedContext()
-            const instance = await db[resourceName].findFirst()
-            if (instance) {
-              return instance[key]
-            }
+        continue
+      }
+
+      for (const key in resourceType.fields) {
+        r[key] = async () => {
+          const { db } = await getResolvedContext()
+          const instance = await db[resourceName].findFirst()
+          if (instance) {
+            return instance[key]
           }
         }
       }

@@ -1,31 +1,10 @@
+import type { Faker } from '@faker-js/faker'
+import type { QueryManagerProxy } from '../resource/queryManagerProxy.js'
+import type { Awaitable } from '../util/types.js'
+import type { QueryManager } from '../resource/queryManager.js'
 import type { DBLocation } from './db.js'
+import type { User } from './user.js'
 import type { ResourceInstanceReference } from './resource.js'
-
-export interface ResourceFactory {
-  id: string
-  name: string
-  location: DBLocation
-  tags: readonly string[]
-  description?: string
-  createdAt: Date
-  lastUsedAt: Date | null
-  resourceName: string
-  createPrompts: ResourceFactoryPrompt[]
-  createValue: ResourceFactoryValue
-  /**
-   * If defined, result will be the same each time.
-   */
-  fakerSeed?: string | number
-  fakerLocale?: string
-  /**
-   * Tags added to the instance.
-   */
-  applyTags: string[]
-  /**
-   * Comment set to the instance.
-   */
-  applyComment?: string
-}
 
 export interface ResourceFactoryPromptChoice {
   label: string
@@ -60,58 +39,130 @@ export type ResourceFactoryPrompt = {
   }
 )
 
-/**
- * We keep all fields so switching between generateTypes keeps user configuration.
- */
-export interface ResourceFactoryValue {
-  generateType: 'faker' | 'static' | 'resourceReference' | 'script' | 'registeredFunction' | 'importFunction'
+export interface ResourceFactoryInfo {
+  tags: string[]
+  description?: string
+  createdAt: Date
+  author: User
+  createPrompts: ResourceFactoryPrompt[]
   /**
-   * Static value or script, as JS code.
+   * If defined, result will be the same each time.
    */
-  staticValue?: any
+  fakerSeed?: string | number
+  fakerLocale?: string
   /**
-   * Need to evaluate staticValue when running the factory.
+   * Tags added to the instance.
    */
-  staticEvaluated?: boolean
-  staticScript?: string
+  applyTags: string[]
   /**
-   * Faker factory. Example: 'image.avatar'.
+   * Comment set to the instance.
    */
-  fakerFactory?: string
+  applyComment?: string
+}
+
+export type ResourceFactoryFieldsMap = Record<string, ResourceFactoryField>
+
+export interface ResourceFactoryField {
+  type: 'faker' | 'db' | 'repeat' | 'pickRandom' | 'object' | 'array' | 'null' | 'other'
   /**
-   * Faker options as JS code.
+   * Should be called after the other props are created to reuse them.
    */
-  fakerOptions?: string
+  lazy?: boolean
   /**
-   * In case the value is an array, this will be the number of items.
+   * JS code of the function body of the field.
    */
-  fakerCount?: number | { min: number, max: number }
+  lazyBody?: string
   /**
-   * If true, will check for duplicate values and try to generate a new one.
+   * JS code of the value of the field.
    */
-  fakerEnforceUnique?: boolean
+  rawCode?: string
   /**
-   * Referenced resource type.
+   * Faker function name. For example: 'image.avatar'
    */
-  resourceTypeName?: string
+  fakerFn?: string
   /**
-   * In case of array, it will be a list of resource ids.
+   * JS code of the parameters passed to the faker function.
    */
-  instanceRefs?: ResourceInstanceReference[] | null
+  fakerParams?: string
+
   /**
-   * Selects a random resource for the corresponding type.
+   * Resource name targeted by the DB function.
+   * Example: `db.User.findMany()` => 'User'
    */
-  resourceRandom?: boolean
+  dbResource?: string
   /**
-   * Function to call to generate the value.
+   * DB function name. For example: 'findMany'
    */
-  functionName?: string
+  dbFn?: keyof QueryManager<any>
   /**
-   * Function to call to generate the value.
+   * JS code of the parameters passed to the DB function.
    */
-  importFunctionPath?: string
+  dbParams?: string
   /**
-   * Nested fields
+   * References to other resources parsed from array.
    */
-  children?: Record<string, ResourceFactoryValue>
+  dbReferences?: ResourceInstanceReference[]
+
+  repeatMin?: number
+  repeatMax?: number
+
+  pickRandomList?: string
+
+  value?: any
+
+  /**
+   * Single child. Currently used for repeat.
+   */
+  child?: ResourceFactoryField
+  /**
+   * Multiple children. Currently used for object.
+   */
+  children?: ResourceFactoryFieldsMap
+  /**
+   * Multiple children. Currently used for array.
+   */
+  arrayChildren?: ResourceFactoryField[]
+}
+
+export interface ResourceFactory {
+  id: string
+  name: string
+  location: DBLocation
+  resourceName: string
+  lastUsedAt?: Date | null
+  /**
+   * Absolute path to the factory file
+   */
+  file: string
+  /**
+   * Factory info parsed from the file.
+   */
+  info: ResourceFactoryInfo
+  /**
+   * Parsed factory return statement to be edited in the UI.
+   */
+  fields: ResourceFactoryFieldsMap
+  /**
+   * AST of the factory file. Reused to save it.
+   */
+  ast?: any
+}
+
+export interface ResourceFactoryContext {
+  faker: Faker
+  db: QueryManagerProxy
+  repeat<T = any> (fn: (context: ResourceFactoryLazyContext) => T, min: number, max: number): Promise<Array<T>>
+  pickRandom<T extends string | number | boolean = any> (list: T[]): T | null
+}
+
+export interface ResourceFactoryLazyContext<TItem = any> {
+  item: TItem
+  rootRef: ResourceInstanceReference
+}
+
+export type ResourceFactoryFn<TData = any> = (context: ResourceFactoryContext) => Awaitable<TData>
+
+export interface DefineFactoryReturn {
+  info: ResourceFactoryInfo
+  fn: ResourceFactoryFn
 }

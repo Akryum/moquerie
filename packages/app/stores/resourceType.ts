@@ -17,8 +17,14 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
   })
 
   const resourceTypesShownInExplorer = computed(() => {
+    let list = resourceTypes.value
+
+    // Inline types
+    list = list.filter(type => !type.inline)
+
+    // Ignored types
     if (data.value?.ignoredInExplorer) {
-      return resourceTypes.value.filter((type) => {
+      list = list.filter((type) => {
         return !data.value?.ignoredInExplorer?.some((filter) => {
           if (typeof filter === 'string') {
             return filter === type.name
@@ -30,7 +36,8 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
         })
       })
     }
-    return resourceTypes.value
+
+    return list
   })
 
   /**
@@ -80,6 +87,10 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
 
   onWindowFocus(refreshResourceType)
 
+  function getResourceType(name: string) {
+    return resourceTypes.value.find(type => type.name === name)
+  }
+
   return {
     resourceTypes,
     resourceTypesShownInExplorer,
@@ -88,5 +99,6 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
     lastSelectedResourceName,
     fetchResourceType,
     refreshResourceType,
+    getResourceType,
   }
 })

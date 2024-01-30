@@ -2,6 +2,8 @@ import { FSWatcher } from 'chokidar'
 import { getPort } from 'get-port-please'
 import path from 'pathe'
 import { debounce } from 'perfect-debounce'
+import type { JITI } from 'jiti'
+import createJITI from 'jiti'
 import type { Config } from './types/config.js'
 import { resolveConfig } from './config/resolve.js'
 import { getCwd } from './util/env.js'
@@ -97,6 +99,7 @@ export interface ResolvedContext {
   db: QueryManagerProxy
   // @TODO type
   pubSubs: PubSubs
+  jiti: JITI
 }
 
 let resolvedContext: ResolvedContext
@@ -126,6 +129,10 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     }),
     db: createQueryManagerProxy(),
     pubSubs: resolvedContext?.pubSubs ?? await createPubSubs(),
+    jiti: resolvedContext?.jiti ?? createJITI(getCwd(), {
+      requireCache: false,
+      esmResolve: true,
+    }),
   }
 }
 

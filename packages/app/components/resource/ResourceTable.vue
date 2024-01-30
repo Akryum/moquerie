@@ -52,7 +52,7 @@ const colsData: Record<string, ColData> = {}
 const cols = computed(() => {
   const cols: Col[] = []
 
-  if (resourceType.value?.type === 'object') {
+  if (resourceType.value) {
     for (const field in resourceType.value.fields) {
       const data = colsData[field]
       const fieldData = resourceType.value.fields[field]

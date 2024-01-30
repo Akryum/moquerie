@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
     value,
     comment,
     tags,
+    save: true,
   })
 
   return SuperJSON.stringify(instance)

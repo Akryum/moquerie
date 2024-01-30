@@ -1,9 +1,11 @@
 import type { DBLocation } from '../types/db.js'
 import { type UseStorageOptions, useStorage } from './storage.js'
 
+export type OverrideStorageOptions<TData> = Partial<Omit<UseStorageOptions<TData>, 'location'>>
+
 export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'location'> & {
   override?: {
-    [TLocation in DBLocation]?: Partial<Omit<UseStorageOptions<TData>, 'location'>>
+    [TLocation in DBLocation]?: OverrideStorageOptions<TData>
   }
 }
 

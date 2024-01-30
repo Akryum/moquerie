@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import * as monaco from 'monaco-editor'
 import { Dropdown } from 'floating-vue'
-import type { ResourceFactoryValue, ResourceSchemaType } from '@moquerie/core'
+import type { ResourceFactoryField, ResourceSchemaType } from '@moquerie/core'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType
   type: string
-  value: ResourceFactoryValue
+  factoryField: ResourceFactoryField
   array?: boolean
   fakerLocale?: string
 }>()
 
 const emit = defineEmits<{
-  'update:value': [ResourceFactoryValue]
+  'update:factoryField': [factoryField: ResourceFactoryField]
 }>()
 
 const { data: factories, refresh } = await useFetch('/api/faker/factories')
@@ -23,9 +23,9 @@ const preview = computedAsync(async () => {
   const data = await $fetch('/api/faker/preview', {
     method: 'POST',
     body: {
-      factory: props.value.fakerFactory,
+      factory: props.factoryField.fakerFn,
       locale: props.fakerLocale,
-      paramsCode: props.value.fakerOptions,
+      paramsCode: props.factoryField.fakerParams,
     },
   })
   previewError.value = null
@@ -37,7 +37,7 @@ const preview = computedAsync(async () => {
 })
 
 const parsedFactory = computed(() => {
-  const [category, ...names] = props.value.fakerFactory?.split('.') ?? []
+  const [category, ...names] = props.factoryField.fakerFn?.split('.') ?? []
   const name = names.join('.')
   return {
     category,
@@ -46,27 +46,27 @@ const parsedFactory = computed(() => {
 })
 
 const docUrl = computed(() => {
-  const factory = props.value.fakerFactory
+  const factory = props.factoryField.fakerFn
   if (factory) {
     const { category, name } = parsedFactory.value
     return `https://fakerjs.dev/api/${category}.html#${name.toLowerCase()}`
   }
 })
 
-function update(updated: Partial<ResourceFactoryValue>) {
-  const newValue: ResourceFactoryValue = {
-    ...props.value,
+function update(updated: Partial<ResourceFactoryField>) {
+  const newValue: ResourceFactoryField = {
+    ...props.factoryField,
     ...updated,
   }
-  emit('update:value', newValue)
+  emit('update:factoryField', newValue)
 }
 
 // Options code
 
-const fakeOptionsSource = computed({
-  get: () => props.value.fakerOptions ?? '',
+const fakeParamsSource = computed({
+  get: () => props.factoryField.fakerParams ?? '',
   set: (value) => {
-    update({ fakerOptions: value })
+    update({ fakerParams: value })
   },
 })
 
@@ -75,7 +75,7 @@ const fakerTypes = import.meta.glob('/node_modules/@faker-js/faker/dist/types/mo
 })
 
 const fakerType = computedAsync(async () => {
-  if (!props.value.fakerFactory) {
+  if (!props.factoryField.fakerFn) {
     return null
   }
   const { category } = parsedFactory.value
@@ -90,7 +90,7 @@ const fakerType = computedAsync(async () => {
 
 // @TODO data context types (previous fields)
 
-const fakerOptionsWrapCode = computed(() => {
+const fakerParamsWrapCode = computed(() => {
   let start
   const typing = fakerType.value
   if (typing) {
@@ -109,29 +109,15 @@ const fakerOptionsWrapCode = computed(() => {
   }
 })
 
-// Array
+// @TODO SelectMenu popper captures all ArrowUp and ArrowDown events which breaks Shift+ArrowUp/Down shortcuts
 
-const fakerCountType = computed({
-  get: () => typeof props.value.fakerCount === 'number' || props.value.fakerCount == null ? 'static' : 'random',
-  set: (value) => {
-    const currentValue = props.value.fakerCount == null
-      ? 1
-      : typeof props.value.fakerCount === 'number'
-        ? props.value.fakerCount
-        : props.value.fakerCount.min
-    if (value === 'static') {
-      update({ fakerCount: currentValue })
-    }
-    else {
-      update({ fakerCount: { min: currentValue, max: currentValue } })
-    }
-  },
-})
+// // Auto-open select
 
-interface RandomFakerCount {
-  min: number
-  max: number
-}
+const select = ref()
+
+// setTimeout(() => {
+//   select.value?.$refs.trigger?.el.click()
+// }, 300) // Timeout to takeover focus from other autofocus elements
 </script>
 
 <template>
@@ -152,14 +138,15 @@ interface RandomFakerCount {
       </template>
 
       <USelectMenu
+        ref="select"
         searchable
-        :model-value="value.fakerFactory"
+        :model-value="factoryField.fakerFn"
         :options="factories!"
-        @update:model-value="update({ fakerFactory: $event })"
+        @update:model-value="update({ fakerFn: $event })"
       />
     </UFormGroup>
 
-    <template v-if="value.fakerFactory">
+    <template v-if="factoryField.fakerFn">
       <UFormGroup label="Parameters">
         <template #hint>
           <div class="text-xs flex items-center gap-1">
@@ -169,14 +156,14 @@ interface RandomFakerCount {
         </template>
 
         <MonacoEditor
-          v-model:source="fakeOptionsSource"
+          v-model:source="fakeParamsSource"
           filename="fakerOptions.ts"
           :options="{
             language: 'typescript',
             lineNumbers: 'off',
             folding: false,
           }"
-          :wrap-code="fakerOptionsWrapCode"
+          :wrap-code="fakerParamsWrapCode"
           class="h-[50px] border border-gray-300 dark:border-gray-800"
         />
       </UFormGroup>
@@ -205,89 +192,6 @@ interface RandomFakerCount {
             :value="preview"
             class="whitespace-pre-wrap"
           />
-        </div>
-      </UFormGroup>
-
-      <div class="p-2 flex items-center gap-2">
-        <UToggle
-          :model-value="value.fakerEnforceUnique ?? false"
-          @update:model-value="update({ fakerEnforceUnique: $event })"
-        />
-        Enforce uniqueness
-      </div>
-
-      <UFormGroup v-if="array" label="Number of generated items">
-        <div class="flex items-center gap-2">
-          <URadioGroup
-            v-model="fakerCountType"
-            :options="[
-              {
-                value: 'static',
-                label: 'Static count',
-              },
-              {
-                value: 'random',
-                label: 'Random count',
-              },
-            ]"
-            class="flex-1"
-            aria-label="Type of count"
-          />
-
-          <UInput
-            v-if="fakerCountType === 'static'"
-            type="number"
-            :model-value="typeof value.fakerCount === 'number' ? value.fakerCount : 1"
-            @update:model-value="update({ fakerCount: $event })"
-          />
-
-          <div
-            v-else
-            class="flex items-center"
-          >
-            <UInput
-              type="number"
-              :model-value="(value.fakerCount as RandomFakerCount)?.min ?? 1"
-              class="w-[120px] relative left-px"
-              aria-label="Min"
-              :ui="{
-                rounded: 'rounded-r-none',
-                leading: {
-                  padding: {
-                    sm: 'ps-11',
-                  },
-                },
-              }"
-              @update:model-value="update({ fakerCount: { min: $event, max: (value.fakerCount as RandomFakerCount)?.max ?? $event } })"
-            >
-              <template #leading>
-                <div class="text-sm uppercase text-gray-500">
-                  Min
-                </div>
-              </template>
-            </UInput>
-            <UInput
-              type="number"
-              :model-value="(value.fakerCount as RandomFakerCount)?.max ?? 1"
-              class="w-[120px]"
-              aria-label="Max"
-              :ui="{
-                rounded: 'rounded-l-none',
-                leading: {
-                  padding: {
-                    sm: 'ps-11',
-                  },
-                },
-              }"
-              @update:model-value="update({ fakerCount: { min: (value.fakerCount as RandomFakerCount)?.min ?? $event, max: $event } })"
-            >
-              <template #leading>
-                <div class="text-sm uppercase text-gray-500">
-                  Max
-                </div>
-              </template>
-            </UInput>
-          </div>
         </div>
       </UFormGroup>
     </template>

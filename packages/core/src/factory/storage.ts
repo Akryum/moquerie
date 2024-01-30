@@ -1,9 +1,19 @@
+import fs from 'node:fs'
 import path from 'pathe'
 import glob from 'fast-glob'
 import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
 import type { ResourceFactory } from '../types/factory.js'
 import { projectHasTypescript } from '../util/env.js'
 import { type Storage, type StorageManifest, useStorage } from '../storage/storage.js'
+import type { DBLocation } from '../types/db.js'
+import { printCode } from '../ast/print.js'
+import { deserializeFactory } from './deserialize.js'
+import { serializeFactory } from './serialize.js'
+
+export function getFactoryFilename(resourceName: string, id: string, name: string, location: DBLocation) {
+  const [, idPart] = /(?:.+?)(@@.+)?$/.exec(id) ?? []
+  return `${resourceName}/${name}${location === 'local' ? idPart : ''}.${projectHasTypescript() ? 'ts' : 'js'}`
+}
 
 let storage: MergedStorage<ResourceFactory>
 let storagePromise: Promise<MergedStorage<ResourceFactory>>
@@ -15,76 +25,87 @@ export async function getFactoryStorage() {
   if (storagePromise) {
     return storagePromise
   }
+
+  async function readFactory(file: string, location: DBLocation) {
+    const resourceName = path.basename(path.dirname(file))
+    const fileName = path.basename(file).replace(/\.[jt]s$/, '')
+    const [, name] = /(.+?)(?:@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
+    const id = `${resourceName}-${fileName}`
+
+    const content = await fs.promises.readFile(file, 'utf8')
+    const result = await deserializeFactory(content)
+
+    const extra = await getRepoMetaFactoryStorage().then(s => s.findById(id))
+
+    const factory: ResourceFactory = {
+      id,
+      name,
+      resourceName,
+      location,
+      file,
+      ...extra,
+      ...result,
+    }
+
+    return factory
+  }
+
+  async function write(file: string, item: ResourceFactory) {
+    await getRepoMetaFactoryStorage().then(s => s.save({
+      id: item.id,
+      lastUsedAt: item.lastUsedAt,
+    }))
+
+    const ast = await serializeFactory(item)
+    const content = printCode(ast)
+    await fs.promises.writeFile(file, content, 'utf8')
+  }
+
   storagePromise = useMergedStorage({
     path: 'factories',
-    filename: item => `${item.resourceName}/${item.name}.${projectHasTypescript() ? 'ts' : 'js'}`,
     format: 'js',
+
+    manifest: {
+      read: async (folder) => {
+        const manifest: StorageManifest = {
+          version: '0.0.1',
+          files: {},
+        }
+        const files = await glob([
+          '**/*.js',
+          '**/*.ts',
+        ], {
+          cwd: folder,
+        })
+        for (const file of files) {
+          const resourceName = path.basename(path.dirname(file))
+          const id = `${resourceName}-${path.basename(file).replace(/\.[jt]s$/, '')}`
+          manifest.files[id] = file
+        }
+        return manifest
+      },
+      write: () => {
+        // Do not write to disk
+      },
+    },
+
+    deduplicateFiles: false,
+
     override: {
+      local: {
+        filename: item => getFactoryFilename(item.resourceName, item.id, item.name, 'local'),
+        file: {
+          read: async file => readFactory(file, 'local'),
+          write,
+        },
+      },
+
       repository: {
-        transform: {
-          read: async (item, file) => {
-            const resourceName = path.basename(path.dirname(file))
-            const name = path.basename(file).replace(/\.[jt]s$/, '')
-            const id = `${resourceName}-${name}`
-            return {
-              createdAt: new Date(),
-              lastUsedAt: null,
-              ...await getRepoMetaFactoryStorage().then(s => s.findById(id)),
-              id,
-              name,
-              resourceName,
-              location: 'repository',
-              ...item,
-            }
-          },
-          write: async (item) => {
-            const data: Partial<ResourceFactory> = {
-              ...item,
-            }
-            await getRepoMetaFactoryStorage().then(s => s.save({
-              id: item.id,
-              lastUsedAt: item.lastUsedAt,
-              createdAt: item.createdAt,
-              location: item.location,
-            }))
-            delete data.id
-            delete data.name
-            delete data.resourceName
-            delete data.createdAt
-            delete data.lastUsedAt
-            delete data.location
-            for (const key of Object.keys(data) as Array<keyof typeof data>) {
-              if (data[key] === undefined || data[key] === null || data[key] === '') {
-                delete data[key]
-              }
-            }
-            return data
-          },
+        filename: item => getFactoryFilename(item.resourceName, item.id, item.name, 'repository'),
+        file: {
+          read: async file => readFactory(file, 'repository'),
+          write,
         },
-        manifest: {
-          read: async (folder) => {
-            const manifest: StorageManifest = {
-              version: '0.0.1',
-              files: {},
-            }
-            const files = await glob([
-              '**/*.js',
-              '**/*.ts',
-            ], {
-              cwd: folder,
-            })
-            for (const file of files) {
-              const resourceName = path.basename(path.dirname(file))
-              const id = `${resourceName}-${path.basename(file).replace(/\.[jt]s$/, '')}`
-              manifest.files[id] = file
-            }
-            return manifest
-          },
-          write: () => {
-            // Do not write to disk
-          },
-        },
-        deduplicateFiles: false,
       },
     },
   })
@@ -92,8 +113,10 @@ export async function getFactoryStorage() {
   return storage
 }
 
-let metaStorage: Storage<Partial<ResourceFactory> & { id: string }>
-let metaStoragePromise: Promise<Storage<Partial<ResourceFactory> & { id: string }>>
+type ExtraFractoryData = Pick<ResourceFactory, 'id' | 'lastUsedAt'>
+
+let metaStorage: Storage<ExtraFractoryData>
+let metaStoragePromise: Promise<Storage<ExtraFractoryData>>
 
 /**
  * Store metadata about factories stored in the repository that is not explicitly stored in the factory files.

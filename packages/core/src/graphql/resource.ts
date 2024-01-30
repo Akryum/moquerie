@@ -25,6 +25,7 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
 
     if (gqlType.kind === 'OBJECT') {
       const fields: Record<string, ResourceSchemaField> = {}
+      let inline = true
 
       for (const field of gqlType.fields) {
         let array = false
@@ -102,6 +103,10 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
           tags.push('deprecated')
         }
 
+        if (['id', '_id'].includes(field.name)) {
+          inline = false
+        }
+
         const resField: ResourceSchemaField = {
           ...type as ResourceSchemaField,
           name: field.name,
@@ -128,10 +133,10 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
         tags,
         description: gqlType.description ?? undefined,
         array: !isRootType,
-        type: 'object',
         fields,
         nonNull: false,
         isDeprecated: false,
+        inline: inline && !isRootType,
       } satisfies ResourceSchemaType
 
       typesTemp[resType.name] = resType

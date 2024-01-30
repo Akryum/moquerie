@@ -1,4 +1,4 @@
-import { createDefaultValueFactory, getResolvedContext } from '@moquerie/core'
+import { createDefaultFactoryFields, getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler<{ query: { resourceName: string } }>(async (event) => {
   const { resourceName } = getQuery(event)
@@ -7,10 +7,10 @@ export default defineEventHandler<{ query: { resourceName: string } }>(async (ev
   if (!resourceType) {
     throw new Error(`Resource ${resourceName} not found`)
   }
-  const defaultValueFactory = createDefaultValueFactory({
+  const fields = await createDefaultFactoryFields({
     resourceType,
   })
   return {
-    value: defaultValueFactory,
+    fields,
   }
 })

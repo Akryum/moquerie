@@ -9,4 +9,4 @@ export const isReferencesOpen = ref(false)
 /**
  * Shortcuts on escape and meta_enter should be disabled if it's open.
  */
-export const isAnyOpen = computed(() => isFakerOpen.value || isBranchesOpen.value)
+export const isAnyOpen = computed(() => isFakerOpen.value || isBranchesOpen.value || isReferencesOpen.value)

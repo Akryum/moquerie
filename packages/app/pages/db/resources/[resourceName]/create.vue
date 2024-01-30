@@ -1,5 +1,5 @@
 <template>
   <ResourceInstanceCreateForm
-    :resource-name="$route.params.resourceName"
+    :resource-name="String($route.params.resourceName)"
   />
 </template>

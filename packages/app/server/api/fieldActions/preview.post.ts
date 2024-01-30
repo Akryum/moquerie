@@ -20,5 +20,6 @@ export default defineEventHandler(async (event) => {
     parent: instance,
     input: {},
     db: ctx.db,
+    pubsub: ctx.pubSubs,
   })
 })

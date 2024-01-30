@@ -113,7 +113,7 @@ defineShortcuts({
     </div>
 
     <div class="flex flex-col gap-4 p-2">
-      <div v-if="resourceType.type === 'object'" class="flex flex-col items-stretch gap-4">
+      <div class="flex flex-col items-stretch gap-4">
         <ResourceInstanceValueFormInput
           v-for="([key, field], index) in Object.entries(resourceType.fields)"
           :key="key"
@@ -126,7 +126,6 @@ defineShortcuts({
           @apply="onSubmit()"
         />
       </div>
-      <!-- @TODO other types -->
 
       <!-- @TODO sticky actions bar with focus scroll + offset -->
       <FormActions>

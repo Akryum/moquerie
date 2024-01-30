@@ -15,22 +15,12 @@ export type ResourceSchemaCommon = {
 
 export type ResourceSchemaType = ResourceSchemaCommon & {
   idFields?: string[]
-} & (
-  {
-    type: 'string'
-  } | {
-    type: 'number'
-  } | {
-    type: 'boolean'
-  } | {
-    type: 'date'
-  } | {
-    type: 'any'
-  } | {
-    type: 'object'
-    fields: Record<string, ResourceSchemaField>
-  }
-)
+  fields: Record<string, ResourceSchemaField>
+  /**
+   * If true, the resource is not available in the explorer and cannot be store independently.
+   */
+  inline?: boolean
+}
 
 export interface ResourceSchemaFieldEnumValue {
   value: any
@@ -78,20 +68,7 @@ export interface ResourceInstance<TType extends ResourceSchemaType = ResourceSch
   factoryId: string | null
 }
 
-export type ResourceInstanceValue<TType extends ResourceSchemaType> =
-  TType['type'] extends 'string'
-    ? string
-    : TType['type'] extends 'number'
-      ? number
-      : TType['type'] extends 'boolean'
-        ? boolean
-        : TType['type'] extends 'date'
-          ? Date
-          : TType['type'] extends 'any'
-            ? any
-            : TType extends Extract<ResourceSchemaType, { type: 'object' }>
-              ? ResourceInstanceObjectValue<TType['fields']>
-              : never
+export type ResourceInstanceValue<TType extends ResourceSchemaType> = ResourceInstanceObjectValue<TType['fields']>
 
 export type ResourceInstanceObjectValue<TFields extends Record<string, ResourceSchemaField>> = {
   [K in keyof TFields]: ResourceInstanceFieldValueMightBeArray<TFields[K]>

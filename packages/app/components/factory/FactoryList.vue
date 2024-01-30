@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useRouteQuery } from '@vueuse/router'
 import type { DBLocation, ResourceFactory } from '@moquerie/core'
-import LinkList from '../LinkList.vue'
 
 const route = useRoute()
 
@@ -11,7 +10,8 @@ const resourceName = computed(() => String(route.params.resourceName))
 
 const location = useRouteQuery<DBLocation>('factoryLocation', 'local')
 
-const linkList = ref<InstanceType<typeof LinkList> | null>(null)
+// @TODO type with component
+const linkList = ref<any>(null)
 
 function onClickOnLocationButton() {
   linkList.value?.focusFilterInput()
@@ -39,10 +39,10 @@ watchEffect(() => {
 
 // Filter
 
-function filter(item: ResourceFactory, filterValue: string): boolean {
-  return item.name.toLowerCase().includes(filterValue)
-    || item.tags.some(tag => tag.toLowerCase().includes(filterValue))
-    || item.description?.toLowerCase().includes(filterValue)
+function filter(factory: ResourceFactory, filterValue: string): boolean {
+  return factory.name.toLowerCase().includes(filterValue)
+    || factory.info.tags.some(tag => tag.toLowerCase().includes(filterValue))
+    || factory.info.description?.toLowerCase().includes(filterValue)
     || false
 }
 

@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
         </div>
 
         <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
-        <UIcon v-else v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
+        <UIcon v-else v-tooltip="'Single reference'" name="i-ph-database" />
 
         <div v-if="field.description" class="text-sm text-gray-500">
           {{ field.description }}

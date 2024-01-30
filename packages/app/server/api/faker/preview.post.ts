@@ -10,7 +10,13 @@ interface Body {
 
 export default defineEventHandler<{ body: Body }>(async (event) => {
   const body = await readBody(event)
-  const paramsContext = body.paramsContext ? SuperJSON.parse<any>(body.paramsContext) ?? JSON.parse(body.paramsContext) : undefined
+  let paramsContext = body.paramsContext ? SuperJSON.parse<any>(body.paramsContext) ?? JSON.parse(body.paramsContext) : undefined
+  if (!paramsContext) {
+    paramsContext = {}
+  }
+  if (!paramsContext.item) {
+    paramsContext.item = {}
+  }
   const faker = await getFaker({
     locale: body.locale,
     seed: undefined,

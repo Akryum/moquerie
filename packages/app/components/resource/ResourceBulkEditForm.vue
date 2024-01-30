@@ -50,10 +50,6 @@ function removeField(field: ResourceSchemaField) {
 const filter = ref('')
 
 const fields = computed(() => {
-  if (props.resourceType.type !== 'object') {
-    return
-  }
-
   let result = Object.values(props.resourceType.fields)
   if (filter) {
     const reg = new RegExp(filter.value, 'i')
@@ -123,7 +119,6 @@ defineShortcuts({
 
 <template>
   <UForm
-    v-if="resourceType.type === 'object'"
     :state="state"
     :validate="validate"
     class="flex flex-col gap-1"

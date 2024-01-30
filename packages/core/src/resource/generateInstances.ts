@@ -17,8 +17,7 @@ export async function generateResourceInstances(options: GenerateResourceInstanc
   for (let i = 0; i < count; i++) {
     const instance = await createInstanceFromFactory({
       factory,
-      factoryDataContext: {},
-      resourceType,
+      save: true,
     })
     if (!resourceType.array) {
       instance.active = false

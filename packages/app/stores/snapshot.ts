@@ -61,6 +61,7 @@ export const useSnapshotStore = defineStore('snapshots', () => {
 
   async function deleteSnapshot(id: string) {
     await $fetch(`/api/snapshots/${id}`, {
+      // @ts-expect-error Nuxt types issue
       method: 'DELETE',
     })
     await refreshSnapshots()

@@ -28,7 +28,8 @@
   ],
   "scripts": {
     "build": "nuxt prepare && nuxt build",
-    "dev": "nuxt prepare && nuxt dev --dotenv .env.playground"
+    "dev": "nuxt prepare && nuxt dev --dotenv .env.playground",
+    "test:types": "nuxt typecheck"
   },
   "peerDependencies": {
     "@moquerie/core": "workspace:^",
@@ -54,6 +55,7 @@
     "floating-vue": "^5.0.3",
     "graphql": "^16.8.1",
     "jiti": "^1.21.0",
+    "just-clone": "^6.2.0",
     "launch-editor": "^2.6.1",
     "monaco-editor": "^0.45.0",
     "monaco-graphql": "^1.4.0",
@@ -62,6 +64,7 @@
     "pathe": "^1.1.1",
     "pinia": "^2.1.7",
     "superjson": "^2.2.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vue-tsc": "^1.8.27"
   }
 }

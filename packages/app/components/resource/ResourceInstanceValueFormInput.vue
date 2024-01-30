@@ -130,7 +130,7 @@ function removeArrayItem(index: number) {
         <span>{{ field.name }}</span>
 
         <UIcon v-if="field.array" v-tooltip="'Array'" name="i-ph-circles-three" />
-        <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-number-circle-one" />
+        <UIcon v-else-if="field.type === 'resource'" v-tooltip="'Single reference'" name="i-ph-database" />
       </div>
     </template>
 

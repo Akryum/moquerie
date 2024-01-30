@@ -35,21 +35,20 @@ onWindowFocus(refresh)
 function getStateInitialValues(factory = props.factory): FactoryData {
   return {
     name: factory?.name ?? `${props.resourceName}Factory`,
-    location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
-    description: factory?.description ?? '',
-    tags: factory?.tags ? structuredClone(toRaw(factory.tags)) : [],
     resourceName: props.resourceName,
-    createPrompts: factory?.createPrompts ? structuredClone(toRaw(factory.createPrompts)) : [],
-    createValue: factory?.createValue
-      ? structuredClone(toRaw(factory.createValue))
-      : {
-          generateType: 'static',
-          children: {},
-        },
-    fakerSeed: factory?.fakerSeed ?? '',
-    fakerLocale: factory?.fakerLocale,
-    applyTags: factory?.applyTags ? structuredClone(toRaw(factory.applyTags)) : [],
-    applyComment: factory?.applyComment ?? '',
+    location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
+    info: {
+      description: factory?.info.description ?? '',
+      tags: factory?.info.tags ? structuredClone(toRaw(factory.info.tags)) : [],
+      createPrompts: factory?.info.createPrompts ? structuredClone(toRaw(factory.info.createPrompts)) : [],
+      fakerSeed: factory?.info.fakerSeed ?? '',
+      fakerLocale: factory?.info.fakerLocale,
+      applyTags: factory?.info.applyTags ? structuredClone(toRaw(factory.info.applyTags)) : [],
+      applyComment: factory?.info.applyComment ?? '',
+    },
+    fields: factory?.fields
+      ? structuredClone(toRaw(factory.fields))
+      : {},
   }
 }
 
@@ -72,29 +71,29 @@ watch(state, () => {
   deep: true,
 })
 
-async function setDefaultValueFactory() {
-  const data = await $fetch('/api/factories/defaultValueFactory', {
+async function setDefaultFactoryFields() {
+  const data = await $fetch('/api/factories/defaultFields', {
     query: {
       resourceName: props.resourceName,
     },
   })
-  state.value.createValue = data.value
+  state.value.fields = data.fields
 }
 
 if (!props.factory) {
-  setDefaultValueFactory()
+  setDefaultFactoryFields()
 }
 
 watch(() => props.resourceName, () => {
   state.value = getStateInitialValues()
   if (!props.factory) {
-    setDefaultValueFactory()
+    setDefaultFactoryFields()
   }
   refresh()
 })
 
-const tags = useTagModel(state.value, 'tags')
-const applyTags = useTagModel(state.value, 'applyTags')
+const tags = useTagModel(state.value.info, 'tags')
+const applyTags = useTagModel(state.value.info, 'applyTags')
 
 function validate(state: FactoryData) {
   const errors = []
@@ -121,10 +120,9 @@ async function onSubmit() {
 
     if (props.factory) {
       // Update factory
-      factory = await $fetch(`/api/factories/update`, {
+      factory = await $fetch(`/api/factories/${props.factory.id}`, {
         method: 'PATCH',
         body: {
-          id: props.factory.id,
           ...state.value,
         },
       })
@@ -201,11 +199,8 @@ async function removeFactory() {
     return
   }
 
-  await $fetch('/api/factories/remove', {
+  await $fetch(`/api/factories/${props.factory.id}`, {
     method: 'DELETE',
-    query: {
-      id: props.factory.id,
-    },
   })
 
   toast.add({
@@ -242,7 +237,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="grid grid-cols-2">
+  <div v-if="resourceType" class="grid grid-cols-2">
     <div class="w-full h-full overflow-y-auto p-4">
       <div class="space-y-4">
         <h1 class="flex items-center gap-1">
@@ -276,7 +271,7 @@ defineShortcuts({
           <FormGroupLocationInput v-model="state.location" />
 
           <UFormGroup name="description" label="Description" hint="What does the factory do?">
-            <UTextarea v-model="state.description" autoresize :rows="1" />
+            <UTextarea v-model="state.info.description" autoresize :rows="1" />
           </UFormGroup>
 
           <UFormGroup name="tags" label="Factory tags" hint="Separate tags with commas">
@@ -306,26 +301,25 @@ defineShortcuts({
 
           <UFormGroup name="fakerLocale" label="Faker locale">
             <USelectMenu
-              v-model="state.fakerLocale"
+              v-model="state.info.fakerLocale"
               :options="fakerLocaleOptions"
               searchable
               value-attribute="value"
             >
               <template #label>
-                {{ fakerLocales?.[state.fakerLocale ?? '']?.name ?? 'Default' }}
+                {{ fakerLocales?.[state.info.fakerLocale ?? '']?.name ?? 'Default' }}
               </template>
             </USelectMenu>
           </UFormGroup>
 
           <UFormGroup
-            v-if="resourceType?.type === 'object'"
-            name="createValue"
+            name="fields"
             label="Fields"
           >
             <FactoryFields
-              v-model:value="state.createValue"
+              v-model:factory-fields="state.fields"
               :resource-type="resourceType"
-              :faker-locale="state.fakerLocale"
+              :faker-locale="state.info.fakerLocale"
             />
           </UFormGroup>
 
@@ -334,7 +328,7 @@ defineShortcuts({
           </UFormGroup>
 
           <UFormGroup name="apply-comment" label="Instance comment" description="Comment/note added to the instance">
-            <UTextarea v-model="state.applyComment" />
+            <UTextarea v-model="state.info.applyComment" />
           </UFormGroup>
 
           <FormActions class="-bottom-4">

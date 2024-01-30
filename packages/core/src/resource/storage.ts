@@ -21,6 +21,7 @@ export async function getResourceInstanceStorage(resourceTypeName: string): Prom
   const promise = useStorage<ResourceInstance>({
     path: `${resourceInstancesFolders.join('/')}/${currentBranch}/${resourceTypeName}`,
     location: 'local',
+    deduplicateFiles: false,
   })
   storagePromise.set(resourceTypeName, promise)
   try {

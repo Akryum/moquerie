@@ -14,8 +14,8 @@ import { generateAstFromObject } from '../ast/objectToAst.js'
 import type { Awaitable } from '../util/types.js'
 import { getLocalDbFolder, getRepositoryDbFolder } from './path.js'
 
-const manifestVersion = '0.0.1'
-const storageVersion = '0.0.1'
+export const manifestVersion = '0.0.1'
+export const storageVersion = '0.0.1'
 
 export interface StorageManifest {
   version: string
@@ -47,6 +47,13 @@ export interface UseStorageOptions<TData> {
   transform?: {
     read?: (item: any, file: string) => Awaitable<TData>
     write?: (item: TData, file: string) => Awaitable<any>
+  }
+  /**
+   * Custom file system implementation.
+   */
+  file?: {
+    read?: (file: string) => Awaitable<any>
+    write?: (file: string, data: any) => Awaitable<void>
   }
   manifest?: {
     read?: (folder: string) => Awaitable<StorageManifest>
@@ -102,9 +109,13 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   }
 
   async function readFile(id: string, file: string) {
+    const filePath = getFilePath(file)
     let item
-    if (fileFormat === 'js') {
-      const mod = await jiti(getFilePath(file))
+    if (options.file?.read) {
+      item = await options.file.read(filePath)
+    }
+    else if (fileFormat === 'js') {
+      const mod = await jiti(filePath)
 
       if (!mod.version) {
         throw new Error(`Invalid storage file ${file} - missing version`)
@@ -119,7 +130,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
       item = mod.default
     }
     else if (fileFormat === 'json') {
-      const content = await fs.promises.readFile(getFilePath(file), 'utf-8')
+      const content = await fs.promises.readFile(filePath, 'utf-8')
       const data = SuperJSON.parse(content) as any
 
       if (!data.version) {
@@ -188,10 +199,17 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
       throw new Error(`Invalid storage file ${item.id} not found in manifest`)
     }
     const file = getFilePath(manifestData)
+    await ensureDir(path.dirname(file))
+
     let content: string
 
     if (options.transform?.write) {
       item = await options.transform.write(item, file)
+    }
+
+    if (options.file?.write) {
+      await options.file.write(file, item)
+      return
     }
 
     if (fileFormat === 'js') {
@@ -249,7 +267,6 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
     }
 
     // Write
-    await ensureDir(path.dirname(file))
     await fs.promises.writeFile(file, content!, 'utf-8')
   }
 
@@ -297,7 +314,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   /**
    * Return all items
    */
-  async function findAll() {
+  async function findAll(): Promise<TData[]> {
     if (options.lazyLoading) {
       throw new Error('findAll() is not supported with lazyLoading')
     }
@@ -307,7 +324,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
   /**
    * Return item by id
    */
-  async function findById(id: string) {
+  async function findById(id: string): Promise<TData | undefined> {
     if (options.lazyLoading) {
       const file = manifest.files[id]
       return readFile(id, file)

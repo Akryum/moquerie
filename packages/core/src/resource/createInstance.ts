@@ -9,11 +9,12 @@ export interface CreateInstanceOptions {
   tags?: string[]
   comment?: string
   id?: string
+  save: boolean
 }
 
 export async function createResourceInstance(options: CreateInstanceOptions) {
   const { resourceName, value, tags, comment } = options
-  const storage = await getResourceInstanceStorage(resourceName)
+  // console.log('createResourceInstance', resourceName, new Error().stack)
 
   const id = options.id ?? nanoid()
 
@@ -29,7 +30,10 @@ export async function createResourceInstance(options: CreateInstanceOptions) {
     factoryId: null,
   }
 
-  await storage.save(instance)
+  if (options.save) {
+    const storage = await getResourceInstanceStorage(resourceName)
+    await storage.save(instance)
+  }
 
   await deactiveOtherSingletonResourceInstances(resourceName, id)
 

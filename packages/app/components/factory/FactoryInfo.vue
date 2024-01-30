@@ -11,14 +11,14 @@ defineProps<{
     {{ factory.name }}
   </div>
   <div
-    v-if="factory.description"
+    v-if="factory.info.description"
     class="text-sm opacity-50 leading-tight"
   >
-    {{ factory.description }}
+    {{ factory.info.description }}
   </div>
-  <div v-if="factory.tags" class="flex gap-1">
+  <div v-if="factory.info.tags" class="flex gap-1">
     <UBadge
-      v-for="tag in factory.tags"
+      v-for="tag in factory.info.tags"
       :key="tag"
       variant="soft"
     >

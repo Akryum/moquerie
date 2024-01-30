@@ -10,7 +10,12 @@ export const schema = makeExecutableSchema({
       name: String!
       email: String!
       avatarUrl: String
+      avatar: Avatar
       messages: [Message!]!
+    }
+
+    type Avatar {
+      url: String!
     }
 
     enum MessageType {
