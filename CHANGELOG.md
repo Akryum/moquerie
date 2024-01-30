@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- Complete factory rework, basic inline resource support ([3458a3d](https://github.com/Akryum/moquerie/commit/3458a3d))
+- Basic inline resource type support in resource explorer ([1acee56](https://github.com/Akryum/moquerie/commit/1acee56))
+- Improve compat with non-ESM projects ([220caa9](https://github.com/Akryum/moquerie/commit/220caa9))
+
+### 🩹 Fixes
+
+- Prevent scrollbars on body with tooltips ([0651678](https://github.com/Akryum/moquerie/commit/0651678))
+
+### 🏡 Chore
+
+- Remove draft files ([c88c8f9](https://github.com/Akryum/moquerie/commit/c88c8f9))
+
+### ✅ Tests
+
+- **lint:** Fix ([8c6ed08](https://github.com/Akryum/moquerie/commit/8c6ed08))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.4
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.3...v0.0.4)
