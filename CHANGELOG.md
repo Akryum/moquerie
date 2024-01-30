@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.6...v0.0.7)
+
+### 🚀 Enhancements
+
+- Update deps ([d19e68a](https://github.com/Akryum/moquerie/commit/d19e68a))
+
+### 🩹 Fixes
+
+- Include index.d.ts in @moquerie/app ([c67c8a6](https://github.com/Akryum/moquerie/commit/c67c8a6))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.6
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.5...v0.0.6)
