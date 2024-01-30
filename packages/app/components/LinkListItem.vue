@@ -20,12 +20,24 @@ defineEmits<{
 
 const el = ref<HTMLElement | null>(null)
 
+function scrollIntoView(center = false, smooth = true) {
+  el.value?.scrollIntoView({
+    behavior: smooth ? 'smooth' : 'instant',
+    block: center ? 'center' : 'nearest',
+  })
+}
+
 watch(() => props.hover, (val) => {
   if (val) {
-    el.value?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-    })
+    scrollIntoView()
+  }
+})
+
+onMounted(() => {
+  if (props.selected) {
+    setTimeout(() => {
+      scrollIntoView(true, false)
+    }, 300)
   }
 })
 </script>
