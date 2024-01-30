@@ -24,6 +24,7 @@
   "types": "./index.d.mts",
   "files": [
     ".output",
+    "index.d.ts",
     "index.mjs"
   ],
   "scripts": {
