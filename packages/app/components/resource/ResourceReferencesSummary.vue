@@ -30,6 +30,6 @@ const list = computed(() => {
     >
       {{ list.length }}
     </span>
-    <span class="text-xs">{{ field.resourceName }}{{ list.length > 1 ? 's' : '' }}</span>
+    <span class="text-xs font-mono">{{ field.resourceName }}{{ list.length > 1 ? 's' : '' }}</span>
   </div>
 </template>

@@ -87,7 +87,7 @@ function getDefaultColSize(fieldData: ResourceSchemaField) {
   }
 
   if (fieldData.type === 'resource') {
-    return 150
+    return fieldData.resourceName.length * 7 + 90
   }
 
   switch (fieldData.type) {
