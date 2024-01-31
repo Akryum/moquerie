@@ -20,7 +20,7 @@ export const useResourceTypeStore = defineStore('resourceTypes', () => {
     let list = resourceTypes.value
 
     // Inline types
-    list = list.filter(type => !type.inline)
+    list = list.filter(type => !type.inline && !type.implementations)
 
     // Ignored types
     if (data.value?.ignoredInExplorer) {

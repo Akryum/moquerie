@@ -20,6 +20,10 @@ export type ResourceSchemaType = ResourceSchemaCommon & {
    * If true, the resource is not available in the explorer and cannot be store independently.
    */
   inline?: boolean
+  /**
+   * The type is virtual and is implemented in those types.
+   */
+  implementations?: string[]
 }
 
 export interface ResourceSchemaFieldEnumValue {

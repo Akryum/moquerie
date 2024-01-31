@@ -82,7 +82,7 @@ defineShortcuts({
         v-model="showOnlyFavorites"
         :options="[
           { label: 'All', value: false, count: (filterList ? filterList(resourceTypeStore.resourceTypesShownInExplorer) : resourceTypeStore.resourceTypesShownInExplorer).length },
-          { label: 'Favorites', value: true, count: favoriteCount },
+          { label: 'Favorites', value: true, count: filterList ? undefined : favoriteCount },
         ]"
         :button-attrs="{
           color: 'gray',

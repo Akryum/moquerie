@@ -40,6 +40,12 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
         }
       }
     }
+
+    // Interface types
+    if (resourceType.implementations) {
+      const r = resolvers[resourceType.name] = {} as Record<any, any>
+      r.__resolveType = (parent: any) => parent.__typename
+    }
   }
 
   // Field actions

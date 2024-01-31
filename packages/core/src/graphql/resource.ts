@@ -75,7 +75,7 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
             }
           }
         }
-        else if (gqlFieldType.kind === 'OBJECT') {
+        else if (gqlFieldType.kind === 'OBJECT' || gqlFieldType.kind === 'INTERFACE' || gqlFieldType.kind === 'UNION') {
           type = {
             type: 'resource',
             resourceName: gqlFieldType.name,
@@ -141,6 +141,21 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
 
       typesTemp[resType.name] = resType
       typesListTemp.push(resType)
+    }
+    else if (gqlType.kind === 'INTERFACE' || gqlType.kind === 'UNION') {
+      const interfaceType = {
+        name: gqlType.name,
+        tags: ['graphql', 'interface'],
+        description: gqlType.description ?? undefined,
+        array: true,
+        fields: {},
+        nonNull: false,
+        isDeprecated: false,
+        implementations: gqlType.possibleTypes.map(t => t.name).sort(),
+      } satisfies ResourceSchemaType
+
+      typesTemp[interfaceType.name] = interfaceType
+      typesListTemp.push(interfaceType)
     }
   }
 

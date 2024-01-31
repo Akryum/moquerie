@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
 import { getResolvedContext } from '../context.js'
-import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaType } from '../types/resource.js'
+import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
 import { type CreateInstanceOptions, createResourceInstance } from './createInstance.js'
 import { findResourceInstanceById } from './find.js'
 import { findAllResourceInstances } from './findAll.js'
@@ -148,7 +148,9 @@ async function deserializeInstanceValue<TData>(
   /**
    * Final object returned in the API.
    */
-  const result = {} as Record<string, any>
+  const result = {
+    __typename: instance.resourceName,
+  } as Record<string, any>
 
   // Cache
   deserializeContext.store.set(storeKey, result)
@@ -165,19 +167,35 @@ async function deserializeInstanceValue<TData>(
       else {
         const refs = (Array.isArray(value) ? value : [value]).filter(Boolean) as ResourceInstanceReference[]
 
-        // Get maps of (only) active instances by id
-        const instancesById = await getInstancesByIdMapCached(deserializeContext.instancesCache, deserializeContext.instancesByIdCache, field.resourceName)
-
         if (field.array) {
-        // Pick active referenced instances
-          const instances = refs.map(({ __id }) => instancesById.get(__id)).filter(Boolean) as ResourceInstance[]
           // Get final objects for referenced instances
-          result[key] = await Promise.all(instances.map(i => deserializeInstanceValue(i, deserializeContext)))
+          result[key] = (await Promise.all(refs.map(async (ref) => {
+            // Get maps of (only) active instances by id
+            const instancesById = await getInstancesByIdMapCached(deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
+
+            const instance = instancesById.get(ref.__id)
+            if (!instance) {
+              return null
+            }
+
+            return deserializeInstanceValue(instance, deserializeContext)
+          }))).filter(Boolean)
         }
         else {
+          let refInstance: ResourceInstance | null = null
+
           // We pick the first active referenced instance
-          const firstActiveRef = refs.find(({ __id }) => instancesById.has(__id))
-          const refInstance = firstActiveRef ? instancesById.get(firstActiveRef.__id) : null
+          for (const ref of refs) {
+            // Get maps of (only) active instances by id
+            const instancesById = await getInstancesByIdMapCached(deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
+
+            const instance = instancesById.get(ref.__id)
+            if (instance) {
+              refInstance = instance
+              break
+            }
+          }
+
           if (refInstance) {
           // Get final object for referenced instance
             result[key] = await deserializeInstanceValue(refInstance, deserializeContext)
@@ -289,22 +307,36 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
 
       const fieldResourceType = ctx.schema.types[field.resourceName]
 
+      async function processChild(field: ResourceSchemaField & { type: 'resource' }, v: any) {
+        let r: ResourceInstanceReference | null
+        if (typeof v === 'string') {
+          // Just an id
+          if (fieldResourceType.implementations) {
+            throw new Error(`Error saving ${v}: Cannot reference interface type "${field.resourceName}" as an object with a __typename property is needed`)
+          }
+          r = await serializeInstanceValue(field.resourceName, v, null, serializeContext)
+        }
+        else {
+          let childResourceName = field.resourceName
+          if (fieldResourceType.implementations) {
+            if (!v.__typename) {
+              throw new Error(`Error saving ${JSON.stringify(v)}: Cannot reference interface type "${field.resourceName}" as an object with a __typename property is needed`)
+            }
+            childResourceName = v.__typename
+          }
+          // An object
+          r = await serializeInstanceValue(childResourceName, null, v as any, serializeContext)
+        }
+        return r
+      }
+
       if (field.array) {
         if (fieldResourceType.inline) {
           resultValue[key] = instanceValues.filter(Boolean)
         }
         else {
           // Process and save referenced object into database
-          const refValues = await Promise.all(instanceValues.map((v) => {
-            if (typeof v === 'string') {
-              // Just an id
-              return serializeInstanceValue(field.resourceName, v, null, serializeContext)
-            }
-            else {
-              // An object
-              return serializeInstanceValue(field.resourceName, null, v as any, serializeContext)
-            }
-          }))
+          const refValues = await Promise.all(instanceValues.map(v => processChild(field, v)))
           // Put resource instance references on current object
           resultValue[key] = refValues.filter(Boolean)
         }
@@ -316,15 +348,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
         // Process and save the first valid object or id into database
         let selected: ResourceInstanceReference | null = null
         for (const v of instanceValues) {
-          let r: ResourceInstanceReference | null
-          if (typeof v === 'string') {
-            // Just an id
-            r = await serializeInstanceValue(field.resourceName, v, null, serializeContext)
-          }
-          else {
-            // An object
-            r = await serializeInstanceValue(field.resourceName, null, v as any, serializeContext)
-          }
+          const r = await processChild(field, v)
           if (r) {
             selected = r
             break
