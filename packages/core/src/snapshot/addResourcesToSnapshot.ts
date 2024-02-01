@@ -4,6 +4,7 @@ import type { DatabaseSnapshot } from '../types/snapshot.js'
 import { getCurrentBranchFolder } from '../resource/branch.js'
 import { ensureDir } from '../util/fs.js'
 import { getResourceInstanceStorage } from '../resource/storage.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getSnapshotFolder } from './folder.js'
 
 export interface AddResourcesToSnapshotOptions {
@@ -11,17 +12,17 @@ export interface AddResourcesToSnapshotOptions {
   resourceIds: { [resourceName: string]: string[] }
 }
 
-export async function addResourcesToSnapshot(options: AddResourcesToSnapshotOptions) {
+export async function addResourcesToSnapshot(mq: MoquerieInstance, options: AddResourcesToSnapshotOptions) {
   const { snapshot, resourceIds } = options
 
   // Copy resources
-  const snapshotFolder = await getSnapshotFolder(snapshot)
+  const snapshotFolder = await getSnapshotFolder(mq, snapshot)
   for (const resourceName in resourceIds) {
-    const sourceFolder = path.join(getCurrentBranchFolder(), resourceName)
+    const sourceFolder = path.join(getCurrentBranchFolder(mq), resourceName)
     const targetFolder = path.join(snapshotFolder, resourceName)
     await ensureDir(targetFolder)
 
-    const resourceStorage = await getResourceInstanceStorage(resourceName)
+    const resourceStorage = await getResourceInstanceStorage(mq, resourceName)
 
     const ids = resourceIds[resourceName]
     for (const id of ids) {

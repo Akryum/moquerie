@@ -1,4 +1,5 @@
 import { getResolvedContext } from '../context.js'
+import type { MoquerieInstance } from '../instance.js'
 import type { ResourceInstanceReference } from '../types/resource.js'
 
 export function createResourceInstanceReference(resourceTypeName: string, id: string): ResourceInstanceReference {
@@ -12,19 +13,19 @@ export function isResourceInstanceReference(value: unknown): value is ResourceIn
   return typeof value === 'object' && value !== null && '__resourceName' in value && '__id' in value
 }
 
-export async function hydrateResourceInstanceReferences(value: any): Promise<any> {
+export async function hydrateResourceInstanceReferences(mq: MoquerieInstance, value: any): Promise<any> {
   if (Array.isArray(value)) {
-    return Promise.all(value.map(item => hydrateResourceInstanceReferences(item)))
+    return Promise.all(value.map(item => hydrateResourceInstanceReferences(mq, item)))
   }
   else if (value && typeof value === 'object') {
     if (isResourceInstanceReference(value)) {
-      const ctx = await getResolvedContext()
+      const ctx = await mq.getResolvedContext()
       return ctx.db[value.__resourceName].findByInstanceId(value.__id)
     }
     else {
       const result: Record<string, any> = {}
       for (const key in value) {
-        result[key] = await hydrateResourceInstanceReferences(value[key])
+        result[key] = await hydrateResourceInstanceReferences(mq, value[key])
       }
       return result
     }

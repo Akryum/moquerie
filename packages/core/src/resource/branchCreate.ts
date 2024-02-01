@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'pathe'
 import { getLocalDbFolder } from '../storage/path.js'
 import { copyDir, ensureDir } from '../util/fs.js'
+import type { MoquerieInstance } from '../instance.js'
 import { resourceInstancesFolders } from './storage.js'
 import { getCurrentBranchFolder } from './branch.js'
 
@@ -20,8 +21,8 @@ export interface CreateBranchOptions {
 /**
  * Create a new branch. Does NOT switch to it.
  */
-export async function createBranch(options: CreateBranchOptions) {
-  const folder = path.join(getLocalDbFolder(), ...resourceInstancesFolders, options.name)
+export async function createBranch(mq: MoquerieInstance, options: CreateBranchOptions) {
+  const folder = path.join(getLocalDbFolder(mq), ...resourceInstancesFolders, options.name)
 
   if (fs.existsSync(folder)) {
     throw new Error(`Branch ${options.name} already exists`)
@@ -31,8 +32,8 @@ export async function createBranch(options: CreateBranchOptions) {
 
   if (!options.empty) {
     // Copy files from current branch
-    const currentBranchFolder = getCurrentBranchFolder()
-    const newBranchFolder = path.join(getLocalDbFolder(), ...resourceInstancesFolders, options.name)
+    const currentBranchFolder = getCurrentBranchFolder(mq)
+    const newBranchFolder = path.join(getLocalDbFolder(mq), ...resourceInstancesFolders, options.name)
     await copyDir(currentBranchFolder, newBranchFolder)
   }
 }

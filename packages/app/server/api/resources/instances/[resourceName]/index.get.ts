@@ -2,10 +2,11 @@ import SuperJSON from 'superjson'
 import { findAllResourceInstances } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
+  const mq = getMq()
   const { resourceName } = getRouterParams(event)
   const { filterActive, searchText } = getQuery(event) as any
 
-  let list = await findAllResourceInstances(resourceName, {
+  let list = await findAllResourceInstances(mq, resourceName, {
     filterActive,
   })
 

@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
 import type { ResourceInstance } from '../types/resource.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getResourceInstanceStorage } from './storage.js'
 import { deactiveOtherSingletonResourceInstances } from './deactivateOthers.js'
 
@@ -12,7 +13,7 @@ export interface CreateInstanceOptions {
   save: boolean
 }
 
-export async function createResourceInstance(options: CreateInstanceOptions) {
+export async function createResourceInstance(mq: MoquerieInstance, options: CreateInstanceOptions) {
   const { resourceName, value, tags, comment } = options
   // console.log('createResourceInstance', resourceName, new Error().stack)
 
@@ -31,11 +32,11 @@ export async function createResourceInstance(options: CreateInstanceOptions) {
   }
 
   if (options.save) {
-    const storage = await getResourceInstanceStorage(resourceName)
+    const storage = await getResourceInstanceStorage(mq, resourceName)
     await storage.save(instance)
   }
 
-  await deactiveOtherSingletonResourceInstances(resourceName, id)
+  await deactiveOtherSingletonResourceInstances(mq, resourceName, id)
 
   return instance
 }

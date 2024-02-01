@@ -2,9 +2,10 @@ import process from 'node:process'
 import fs from 'node:fs'
 import path from 'pathe'
 import { LRUCache } from 'lru-cache'
+import type { MoquerieInstance } from '../instance.js'
 import { findUp } from './find-up.js'
 
-export function getCwd() {
+export function getDefaultCwd() {
   return path.resolve(process.env.MOQUERIE_OVERRIDE_CWD ?? process.cwd())
 }
 
@@ -13,8 +14,8 @@ const projectNameCache = new LRUCache<string, string>({
   ttl: 5000,
 })
 
-export function getProjectName(): string {
-  const cwd = getCwd()
+export function getProjectName(mq: MoquerieInstance): string {
+  const cwd = mq.data.cwd
   const cached = projectNameCache.get(cwd)
   if (cached) {
     return cached
@@ -38,8 +39,8 @@ const projectHasTypescriptCache = new LRUCache<string, boolean>({
   ttl: 1000 * 60 * 5,
 })
 
-export function projectHasTypescript(): boolean {
-  const cwd = getCwd()
+export function projectHasTypescript(mq: MoquerieInstance): boolean {
+  const cwd = mq.data.cwd
   const cached = projectHasTypescriptCache.get(cwd)
   if (cached !== undefined) {
     return cached

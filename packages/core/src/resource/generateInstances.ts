@@ -2,6 +2,7 @@ import { createInstanceFromFactory } from '../factory/createInstanceFromFactory.
 import type { ResourceSchemaType } from '../types/resource.js'
 import type { ResourceFactory } from '../types/factory.js'
 import { getFactoryStorage } from '../factory/storage.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getResourceInstanceStorage } from './storage.js'
 
 export interface GenerateResourceInstancesOptions {
@@ -10,12 +11,12 @@ export interface GenerateResourceInstancesOptions {
   count: number
 }
 
-export async function generateResourceInstances(options: GenerateResourceInstancesOptions) {
+export async function generateResourceInstances(mq: MoquerieInstance, options: GenerateResourceInstancesOptions) {
   const { resourceType, factory, count } = options
-  const storage = await getResourceInstanceStorage(resourceType.name)
+  const storage = await getResourceInstanceStorage(mq, resourceType.name)
   const instances = []
   for (let i = 0; i < count; i++) {
-    const instance = await createInstanceFromFactory({
+    const instance = await createInstanceFromFactory(mq, {
       factory,
       save: true,
     })
@@ -26,7 +27,7 @@ export async function generateResourceInstances(options: GenerateResourceInstanc
     await storage?.save(instance)
   }
 
-  const factoryStorage = await getFactoryStorage()
+  const factoryStorage = await getFactoryStorage(mq)
   await factoryStorage.save({
     ...factory,
     lastUsedAt: new Date(),

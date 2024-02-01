@@ -4,17 +4,18 @@ import { deactiveOtherSingletonResourceInstances, findResourceInstanceById, getR
 import type { ResourceInstance } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
+  const mq = getMq()
   const { resourceName } = getRouterParams(event)
   const { ids } = await readBody(event)
 
-  const ctx = await getResolvedContext()
+  const ctx = await mq.getResolvedContext()
   const resourceType = ctx.schema.types[resourceName]
   if (!resourceType) {
     throw new Error(`Resource not found: ${resourceName}`)
   }
 
   const copies = await Promise.all((ids as string[]).map(async (instanceId, index) => {
-    const instance = await findResourceInstanceById(resourceName, instanceId)
+    const instance = await findResourceInstanceById(mq, resourceName, instanceId)
     if (!instance) {
       throw new Error(`Resource instance not found: ${resourceName}/${instanceId}`)
     }
@@ -25,11 +26,11 @@ export default defineEventHandler(async (event) => {
       updatedAt: null,
       active: resourceType.array || index === ids.length - 1,
     }
-    const storage = await getResourceInstanceStorage(resourceName)
+    const storage = await getResourceInstanceStorage(mq, resourceName)
     await storage.save(copy)
 
     if (copy.active) {
-      await deactiveOtherSingletonResourceInstances(resourceName, copy.id)
+      await deactiveOtherSingletonResourceInstances(mq, resourceName, copy.id)
     }
 
     return copy

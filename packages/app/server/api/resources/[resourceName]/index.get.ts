@@ -1,7 +1,8 @@
 import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
   const { resourceName } = getRouterParams(event)
   return ctx.schema.types[resourceName]
 })

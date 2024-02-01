@@ -1,3 +1,4 @@
+import type { MoquerieInstance } from '../instance.js'
 import type { FilterActive } from '../types/resource.js'
 import { getResourceInstanceStorage } from './storage.js'
 
@@ -8,8 +9,8 @@ export interface FindAllResourceInstancesOptions {
   filterActive?: FilterActive
 }
 
-export async function findAllResourceInstances(resourceTypeName: string, options: FindAllResourceInstancesOptions = {}) {
-  const storage = await getResourceInstanceStorage(resourceTypeName)
+export async function findAllResourceInstances(mq: MoquerieInstance, resourceTypeName: string, options: FindAllResourceInstancesOptions = {}) {
+  const storage = await getResourceInstanceStorage(mq, resourceTypeName)
   const instances = await storage.findAll()
 
   if (!options.filterActive || options.filterActive === 'active') {

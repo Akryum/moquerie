@@ -1,11 +1,10 @@
 import { loadConfig } from 'c12'
 import type { Config } from '../types/config.js'
-import { getCwd } from '../util/env.js'
 
-export async function resolveConfig() {
+export async function resolveConfig(cwd: string) {
   return loadConfig<Config>({
     name: 'moquerie',
-    cwd: getCwd(),
+    cwd,
     defaults: {
       ignoredResourcesInExplorer: [
         'Mutation',

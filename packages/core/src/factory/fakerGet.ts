@@ -1,12 +1,12 @@
-import { getContext } from '../context.js'
+import type { MoquerieInstance } from '../instance.js'
 
 export interface GetFakerOptions {
   locale?: string
   seed?: any
 }
 
-export async function getFaker(options: GetFakerOptions) {
-  const ctx = await getContext()
+export async function getFaker(mq: MoquerieInstance, options: GetFakerOptions) {
+  const ctx = await mq.getContext()
 
   const allFakers = await import('@faker-js/faker')
 

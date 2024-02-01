@@ -1,8 +1,7 @@
 import type { ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
-import type { Context } from '../context.js'
 import type { ResolvedGraphQLSchema } from './schema.js'
 
-export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: ResolvedGraphQLSchema) {
+export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSchema) {
   const gqlIntrospection = graphqlSchema.introspection
 
   const typesTemp: Record<string, ResourceSchemaType> = {}

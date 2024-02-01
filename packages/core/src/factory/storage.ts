@@ -7,18 +7,19 @@ import { projectHasTypescript } from '../util/env.js'
 import { type Storage, type StorageManifest, useStorage } from '../storage/storage.js'
 import type { DBLocation } from '../types/db.js'
 import { printCode } from '../ast/print.js'
+import type { MoquerieInstance } from '../instance.js'
 import { deserializeFactory } from './deserialize.js'
 import { serializeFactory } from './serialize.js'
 
-export function getFactoryFilename(resourceName: string, id: string, name: string, location: DBLocation) {
+export function getFactoryFilename(mq: MoquerieInstance, resourceName: string, id: string, name: string, location: DBLocation) {
   const [, idPart] = /(?:.+?)(@@.+)?$/.exec(id) ?? []
-  return `${resourceName}/${name}${location === 'local' ? idPart : ''}.${projectHasTypescript() ? 'ts' : 'js'}`
+  return `${resourceName}/${name}${location === 'local' ? idPart : ''}.${projectHasTypescript(mq) ? 'ts' : 'js'}`
 }
 
 let storage: MergedStorage<ResourceFactory>
 let storagePromise: Promise<MergedStorage<ResourceFactory>>
 
-export async function getFactoryStorage() {
+export async function getFactoryStorage(mq: MoquerieInstance) {
   if (storage) {
     return storage
   }
@@ -35,7 +36,7 @@ export async function getFactoryStorage() {
     const content = await fs.promises.readFile(file, 'utf8')
     const result = await deserializeFactory(content)
 
-    const extra = await getRepoMetaFactoryStorage().then(s => s.findById(id))
+    const extra = await getRepoMetaFactoryStorage(mq).then(s => s.findById(id))
 
     const factory: ResourceFactory = {
       id,
@@ -51,7 +52,7 @@ export async function getFactoryStorage() {
   }
 
   async function write(file: string, item: ResourceFactory) {
-    await getRepoMetaFactoryStorage().then(s => s.save({
+    await getRepoMetaFactoryStorage(mq).then(s => s.save({
       id: item.id,
       lastUsedAt: item.lastUsedAt,
     }))
@@ -61,7 +62,7 @@ export async function getFactoryStorage() {
     await fs.promises.writeFile(file, content, 'utf8')
   }
 
-  storagePromise = useMergedStorage({
+  storagePromise = useMergedStorage(mq, {
     path: 'factories',
     format: 'js',
 
@@ -93,7 +94,7 @@ export async function getFactoryStorage() {
 
     override: {
       local: {
-        filename: item => getFactoryFilename(item.resourceName, item.id, item.name, 'local'),
+        filename: item => getFactoryFilename(mq, item.resourceName, item.id, item.name, 'local'),
         file: {
           read: async file => readFactory(file, 'local'),
           write,
@@ -101,7 +102,7 @@ export async function getFactoryStorage() {
       },
 
       repository: {
-        filename: item => getFactoryFilename(item.resourceName, item.id, item.name, 'repository'),
+        filename: item => getFactoryFilename(mq, item.resourceName, item.id, item.name, 'repository'),
         file: {
           read: async file => readFactory(file, 'repository'),
           write,
@@ -121,14 +122,14 @@ let metaStoragePromise: Promise<Storage<ExtraFractoryData>>
 /**
  * Store metadata about factories stored in the repository that is not explicitly stored in the factory files.
  */
-async function getRepoMetaFactoryStorage() {
+async function getRepoMetaFactoryStorage(mq: MoquerieInstance) {
   if (metaStorage) {
     return metaStorage
   }
   if (metaStoragePromise) {
     return metaStoragePromise
   }
-  metaStoragePromise = useStorage({
+  metaStoragePromise = useStorage(mq, {
     path: 'factories-repo-meta',
     format: 'json',
     location: 'local',

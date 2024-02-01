@@ -1,3 +1,4 @@
+import type { MoquerieInstance } from '../instance.js'
 import type { DBLocation } from '../types/db.js'
 import { type UseStorageOptions, useStorage } from './storage.js'
 
@@ -9,14 +10,14 @@ export type UseMergedStorageOptions<TData> = Omit<UseStorageOptions<TData>, 'loc
   }
 }
 
-export async function useMergedStorage<TData extends { id: string, location: DBLocation }>(options: UseMergedStorageOptions<TData>) {
+export async function useMergedStorage<TData extends { id: string, location: DBLocation }>(mq: MoquerieInstance, options: UseMergedStorageOptions<TData>) {
   const storages = {
-    local: await useStorage<TData>({
+    local: await useStorage<TData>(mq, {
       ...options,
       location: 'local',
       ...options.override?.local,
     }),
-    repository: await useStorage<TData>({
+    repository: await useStorage<TData>(mq, {
       ...options,
       location: 'repository',
       ...options.override?.repository,

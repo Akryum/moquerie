@@ -5,7 +5,8 @@ import type { FactoryData } from '@/components/factory/formTypes.js'
 export default defineEventHandler<{ body: FactoryData }>(async (event) => {
   const { factoryId } = getRouterParams(event)
   const body = await readBody(event)
-  const storage = await getFactoryStorage()
+  const mq = getMq()
+  const storage = await getFactoryStorage(mq)
 
   const factory = await storage.findById(factoryId)
   if (!factory) {

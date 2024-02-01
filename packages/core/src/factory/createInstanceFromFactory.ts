@@ -1,9 +1,9 @@
 import vm from 'node:vm'
 import fs from 'node:fs'
 import { nanoid } from 'nanoid'
-import { getResolvedContext } from '../context.js'
 import type { DefineFactoryReturn, ResourceFactory, ResourceFactoryFn, ResourceFactoryInfo } from '../types/factory.js'
 import { createResourceInstance } from '../resource/createInstance.js'
+import type { MoquerieInstance } from '../instance.js'
 import { executeFactory } from './execute.js'
 
 export interface CreateInstanceFromFactoryOptions {
@@ -12,8 +12,8 @@ export interface CreateInstanceFromFactoryOptions {
   save: boolean
 }
 
-export async function createInstanceFromFactory(options: CreateInstanceFromFactoryOptions) {
-  const ctx = await getResolvedContext()
+export async function createInstanceFromFactory(mq: MoquerieInstance, options: CreateInstanceFromFactoryOptions) {
+  const ctx = await mq.getResolvedContext()
   const { factory } = options
 
   let fn: ResourceFactoryFn
@@ -51,7 +51,7 @@ export async function createInstanceFromFactory(options: CreateInstanceFromFacto
   }
 
   const id = nanoid()
-  const data = await executeFactory(factory, fn, id)
+  const data = await executeFactory(mq, factory, fn, id)
 
   const instance = options.save
     ? await ctx.db[factory.resourceName].createInstance(data, {
@@ -59,7 +59,7 @@ export async function createInstanceFromFactory(options: CreateInstanceFromFacto
       tags: [...(factory.info.applyTags ?? [])],
       comment: factory.info.applyComment,
     })
-    : await createResourceInstance({
+    : await createResourceInstance(mq, {
       id: 'preview',
       resourceName: factory.resourceName,
       value: data,

@@ -1,24 +1,24 @@
 import { faker } from '@faker-js/faker'
 import type { ResourceFactory, ResourceFactoryContext, ResourceFactoryFn } from '../types/factory.js'
-import { getResolvedContext } from '../context.js'
 import type { Awaitable } from '../util/types.js'
 import { createResourceInstanceReference, isResourceInstanceReference } from '../resource/resourceReference.js'
 import { isPlainObject } from '../util/object.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getFaker } from './fakerGet.js'
 
 /**
  * Create new instance data.
  * @returns New instance data that can be used to create a new resource instance.
  */
-export async function executeFactory(factory: ResourceFactory, fn: ResourceFactoryFn, instanceId: string) {
-  const ctx = await getResolvedContext()
+export async function executeFactory(mq: MoquerieInstance, factory: ResourceFactory, fn: ResourceFactoryFn, instanceId: string) {
+  const ctx = await mq.getResolvedContext()
 
   const rootRef = createResourceInstanceReference(factory.resourceName, instanceId)
 
   const result: Record<string, any> = {}
 
   const factoryContext: ResourceFactoryContext = {
-    faker: await getFaker({
+    faker: await getFaker(mq, {
       locale: factory.info.fakerLocale,
       seed: factory.info.fakerSeed,
     }),

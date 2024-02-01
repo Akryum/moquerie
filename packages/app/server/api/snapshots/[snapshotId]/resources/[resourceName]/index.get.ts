@@ -3,14 +3,15 @@ import { getSnapshotStorage, readSnapshotResources } from '@moquerie/core'
 import SuperJSON from 'superjson'
 
 export default defineEventHandler(async (event) => {
+  const mq = getMq()
   const { snapshotId, resourceName } = getRouterParams(event)
   const { filterActive, searchText } = getQuery(event) as { filterActive: FilterActive, searchText: string }
-  const storage = await getSnapshotStorage()
+  const storage = await getSnapshotStorage(mq)
   const snapshot = await storage.findById(snapshotId)
   if (!snapshot) {
     throw new Error(`Snapshot ${snapshotId} not found`)
   }
-  let list = await readSnapshotResources(snapshot, resourceName)
+  let list = await readSnapshotResources(mq, snapshot, resourceName)
 
   if (filterActive && filterActive !== 'all') {
     list = list.filter((instance) => {

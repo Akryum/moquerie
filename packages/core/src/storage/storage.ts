@@ -7,11 +7,11 @@ import { builders } from 'ast-types'
 import SuperJSON from 'superjson'
 import { useQueue } from '../util/queue.js'
 import type { DBLocation } from '../types/db.js'
-import { getCwd } from '../util/env.js'
 import { createExportedVariable } from '../ast/exportVariable.js'
 import { ensureDir } from '../util/fs.js'
 import { generateAstFromObject } from '../ast/objectToAst.js'
 import type { Awaitable } from '../util/types.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getLocalDbFolder, getRepositoryDbFolder } from './path.js'
 
 export const manifestVersion = '0.0.1'
@@ -61,12 +61,12 @@ export interface UseStorageOptions<TData> {
   }
 }
 
-export async function useStorage<TData extends { id: string }>(options: UseStorageOptions<TData>) {
+export async function useStorage<TData extends { id: string }>(mq: MoquerieInstance, options: UseStorageOptions<TData>) {
   const getFilename = options.filename ?? ((item: any) => `${item.id}.${options.format ?? 'json'}`)
   const fileFormat = options.format ?? 'json'
   const baseFolder = options.location === 'local'
-    ? getLocalDbFolder()
-    : getRepositoryDbFolder()
+    ? getLocalDbFolder(mq)
+    : getRepositoryDbFolder(mq)
   const folder = path.join(baseFolder, options.path)
   const manifestFile = path.join(folder, 'manifest.json')
 
@@ -74,7 +74,7 @@ export async function useStorage<TData extends { id: string }>(options: UseStora
 
   // Read
 
-  const jiti = createJITI(getCwd(), {
+  const jiti = createJITI(mq.data.cwd, {
     requireCache: false,
   })
 

@@ -1,8 +1,9 @@
+import type { MoquerieInstance } from '../instance.js'
 import { type QueryManager, createQueryManager } from './queryManager.js'
 
 export type QueryManagerProxy = Record<string, QueryManager<any>>
 
-export function createQueryManagerProxy() {
+export function createQueryManagerProxy(mq: MoquerieInstance) {
   const cache = new Map<string, QueryManager<any>>()
 
   const proxy = new Proxy({}, {
@@ -11,7 +12,7 @@ export function createQueryManagerProxy() {
         return cache.get(key)
       }
 
-      const queryManager = createQueryManager({
+      const queryManager = createQueryManager(mq, {
         resourceName: key,
       })
       cache.set(key, queryManager)

@@ -6,14 +6,15 @@ import type { FactoryData } from '~/components/factory/formTypes.js'
 
 export default defineEventHandler(async (event) => {
   const body: FactoryData = await readBody(event)
-  const storage = await getFactoryStorage()
+  const mq = getMq()
+  const storage = await getFactoryStorage(mq)
   const id = `${body.resourceName}-${body.name}${body.location === 'local' ? `@@${nanoid()}` : ''}`
 
   if (await storage.findById(id)) {
     throw new Error(`Factory with id "${id}" already exists`)
   }
 
-  const file = path.join(storage[body.location].folder, getFactoryFilename(body.resourceName, id, body.name, body.location))
+  const file = path.join(storage[body.location].folder, getFactoryFilename(mq, body.resourceName, id, body.name, body.location))
 
   const factory: ResourceFactory = {
     ...body,

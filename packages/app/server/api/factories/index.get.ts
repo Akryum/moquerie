@@ -4,7 +4,8 @@ import type { DBLocation, ResourceFactory } from '@moquerie/core'
 
 export default defineEventHandler<{ query: { resourceName: string, location?: DBLocation } }, Promise<ResourceFactory[]>>(async (event) => {
   const query = getQuery(event)
-  const storage = await getFactoryStorage()
+  const mq = getMq()
+  const storage = await getFactoryStorage(mq)
   let factories: ResourceFactory[]
   if (query.location) {
     factories = await storage.findAllByLocation(query.location)

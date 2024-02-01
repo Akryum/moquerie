@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
 import { getResolvedContext } from '../context.js'
 import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
+import type { MoquerieInstance } from '../instance.js'
 import { type CreateInstanceOptions, createResourceInstance } from './createInstance.js'
 import { findResourceInstanceById } from './find.js'
 import { findAllResourceInstances } from './findAll.js'
@@ -87,11 +88,11 @@ export interface CreateQueryManagerOptions {
 
 type InstancesCache = Map<string, ResourceInstance[]>
 
-async function getInstancesCached(cache: InstancesCache, resourceName: string) {
+async function getInstancesCached(mq: MoquerieInstance, cache: InstancesCache, resourceName: string) {
   if (cache.has(resourceName)) {
     return cache.get(resourceName)!
   }
-  const items = await findAllResourceInstances(resourceName, {
+  const items = await findAllResourceInstances(mq, resourceName, {
     filterActive: 'active',
   })
   cache.set(resourceName, items)
@@ -100,11 +101,11 @@ async function getInstancesCached(cache: InstancesCache, resourceName: string) {
 
 type InstancesByIdCache = Map<string, Map<string, ResourceInstance>>
 
-async function getInstancesByIdMapCached(instancesCache: InstancesCache, mapCache: InstancesByIdCache, resourceName: string) {
+async function getInstancesByIdMapCached(mq: MoquerieInstance, instancesCache: InstancesCache, mapCache: InstancesByIdCache, resourceName: string) {
   if (mapCache.has(resourceName)) {
     return mapCache.get(resourceName)!
   }
-  const items = await getInstancesCached(instancesCache, resourceName)
+  const items = await getInstancesCached(mq, instancesCache, resourceName)
   const itemsById = new Map(items.map(item => [item.id, item]))
   mapCache.set(resourceName, itemsById)
   return itemsById
@@ -125,6 +126,7 @@ interface DeserializeContext {
  * Create final object from resource instance, included referenced resources.
  */
 async function deserializeInstanceValue<TData>(
+  mq: MoquerieInstance,
   instance: ResourceInstance,
   deserializeContext: DeserializeContext = {
     store: new Map(),
@@ -139,7 +141,7 @@ async function deserializeInstanceValue<TData>(
   }
 
   // Resource type
-  const ctx = await getResolvedContext()
+  const ctx = await mq.getResolvedContext()
   const resourceType = ctx.schema.types[instance.resourceName]
   if (resourceType == null) {
     throw new Error(`Resource type "${instance.resourceName}" not found`)
@@ -171,14 +173,14 @@ async function deserializeInstanceValue<TData>(
           // Get final objects for referenced instances
           result[key] = (await Promise.all(refs.map(async (ref) => {
             // Get maps of (only) active instances by id
-            const instancesById = await getInstancesByIdMapCached(deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
+            const instancesById = await getInstancesByIdMapCached(mq, deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
 
             const instance = instancesById.get(ref.__id)
             if (!instance) {
               return null
             }
 
-            return deserializeInstanceValue(instance, deserializeContext)
+            return deserializeInstanceValue(mq, instance, deserializeContext)
           }))).filter(Boolean)
         }
         else {
@@ -187,7 +189,7 @@ async function deserializeInstanceValue<TData>(
           // We pick the first active referenced instance
           for (const ref of refs) {
             // Get maps of (only) active instances by id
-            const instancesById = await getInstancesByIdMapCached(deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
+            const instancesById = await getInstancesByIdMapCached(mq, deserializeContext.instancesCache, deserializeContext.instancesByIdCache, ref.__resourceName)
 
             const instance = instancesById.get(ref.__id)
             if (instance) {
@@ -198,7 +200,7 @@ async function deserializeInstanceValue<TData>(
 
           if (refInstance) {
           // Get final object for referenced instance
-            result[key] = await deserializeInstanceValue(refInstance, deserializeContext)
+            result[key] = await deserializeInstanceValue(mq, refInstance, deserializeContext)
           }
           else {
             result[key] = null
@@ -239,6 +241,7 @@ interface SerializeContext {
  * @param createOptions Options used to create the resource instance.
  */
 async function serializeInstanceValue<TType extends ResourceSchemaType>(
+  mq: MoquerieInstance,
   resourceName: string,
   valueId: string | null,
   data: ResourceInstanceValue<TType> | null,
@@ -257,7 +260,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
   }
 
   // Resource type
-  const ctx = await getResolvedContext()
+  const ctx = await mq.getResolvedContext()
   const resourceType = ctx.schema.types[resourceName]
   if (resourceType == null) {
     throw new Error(`Resource type "${resourceName}" not found`)
@@ -272,7 +275,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
   }
 
   // Search for existing active instance
-  const instances = await getInstancesCached(serializeContext.instancesCache, resourceName)
+  const instances = await getInstancesCached(mq, serializeContext.instancesCache, resourceName)
   let instance = valueId ? instances.find(i => getValueId(i.value) === valueId) : instances[0]
 
   const getStoreKey = (resourceName: string, id: string) => `${resourceName}:${id}`
@@ -314,7 +317,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
           if (fieldResourceType.implementations) {
             throw new Error(`Error saving ${v}: Cannot reference interface type "${field.resourceName}" as an object with a __typename property is needed`)
           }
-          r = await serializeInstanceValue(field.resourceName, v, null, serializeContext)
+          r = await serializeInstanceValue(mq, field.resourceName, v, null, serializeContext)
         }
         else {
           let childResourceName = field.resourceName
@@ -325,7 +328,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
             childResourceName = v.__typename
           }
           // An object
-          r = await serializeInstanceValue(childResourceName, null, v as any, serializeContext)
+          r = await serializeInstanceValue(mq, childResourceName, null, v as any, serializeContext)
         }
         return r
       }
@@ -363,10 +366,10 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
   }
 
   if (instance) {
-    instance = await updateResourceInstanceById(resourceName, instance.id, resultValue)
+    instance = await updateResourceInstanceById(mq, resourceName, instance.id, resultValue)
   }
   else {
-    instance = await createResourceInstance({
+    instance = await createResourceInstance(mq, {
       ...createOptions,
       id: ref.__id,
       resourceName,
@@ -385,11 +388,11 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
 
 /* Query manager */
 
-export function createQueryManager<TData>(options: CreateQueryManagerOptions): QueryManager<TData> {
+export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQueryManagerOptions): QueryManager<TData> {
   async function findByInstanceId(id: string): Promise<TData | null> {
-    const instance = await findResourceInstanceById(options.resourceName, id)
+    const instance = await findResourceInstanceById(mq, options.resourceName, id)
     if (instance?.active) {
-      return deserializeInstanceValue(instance)
+      return deserializeInstanceValue(mq, instance)
     }
     return null
   }
@@ -403,12 +406,12 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   async function _findMany(predicate?: (data: TData) => boolean) {
-    const instances = await findAllResourceInstances(options.resourceName, {
+    const instances = await findAllResourceInstances(mq, options.resourceName, {
       filterActive: 'active',
     })
     const result = await Promise.all(instances.map(async i => ({
       instance: i,
-      value: await deserializeInstanceValue<TData>(i),
+      value: await deserializeInstanceValue<TData>(mq, i),
     })))
     return predicate ? result.filter(r => predicate(r.value)) : result
   }
@@ -431,7 +434,7 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   async function create(data: TData): Promise<TData> {
-    const result = await serializeInstanceValue(options.resourceName, null, data as any)
+    const result = await serializeInstanceValue(mq, options.resourceName, null, data as any)
     if (result) {
       return findByInstanceIdOrThrow(result.__id)
     }
@@ -439,9 +442,9 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   async function createInstance(data: TData, createOptions: QueryManagerCreateInstanceOptions = {}): Promise<ResourceInstance> {
-    const result = await serializeInstanceValue(options.resourceName, null, data as any, undefined, createOptions)
+    const result = await serializeInstanceValue(mq, options.resourceName, null, data as any, undefined, createOptions)
     if (result) {
-      const resource = await findResourceInstanceById(result.__resourceName, result.__id)
+      const resource = await findResourceInstanceById(mq, result.__resourceName, result.__id)
       if (!resource) {
         throw new Error(`Resource instance not found after create ${options.resourceName}: ${JSON.stringify(data)}`)
       }
@@ -451,12 +454,12 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   async function selectForChange(predicate?: (data: TData) => boolean) {
-    const instances = await findAllResourceInstances(options.resourceName, {
+    const instances = await findAllResourceInstances(mq, options.resourceName, {
       filterActive: 'active',
     })
     const valuesWithInstances = await Promise.all(instances.map(async i => ({
       instance: i,
-      value: await deserializeInstanceValue<TData>(i),
+      value: await deserializeInstanceValue<TData>(mq, i),
     })))
     return predicate ? valuesWithInstances.filter(({ value }) => predicate(value)) : valuesWithInstances
   }
@@ -465,7 +468,7 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
     const selected = await selectForChange(predicate)
 
     // Update instances
-    const result = (await Promise.all(selected.map(r => serializeInstanceValue(options.resourceName, null, {
+    const result = (await Promise.all(selected.map(r => serializeInstanceValue(mq, options.resourceName, null, {
       ...r.value,
       ...data,
     })))).filter(Boolean) as ResourceInstanceReference[]
@@ -474,11 +477,11 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
 
   async function _delete(predicate: (data: TData) => boolean): Promise<void> {
     const selected = await selectForChange(predicate)
-    await Promise.all(selected.map(r => removeResourceInstanceById(options.resourceName, r.instance.id)))
+    await Promise.all(selected.map(r => removeResourceInstanceById(mq, options.resourceName, r.instance.id)))
   }
 
   async function pickOneRandom() {
-    const storage = await getResourceInstanceStorage(options.resourceName)
+    const storage = await getResourceInstanceStorage(mq, options.resourceName)
     const ids = Object.keys(storage.manifest.files)
     if (!ids.length) {
       return null
@@ -488,7 +491,7 @@ export function createQueryManager<TData>(options: CreateQueryManagerOptions): Q
   }
 
   async function pickManyRandom(min: number, max: number) {
-    const storage = await getResourceInstanceStorage(options.resourceName)
+    const storage = await getResourceInstanceStorage(mq, options.resourceName)
     const ids = Object.keys(storage.manifest.files)
     const selectedIds = new Set<string>()
     const count = faker.number.int({

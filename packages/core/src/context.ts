@@ -1,12 +1,11 @@
 import { FSWatcher } from 'chokidar'
-import { getPort } from 'get-port-please'
+import { checkPort, getPort } from 'get-port-please'
 import path from 'pathe'
 import { debounce } from 'perfect-debounce'
 import type { JITI } from 'jiti'
 import createJITI from 'jiti'
 import type { Config } from './types/config.js'
 import { resolveConfig } from './config/resolve.js'
-import { getCwd } from './util/env.js'
 import type { ResourceSchema } from './types/resource.js'
 import { getResourceSchema } from './resource.js'
 import type { Server } from './server.js'
@@ -17,6 +16,7 @@ import type { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
 import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
+import type { MoquerieInstance } from './instance.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -25,12 +25,10 @@ export interface Context {
   port: number
 }
 
-let context: Context
-
-async function getContextRelatedToConfig() {
-  const { config } = await resolveConfig()
-  let port = context?.port
-  if (!context || !port || context?.config.server?.port !== config?.server?.port) {
+async function getContextRelatedToConfig(mq: MoquerieInstance) {
+  const { config } = await resolveConfig(mq.data.cwd)
+  let port = mq.data.context?.port
+  if (!mq.data.context || !port || mq.data.context?.config.server?.port !== config?.server?.port) {
     port = await getPort({
       port: config?.server?.port ?? 5658,
     })
@@ -41,48 +39,56 @@ async function getContextRelatedToConfig() {
   }
 }
 
-async function createContext(): Promise<Context> {
+async function createContext(mq: MoquerieInstance): Promise<Context> {
   const contextWatcher = new FSWatcher({
     ignoreInitial: true,
   })
 
   // Watch config file
-  const cwd = getCwd()
+  const cwd = mq.data.cwd
   const configExt = ['ts', 'js', 'mjs', 'cjs', 'cts', 'mts', 'json']
   configExt.forEach((ext) => {
     contextWatcher.add(path.resolve(cwd, `moquerie.config.${ext}`))
   })
 
+  // Context change
+  async function onContextChange() {
+    const context = await getContext(mq)
+    Object.assign(context, await getContextRelatedToConfig(mq))
+    // Reset resolved context timer so it's re-evaluated
+    mq.data.resolvedContextTime = 0
+  }
+
   contextWatcher.on('all', debounce(onContextChange, 100))
 
+  mq.onDestroy(() => contextWatcher.close())
+
   // Settings
-  const settings = await createSettingsManager()
+  const settings = await createSettingsManager(mq)
 
   return {
     contextWatcher,
     settings,
-    ...await getContextRelatedToConfig(),
+    ...await getContextRelatedToConfig(mq),
   }
 }
 
-let contextPromise: Promise<Context> | null = null
-
-export async function getContext(): Promise<Context> {
-  if (context) {
-    return context
+export async function getContext(mq: MoquerieInstance): Promise<Context> {
+  if (mq.data.context) {
+    return mq.data.context
   }
 
-  if (contextPromise) {
-    return contextPromise
+  if (mq.data.contextPromise) {
+    return mq.data.contextPromise
   }
 
-  contextPromise = createContext()
+  mq.data.contextPromise = createContext(mq)
   try {
-    context = await contextPromise
-    return context
+    mq.data.context = await mq.data.contextPromise
+    return mq.data.context
   }
   finally {
-    contextPromise = null
+    mq.data.contextPromise = null
   }
 }
 
@@ -102,21 +108,27 @@ export interface ResolvedContext {
   jiti: JITI
 }
 
-let resolvedContext: ResolvedContext
+async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedContext> {
+  const ctx = await mq.getContext()
 
-async function createResolvedContext(): Promise<ResolvedContext> {
-  const ctx = await getContext()
+  const { schema, graphqlSchema } = await getResourceSchema(mq)
 
-  const { schema, graphqlSchema } = await getResourceSchema(ctx)
-
-  let server = resolvedContext?.server
+  let server = mq.data.resolvedContext?.server
   if (server) {
-    if (resolvedContext.context.port !== ctx.port) {
+    if (mq.data.resolvedContext?.context.port !== ctx.port) {
       await server.restart()
     }
   }
   else {
-    server = await createServer(ctx)
+    server = await createServer(mq)
+  }
+
+  let fieldActions = mq.data.resolvedContext?.fieldActions
+
+  if (!fieldActions) {
+    fieldActions = await createFieldActionWatcher(mq)
+
+    mq.onDestroy(() => fieldActions?.destroy())
   }
 
   return {
@@ -124,49 +136,36 @@ async function createResolvedContext(): Promise<ResolvedContext> {
     schema,
     graphqlSchema,
     server,
-    fieldActions: resolvedContext?.fieldActions ?? await createFieldActionWatcher({
-      getSchema: () => resolvedContext?.schema ?? schema,
-    }),
-    db: createQueryManagerProxy(),
-    pubSubs: resolvedContext?.pubSubs ?? await createPubSubs(),
-    jiti: resolvedContext?.jiti ?? createJITI(getCwd(), {
+    fieldActions,
+    db: createQueryManagerProxy(mq),
+    pubSubs: mq.data.resolvedContext?.pubSubs ?? await createPubSubs(),
+    jiti: mq.data.resolvedContext?.jiti ?? createJITI(mq.data.cwd, {
       requireCache: false,
       esmResolve: true,
     }),
   }
 }
 
-let resolvedContextPromise: Promise<ResolvedContext> | null = null
-let resolvedContextTime: number = 0
 const resolvedContextMaxAge = 2000 // 2 seconds
 
-export async function getResolvedContext(): Promise<ResolvedContext> {
+export async function getResolvedContext(mq: MoquerieInstance): Promise<ResolvedContext> {
   const now = Date.now()
   // If context was resolved less than 2 seconds ago, return it
-  if (resolvedContext && now - resolvedContextTime < resolvedContextMaxAge) {
-    return resolvedContext
+  if (mq.data.watching && mq.data.resolvedContext && now - mq.data.resolvedContextTime < resolvedContextMaxAge) {
+    return mq.data.resolvedContext
   }
 
-  if (resolvedContextPromise) {
-    return resolvedContextPromise
+  if (mq.data.resolvedContextPromise) {
+    return mq.data.resolvedContextPromise
   }
 
-  resolvedContextPromise = createResolvedContext()
+  mq.data.resolvedContextPromise = createResolvedContext(mq)
   try {
-    resolvedContext = await resolvedContextPromise
-    resolvedContextTime = now
-    return resolvedContext
+    mq.data.resolvedContext = await mq.data.resolvedContextPromise
+    mq.data.resolvedContextTime = now
+    return mq.data.resolvedContext
   }
   finally {
-    resolvedContextPromise = null
+    mq.data.resolvedContextPromise = null
   }
-}
-
-// Context change
-
-async function onContextChange() {
-  const context = await getContext()
-  Object.assign(context, await getContextRelatedToConfig())
-  // Reset resolved context timer so it's re-evaluated
-  resolvedContextTime = 0
 }

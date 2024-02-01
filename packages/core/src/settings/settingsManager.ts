@@ -3,6 +3,7 @@ import path from 'pathe'
 import { getLocalFolder } from '../storage/path.js'
 import { ensureDir } from '../util/fs.js'
 import type { Settings } from '../types/settings.js'
+import type { MoquerieInstance } from '../instance.js'
 import { notifySettingsChange } from './onChange.js'
 
 export interface SettingsManager {
@@ -10,8 +11,8 @@ export interface SettingsManager {
   updateSettings: (settings: Partial<Settings>) => Promise<void>
 }
 
-export async function createSettingsManager() {
-  const file = path.join(getLocalFolder(), 'settings.json')
+export async function createSettingsManager(mq: MoquerieInstance) {
+  const file = path.join(getLocalFolder(mq), 'settings.json')
   await ensureDir(path.dirname(file))
 
   let currentSettings: Settings

@@ -1,25 +1,22 @@
 import { type FSWatcher, watch } from 'chokidar'
 import createJITI, { type JITI } from 'jiti'
 import path from 'pathe'
-import { getCwd } from '../util/env.js'
 import type { FieldAction } from '../types/fieldAction.js'
-import type { ResourceSchema } from '../types/resource.js'
-
-export interface FieldActionWatcherConfig {
-  getSchema: () => ResourceSchema
-}
+import type { MoquerieInstance } from '../instance.js'
 
 export class FieldActionWatcher {
   watcher: FSWatcher
   allActions: FieldAction[] = []
 
-  private config: FieldActionWatcherConfig
+  private mq: MoquerieInstance
   private jiti: JITI
 
-  constructor(config: FieldActionWatcherConfig) {
-    this.config = config
+  constructor(mq: MoquerieInstance) {
+    this.mq = mq
 
-    this.jiti = createJITI(getCwd(), {
+    const cwd = mq.data.cwd
+
+    this.jiti = createJITI(cwd, {
       requireCache: false,
       esmResolve: true,
     })
@@ -28,7 +25,7 @@ export class FieldActionWatcher {
       '**/*.mock.js',
       '**/*.mock.ts',
     ], {
-      cwd: getCwd(),
+      cwd,
       ignored: [
         '**/node_modules/**',
       ],
@@ -49,7 +46,7 @@ export class FieldActionWatcher {
 
   async upsertFieldActions(file: string) {
     try {
-      const absoluteFile = path.join(getCwd(), file)
+      const absoluteFile = path.join(this.mq.data.cwd, file)
 
       // Cleanup
       this.allActions = this.allActions.filter(action => action.file !== file)
@@ -95,8 +92,8 @@ export class FieldActionWatcher {
   }
 }
 
-export async function createFieldActionWatcher(config: FieldActionWatcherConfig) {
-  const watcher = new FieldActionWatcher(config)
+export async function createFieldActionWatcher(mq: MoquerieInstance) {
+  const watcher = new FieldActionWatcher(mq)
   return new Promise<FieldActionWatcher>((resolve) => {
     watcher.watcher.on('ready', () => {
       resolve(watcher)

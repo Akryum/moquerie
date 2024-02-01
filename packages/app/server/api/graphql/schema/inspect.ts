@@ -2,7 +2,8 @@ import { printSchema } from 'graphql'
 import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
   if (!ctx.graphqlSchema) {
     throw new Error('GraphQL schema not found')
   }

@@ -1,19 +1,20 @@
 import envinfo from 'envinfo'
 import { getLocalDbFolder, getRepositoryDbFolder, resolveConfig } from '@moquerie/core'
-import { getCwd, getProjectName } from '@moquerie/core/util'
+import { getProjectName } from '@moquerie/core/util'
 
 export default defineEventHandler(async () => {
+  const mq = getMq()
   let config: any
   try {
-    config = await resolveConfig()
+    config = await resolveConfig(mq.data.cwd)
   }
   catch (e) {
     config = e
   }
 
   return {
-    cwd: getCwd(),
-    projectName: getProjectName(),
+    cwd: mq.data.cwd,
+    projectName: getProjectName(mq),
     envinfo: JSON.parse(await envinfo.run({
       System: ['OS', 'CPU', 'Memory', 'Shell'],
       Binaries: ['Node', 'Yarn', 'npm', 'pnpm'],
@@ -25,8 +26,8 @@ export default defineEventHandler(async () => {
     })),
     config,
     db: {
-      localPath: getLocalDbFolder(),
-      repositoryPath: getRepositoryDbFolder(),
+      localPath: getLocalDbFolder(mq),
+      repositoryPath: getRepositoryDbFolder(mq),
     },
   }
 })

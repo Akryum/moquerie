@@ -4,12 +4,13 @@ import { printCode } from '@moquerie/core/util'
 
 export default defineEventHandler<{ query: { resourceName: string } }>(async (event) => {
   const { resourceName } = getQuery(event)
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
   const resourceType = ctx.schema.types[resourceName]
   if (!resourceType) {
     throw new Error(`Resource ${resourceName} not found`)
   }
-  const defaultFields = await createDefaultFactoryFields({
+  const defaultFields = await createDefaultFactoryFields(mq, {
     resourceType,
     randomRefs: false,
   })
@@ -34,7 +35,7 @@ export default defineEventHandler<{ query: { resourceName: string } }>(async (ev
   ast.program.body = ast.program.body.filter(node => node.type !== 'ImportDeclaration')
   const inlineCode = printCode(ast)
 
-  const instance = await createInstanceFromFactory({
+  const instance = await createInstanceFromFactory(mq, {
     factory,
     inlineCode,
     save: false,

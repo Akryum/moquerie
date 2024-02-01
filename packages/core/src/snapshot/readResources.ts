@@ -3,10 +3,11 @@ import path from 'pathe'
 import SuperJSON from 'superjson'
 import type { DatabaseSnapshot } from '../types/snapshot.js'
 import type { ResourceInstance } from '../types/resource.js'
+import type { MoquerieInstance } from '../instance.js'
 import { getSnapshotFolder } from './folder.js'
 
-export async function readSnapshotResourceIds(snapshot: DatabaseSnapshot) {
-  const folder = await getSnapshotFolder(snapshot)
+export async function readSnapshotResourceIds(mq: MoquerieInstance, snapshot: DatabaseSnapshot) {
+  const folder = await getSnapshotFolder(mq, snapshot)
   const resourceTypeFolders = (await fs.promises.readdir(folder)).filter(file => fs.statSync(path.join(folder, file)).isDirectory())
 
   const result: { [resourceName: string]: string[] } = {}
@@ -21,8 +22,8 @@ export async function readSnapshotResourceIds(snapshot: DatabaseSnapshot) {
   return result
 }
 
-export async function readSnapshotResources(snapshot: DatabaseSnapshot, resourceName: string): Promise<ResourceInstance[]> {
-  const folder = await getSnapshotFolder(snapshot)
+export async function readSnapshotResources(mq: MoquerieInstance, snapshot: DatabaseSnapshot, resourceName: string): Promise<ResourceInstance[]> {
+  const folder = await getSnapshotFolder(mq, snapshot)
   const resourceFolder = path.join(folder, resourceName)
   if (!fs.existsSync(resourceFolder)) {
     return []
@@ -35,8 +36,8 @@ export async function readSnapshotResources(snapshot: DatabaseSnapshot, resource
   return resources
 }
 
-export async function readSnapshotAllResources(snapshot: DatabaseSnapshot) {
-  const folder = await getSnapshotFolder(snapshot)
+export async function readSnapshotAllResources(mq: MoquerieInstance, snapshot: DatabaseSnapshot) {
+  const folder = await getSnapshotFolder(mq, snapshot)
   const resourceTypeFolders = (await fs.promises.readdir(folder)).filter(file => fs.statSync(path.join(folder, file)).isDirectory())
   const result: { [resourceName: string]: ResourceInstance[] } = {}
 

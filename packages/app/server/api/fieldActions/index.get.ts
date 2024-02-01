@@ -3,7 +3,8 @@ import { getResolvedContext } from '@moquerie/core'
 export default defineEventHandler(async (event) => {
   const { resourceName, getCode } = getQuery(event)
 
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
   let result = ctx.fieldActions.allActions.map(fa => ({
     resourceName: fa.resourceName,
     fieldName: fa.fieldName,

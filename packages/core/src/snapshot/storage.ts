@@ -4,18 +4,19 @@ import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.j
 import type { ResourceFactory } from '../types/factory.js'
 import type { StorageManifest } from '../storage/storage.js'
 import type { DatabaseSnapshot } from '../types/snapshot.js'
+import type { MoquerieInstance } from '../instance.js'
 
 let storage: MergedStorage<DatabaseSnapshot>
 let storagePromise: Promise<MergedStorage<DatabaseSnapshot>>
 
-export async function getSnapshotStorage() {
+export async function getSnapshotStorage(mq: MoquerieInstance) {
   if (storage) {
     return storage
   }
   if (storagePromise) {
     return storagePromise
   }
-  storagePromise = useMergedStorage({
+  storagePromise = useMergedStorage(mq, {
     path: 'snapshots',
     filename: item => `${item.id}/snapshot.json`,
     format: 'json',

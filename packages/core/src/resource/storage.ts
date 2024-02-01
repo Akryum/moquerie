@@ -1,69 +1,64 @@
 import { getContext } from '../context.js'
-import { onSettingsChange } from '../settings/onChange.js'
+import type { MoquerieInstance } from '../instance.js'
 import type { Storage } from '../storage/storage.js'
 import { useStorage } from '../storage/storage.js'
 import type { ResourceInstance } from '../types/resource.js'
 
-const storage: Map<string, Storage<ResourceInstance>> = new Map()
-const storagePromise: Map<string, Promise<Storage<ResourceInstance>>> = new Map()
-
-let currentBranch: string = 'default'
+export interface ResourceStorages {
+  storage: Map<string, Storage<ResourceInstance>>
+  storagePromise: Map<string, Promise<Storage<ResourceInstance>>>
+  currentBranch: string
+}
 
 export const resourceInstancesFolders = ['resource-instances', 'branches'] as const
 
-export async function getResourceInstanceStorage(resourceTypeName: string): Promise<Storage<ResourceInstance>> {
-  if (storage.has(resourceTypeName)) {
-    return storage.get(resourceTypeName)!
+export async function getResourceInstanceStorage(mq: MoquerieInstance, resourceTypeName: string): Promise<Storage<ResourceInstance>> {
+  if (mq.data.resourceStorages.storage.has(resourceTypeName)) {
+    return mq.data.resourceStorages.storage.get(resourceTypeName)!
   }
-  if (storagePromise.has(resourceTypeName)) {
-    return storagePromise.get(resourceTypeName)!
+  if (mq.data.resourceStorages.storagePromise.has(resourceTypeName)) {
+    return mq.data.resourceStorages.storagePromise.get(resourceTypeName)!
   }
-  const promise = useStorage<ResourceInstance>({
-    path: `${resourceInstancesFolders.join('/')}/${currentBranch}/${resourceTypeName}`,
+  const promise = useStorage<ResourceInstance>(mq, {
+    path: `${resourceInstancesFolders.join('/')}/${mq.data.resourceStorages.currentBranch}/${resourceTypeName}`,
     location: 'local',
     deduplicateFiles: false,
   })
-  storagePromise.set(resourceTypeName, promise)
+  mq.data.resourceStorages.storagePromise.set(resourceTypeName, promise)
   try {
     const s = await promise
-    storage.set(resourceTypeName, s)
+    mq.data.resourceStorages.storage.set(resourceTypeName, s)
     return s
   }
   finally {
-    storagePromise.delete(resourceTypeName)
+    mq.data.resourceStorages.storagePromise.delete(resourceTypeName)
   }
 }
 
 // Branch support
 
-function destroyAllStorage() {
-  for (const s of storage.values()) {
+function destroyAllStorage(mq: MoquerieInstance) {
+  for (const s of mq.data.resourceStorages.storage.values()) {
     s.destroy()
   }
-  storage.clear()
-  storagePromise.clear()
+  mq.data.resourceStorages.storage.clear()
+  mq.data.resourceStorages.storagePromise.clear()
 }
 
-function applySwitchToBranch(branch: string) {
-  destroyAllStorage()
-  currentBranch = branch
+export function applySwitchToBranch(mq: MoquerieInstance, branch: string) {
+  destroyAllStorage(mq)
+  mq.data.resourceStorages.currentBranch = branch
 }
-
-onSettingsChange((settings) => {
-  if (settings.currentBranch && settings.currentBranch !== currentBranch) {
-    applySwitchToBranch(settings.currentBranch)
-  }
-})
 
 /**
  * Switch the resource instances database to a different branch.
  * @param branch Branch name
  */
-export async function switchToBranch(branch: string) {
-  if (branch === currentBranch) {
+export async function switchToBranch(mq: MoquerieInstance, branch: string) {
+  if (branch === mq.data.resourceStorages.currentBranch) {
     return
   }
-  const ctx = await getContext()
+  const ctx = await mq.getContext()
   await ctx.settings.updateSettings({
     currentBranch: branch,
   })
@@ -72,6 +67,6 @@ export async function switchToBranch(branch: string) {
 /**
  * Get the current branch name of the resource instances database.
  */
-export function getCurrentBranch() {
-  return currentBranch
+export function getCurrentBranch(mq: MoquerieInstance) {
+  return mq.data.resourceStorages.currentBranch
 }

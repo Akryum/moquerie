@@ -5,6 +5,7 @@ import express from 'express'
 import colors from 'picocolors'
 import type { Context } from './context.js'
 import type { ServerRouteInfo } from './types/server.js'
+import type { MoquerieInstance } from './instance.js'
 
 export interface Server {
   context: Context
@@ -29,13 +30,15 @@ async function listen(context: Context, expressApp: Application) {
   return httpServer
 }
 
-export async function createServer(context: Context): Promise<Server> {
+export async function createServer(mq: MoquerieInstance): Promise<Server> {
+  const context = await mq.getContext()
+
   const routeInfos: ServerRouteInfo[] = []
   const expressApp = express()
 
   if (context.config.graphql) {
     const { createYogaServer } = await import('./graphql/index.js')
-    const { yoga } = await createYogaServer()
+    const { yoga } = await createYogaServer(mq)
     expressApp.use(yoga.graphqlEndpoint, yoga)
     routeInfos.push({
       url: `http://localhost:${context.port}${yoga.graphqlEndpoint}`,

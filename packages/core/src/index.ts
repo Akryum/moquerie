@@ -1,6 +1,7 @@
 export * from './config/index.js'
 export * from './factory/index.js'
 export * from './graphql/index.js'
+export * from './instance.js'
 export * from './resource/index.js'
 export * from './snapshot/index.js'
 export * from './storage/index.js'

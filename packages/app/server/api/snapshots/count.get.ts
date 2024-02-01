@@ -2,7 +2,8 @@ import { getSnapshotStorage } from '@moquerie/core'
 import type { DBLocation } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
-  const storage = await getSnapshotStorage()
+  const mq = getMq()
+  const storage = await getSnapshotStorage(mq)
   const snapshots = await storage.findAll()
   const result: Record<DBLocation, number> = {
     local: 0,

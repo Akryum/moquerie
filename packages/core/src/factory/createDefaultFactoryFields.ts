@@ -1,4 +1,4 @@
-import { getResolvedContext } from '../context.js'
+import type { MoquerieInstance } from '../instance.js'
 import type { ResourceFactoryField, ResourceFactoryFieldsMap } from '../types/factory.js'
 import type { ResourceSchemaType } from '../types/resource.js'
 import { autoSelectFakerGenerator } from './fakerAutoSelect.js'
@@ -8,8 +8,8 @@ export interface CreateDefaultValueFactoryOptions {
   randomRefs?: boolean
 }
 
-export async function createDefaultFactoryFields(options: CreateDefaultValueFactoryOptions): Promise<ResourceFactoryFieldsMap> {
-  const ctx = await getResolvedContext()
+export async function createDefaultFactoryFields(mq: MoquerieInstance, options: CreateDefaultValueFactoryOptions): Promise<ResourceFactoryFieldsMap> {
+  const ctx = await mq.getResolvedContext()
 
   const fields: ResourceFactoryFieldsMap = {}
 
@@ -26,7 +26,7 @@ export async function createDefaultFactoryFields(options: CreateDefaultValueFact
       if (targetResourceType.inline) {
         factoryField = {
           type: 'object',
-          children: await createDefaultFactoryFields({
+          children: await createDefaultFactoryFields(mq, {
             resourceType: targetResourceType,
             randomRefs: options.randomRefs,
           }),

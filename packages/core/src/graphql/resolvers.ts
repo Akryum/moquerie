@@ -1,11 +1,11 @@
 import type { IResolvers, ISchemaLevelResolver } from '@graphql-tools/utils'
-import { getResolvedContext } from '../context.js'
 import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
+import type { MoquerieInstance } from '../instance.js'
 
-export async function createGraphQLResolvers(): Promise<IResolvers> {
+export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IResolvers> {
   const resolvers: IResolvers = {}
 
-  const ctx = await getResolvedContext()
+  const ctx = await mq.getResolvedContext()
 
   for (const resourceName in ctx.schema.types) {
     const resourceType = ctx.schema.types[resourceName]
@@ -21,7 +21,7 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
               if (!(key in payload)) {
                 throw new Error(`Payload does not contain key "${key}": ${JSON.stringify(payload, null, 2)}}`)
               }
-              const data = await hydrateResourceInstanceReferences(payload)
+              const data = await hydrateResourceInstanceReferences(mq, payload)
               return data[key]
             },
           }
@@ -32,7 +32,7 @@ export async function createGraphQLResolvers(): Promise<IResolvers> {
 
       for (const key in resourceType.fields) {
         r[key] = async () => {
-          const { db } = await getResolvedContext()
+          const { db } = await mq.getResolvedContext()
           const instance = await db[resourceName].findFirst()
           if (instance) {
             return instance[key]

@@ -3,7 +3,8 @@ import { printCode } from '@moquerie/core/util'
 import type { FactoryData } from '@/components/factory/formTypes.js'
 
 export default defineEventHandler<{ body: FactoryData }>(async (event) => {
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
   const factoryData = await readBody(event)
   const resourceType = ctx.schema.types[factoryData.resourceName]
   if (!resourceType) {
@@ -26,7 +27,7 @@ export default defineEventHandler<{ body: FactoryData }>(async (event) => {
   ast.program.body = ast.program.body.filter(node => node.type !== 'ImportDeclaration')
   const inlineCode = printCode(ast)
 
-  const instance = await createInstanceFromFactory({
+  const instance = await createInstanceFromFactory(mq, {
     factory,
     inlineCode,
     save: false,

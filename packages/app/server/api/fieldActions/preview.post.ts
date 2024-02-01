@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     fieldName,
   } = await readBody(event)
 
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
 
   const fieldAction = ctx.fieldActions.allActions.find(fa => fa.resourceName === resourceName && fa.fieldName === fieldName)
   if (!fieldAction) {

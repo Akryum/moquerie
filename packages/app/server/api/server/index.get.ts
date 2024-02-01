@@ -1,7 +1,8 @@
 import { getResolvedContext } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
-  const ctx = await getResolvedContext()
+  const mq = getMq()
+  const ctx = await mq.getResolvedContext()
 
   return {
     port: ctx.context.port,

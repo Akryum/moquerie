@@ -3,10 +3,11 @@ import { loadTypedefs } from '@graphql-tools/load'
 import { mergeSchemas } from '@graphql-tools/schema'
 import type { Source, TypeSource } from '@graphql-tools/utils'
 import type { GraphQLSchema, IntrospectionQuery } from 'graphql'
-import type { Context } from '../context.js'
-import { getCwd } from '../util/env.js'
+import type { MoquerieInstance } from '../instance.js'
 
-async function resolveGraphQLTypeDefs(ctx: Context): Promise<Source[]> {
+async function resolveGraphQLTypeDefs(mq: MoquerieInstance): Promise<Source[]> {
+  const ctx = await mq.getContext()
+
   if (!ctx.config.graphql?.schema) {
     throw new Error('[moquerie] config.graphql.schema is required')
   }
@@ -40,7 +41,7 @@ async function resolveGraphQLTypeDefs(ctx: Context): Promise<Source[]> {
     throw new Error('[moquerie] config.graphql.schema must be one of url, jsonFile, graphqlFiles, or scanCodeFiles')
   }
 
-  const glob = path.resolve(getCwd(), target)
+  const glob = path.resolve(mq.data.cwd, target)
   const typeDefs = await loadTypedefs(glob, {
     loaders,
     ignore: [
@@ -100,8 +101,8 @@ export interface ResolvedGraphQLSchema {
   introspection: IntrospectionQuery
 }
 
-export async function resolveGraphQLSchema(ctx: Context): Promise<ResolvedGraphQLSchema> {
-  const typeDefs = await resolveGraphQLTypeDefs(ctx)
+export async function resolveGraphQLSchema(mq: MoquerieInstance): Promise<ResolvedGraphQLSchema> {
+  const typeDefs = await resolveGraphQLTypeDefs(mq)
   const schema = getSchemaFromTypeDefs(typeDefs)
   const introspection = await getGraphQLSchemaIntrospection(schema)
   return {
