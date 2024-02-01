@@ -128,12 +128,19 @@ export async function getGraphQLResourceSchema(ctx: Context, graphqlSchema: Reso
         tags.push('root')
       }
 
+      // Sort fields
+      const sortedFields = Object.values(fields).sort((a, b) => a.name.localeCompare(b.name))
+      const sortedFieldsMap: Record<string, ResourceSchemaField> = {}
+      for (const field of sortedFields) {
+        sortedFieldsMap[field.name] = field
+      }
+
       const resType = {
         name: gqlType.name,
         tags,
         description: gqlType.description ?? undefined,
         array: !isRootType,
-        fields,
+        fields: sortedFieldsMap,
         nonNull: false,
         isDeprecated: false,
         inline: inline && !isRootType,
