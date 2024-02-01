@@ -34,9 +34,8 @@ export async function createResourceInstance(mq: MoquerieInstance, options: Crea
   if (options.save) {
     const storage = await getResourceInstanceStorage(mq, resourceName)
     await storage.save(instance)
+    await deactiveOtherSingletonResourceInstances(mq, resourceName, id)
   }
-
-  await deactiveOtherSingletonResourceInstances(mq, resourceName, id)
 
   return instance
 }
