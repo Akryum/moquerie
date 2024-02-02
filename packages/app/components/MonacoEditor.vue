@@ -1,93 +1,14 @@
 <script lang="ts">
-import * as monaco from 'monaco-editor'
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import GraphQLWorker from 'monaco-graphql/esm/graphql.worker?worker'
-import configTypes from '@moquerie/core/src/types/config.js?raw'
-
-// Language support
-
-// eslint-disable-next-line no-restricted-globals
-self.MonacoEnvironment = {
-  getWorker(_, label) {
-    if (label === 'json') {
-      return new JsonWorker()
-    }
-
-    if (label === 'typescript' || label === 'javascript') {
-      return new TsWorker()
-    }
-
-    if (label === 'graphql') {
-      return new GraphQLWorker()
-    }
-
-    return new EditorWorker()
-  },
-}
-
-// Theme
-
-monaco.editor.defineTheme('custom-dark-theme', {
-  base: 'vs-dark',
-  inherit: true,
-  rules: [],
-  colors: {
-    'editor.background': '#111827',
-    'editorLineNumber.foreground': '#6b7280',
-    'editorLineNumber.activeForeground': '#d1d5db',
-  },
-})
-
-// Types
-
-monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-  target: monaco.languages.typescript.ScriptTarget.ESNext,
-  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-})
-
-const embeddedTypes = `${configTypes}
-export function defineConfig(config: Config): Config {
-  return config
-}`
-
-monaco.editor.getModels().forEach(m => m.dispose())
-monaco.editor.createModel(embeddedTypes, 'typescript', monaco.Uri.parse('file:///node_modules/moquerie/config.d.ts'))
-
-// Auto-completion
-
-monaco.languages.registerCompletionItemProvider('json', {
-  provideCompletionItems(model, position) {
-    const word = model.getWordUntilPosition(position)
-    const range = {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: word.startColumn,
-      endColumn: word.endColumn,
-    }
-
-    return {
-      suggestions: [
-        {
-          label: 'Reference to a resource',
-          documentation: 'Reference a resource instance with its resource name and instance id',
-          kind: monaco.languages.CompletionItemKind.Function,
-          insertText: '{ "__resourceName": "$1", "__id": "$2" }',
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range,
-        },
-      ],
-    }
-  },
-})
+import './monaco.js'
 </script>
 
 <script lang="ts" setup>
+import * as monaco from 'monaco-editor'
+
 const props = defineProps<{
   filename: string
   source: string
-  options: monaco.editor.IStandaloneEditorConstructionOptions
+  options?: monaco.editor.IStandaloneEditorConstructionOptions
   wrapCode?: {
     start: string
     end: string
@@ -123,7 +44,7 @@ onMounted(() => {
   // Clear models with same URI
   monaco.editor.getModels().filter(m => m.uri.fsPath === uri.fsPath).forEach(m => m.dispose())
 
-  const model = monaco.editor.createModel(getWrappedSource(), props.options.language ?? 'typescript', uri)
+  const model = monaco.editor.createModel(getWrappedSource(), props.options?.language ?? 'typescript', uri)
 
   const editor = monaco.editor.create(el.value, {
     minimap: {
@@ -257,8 +178,10 @@ onMounted(() => {
   // Options
 
   watch(() => props.options, (val) => {
-    editor.updateOptions(val)
-    updateHiddenAreas()
+    if (val) {
+      editor.updateOptions(val)
+      updateHiddenAreas()
+    }
   }, {
     deep: true,
   })

@@ -17,6 +17,7 @@ import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
 import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
 import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 import type { MoquerieInstance } from './instance.js'
+import type { HistoryRecord } from './types/history.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -106,6 +107,7 @@ export interface ResolvedContext {
   // @TODO type
   pubSubs: PubSubs
   jiti: JITI
+  historyRecords: Array<HistoryRecord>
 }
 
 async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedContext> {
@@ -143,6 +145,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
       requireCache: false,
       esmResolve: true,
     }),
+    historyRecords: mq.data.resolvedContext?.historyRecords ?? [],
   }
 }
 

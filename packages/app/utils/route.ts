@@ -27,7 +27,7 @@ export interface UseSaveRouteOptions {
   }
 }
 
-export function useSaveRoute(options: UseSaveRouteOptions) {
+export async function useSaveRoute(options: UseSaveRouteOptions) {
   const route = useRoute()
   const router = useRouter()
 

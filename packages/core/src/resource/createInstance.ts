@@ -3,6 +3,7 @@ import type { ResourceInstance } from '../types/resource.js'
 import type { MoquerieInstance } from '../instance.js'
 import { getResourceInstanceStorage } from './storage.js'
 import { deactiveOtherSingletonResourceInstances } from './deactivateOthers.js'
+import { createHistoryRecord } from './history.js'
 
 export interface CreateInstanceOptions {
   resourceName: string
@@ -34,6 +35,12 @@ export async function createResourceInstance(mq: MoquerieInstance, options: Crea
     const storage = await getResourceInstanceStorage(mq, resourceName)
     await storage.save(instance)
     await deactiveOtherSingletonResourceInstances(mq, resourceName, id)
+    await createHistoryRecord(mq, {
+      type: 'create',
+      resourceName,
+      instanceId: id,
+      value,
+    })
   }
 
   return instance

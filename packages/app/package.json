@@ -57,6 +57,7 @@
     "graphql": "^16.8.1",
     "jiti": "^1.21.0",
     "just-clone": "^6.2.0",
+    "just-diff-apply": "^5.5.0",
     "launch-editor": "^2.6.1",
     "monaco-editor": "^0.45.0",
     "monaco-graphql": "^1.4.0",
