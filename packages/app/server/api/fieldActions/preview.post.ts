@@ -1,5 +1,3 @@
-import { getResolvedContext } from '@moquerie/core'
-
 export default defineEventHandler(async (event) => {
   const {
     resourceName,

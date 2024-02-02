@@ -1,4 +1,4 @@
-import { getResolvedContext, getResourceInstanceStorage } from '@moquerie/core'
+import { getResourceInstanceStorage } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
   const mq = getMq()

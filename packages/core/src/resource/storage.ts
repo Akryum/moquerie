@@ -1,4 +1,3 @@
-import { getContext } from '../context.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { Storage } from '../storage/storage.js'
 import { useStorage } from '../storage/storage.js'

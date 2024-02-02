@@ -1,5 +1,3 @@
-import { getContext } from '@moquerie/core'
-
 export default defineEventHandler(async (event) => {
   const mq = getMq()
   const { settings } = await readBody(event)

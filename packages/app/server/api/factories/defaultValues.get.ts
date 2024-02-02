@@ -1,5 +1,5 @@
 import type { ResourceFactory } from '@moquerie/core'
-import { createDefaultFactoryFields, createInstanceFromFactory, getCurrentUser, getResolvedContext, serializeFactory } from '@moquerie/core'
+import { createDefaultFactoryFields, createInstanceFromFactory, getCurrentUser, serializeFactory } from '@moquerie/core'
 import { printCode } from '@moquerie/core/util'
 
 export default defineEventHandler<{ query: { resourceName: string } }>(async (event) => {

@@ -1,4 +1,3 @@
-import { getResolvedContext } from '../context.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceInstanceReference } from '../types/resource.js'
 

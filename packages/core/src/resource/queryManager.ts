@@ -1,6 +1,5 @@
 import { nanoid } from 'nanoid'
 import { faker } from '@faker-js/faker'
-import { getResolvedContext } from '../context.js'
 import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
 import type { MoquerieInstance } from '../instance.js'
 import { type CreateInstanceOptions, createResourceInstance } from './createInstance.js'

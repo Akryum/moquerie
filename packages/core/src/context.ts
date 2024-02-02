@@ -1,5 +1,5 @@
 import { FSWatcher } from 'chokidar'
-import { checkPort, getPort } from 'get-port-please'
+import { getPort } from 'get-port-please'
 import path from 'pathe'
 import { debounce } from 'perfect-debounce'
 import type { JITI } from 'jiti'

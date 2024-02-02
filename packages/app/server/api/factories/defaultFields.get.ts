@@ -1,4 +1,4 @@
-import { createDefaultFactoryFields, getResolvedContext } from '@moquerie/core'
+import { createDefaultFactoryFields } from '@moquerie/core'
 
 export default defineEventHandler<{ query: { resourceName: string } }>(async (event) => {
   const { resourceName } = getQuery(event)
