@@ -15,7 +15,6 @@ export interface CreateInstanceOptions {
 
 export async function createResourceInstance(mq: MoquerieInstance, options: CreateInstanceOptions) {
   const { resourceName, value, tags, comment } = options
-  // console.log('createResourceInstance', resourceName, new Error().stack)
 
   const id = options.id ?? nanoid()
 
