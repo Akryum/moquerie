@@ -1,4 +1,12 @@
 <script lang="ts" setup>
+useSaveRoute({
+  key: 'db.history.lastRoute',
+  basePath: '/db/history',
+  defaultRoute: {
+    name: 'db-history',
+  },
+})
+
 useHead({
   title: 'History',
 })

@@ -27,7 +27,7 @@ export interface UseSaveRouteOptions {
   }
 }
 
-export async function useSaveRoute(options: UseSaveRouteOptions) {
+export function useSaveRoute(options: UseSaveRouteOptions) {
   const route = useRoute()
   const router = useRouter()
 
@@ -36,15 +36,17 @@ export async function useSaveRoute(options: UseSaveRouteOptions) {
 
   if (savedRoute) {
     if (isBaseRoute) {
-      router.replace({
-        name: savedRoute.name,
-        params: {
-          ...savedRoute.params,
-          // We reuse the params to keep same topic
-          ...lastRoute?.params,
-        },
-        query: savedRoute.query,
-      })
+      setTimeout(() => {
+        router.replace({
+          name: savedRoute.name,
+          params: {
+            ...savedRoute.params,
+            // We reuse the params to keep same topic
+            ...lastRoute?.params,
+          },
+          query: savedRoute.query,
+        })
+      }, 100)
     }
   }
   else {
@@ -58,16 +60,19 @@ export async function useSaveRoute(options: UseSaveRouteOptions) {
       lastRoute = s
     }
     if (options.defaultRoute && isBaseRoute) {
+      const defaultRoute = options.defaultRoute
       try {
-        router.replace({
-          name: options.defaultRoute.name,
-          params: {
-            ...options.defaultRoute.params,
-            // We reuse the params to keep same topic
-            ...lastRoute?.params,
-          },
-          query: options.defaultRoute.query,
-        })
+        setTimeout(() => {
+          router.replace({
+            name: defaultRoute.name,
+            params: {
+              ...defaultRoute.params,
+              // We reuse the params to keep same topic
+              ...lastRoute?.params,
+            },
+            query: defaultRoute.query,
+          })
+        }, 100)
       }
       catch (e) {
         // Ignore
