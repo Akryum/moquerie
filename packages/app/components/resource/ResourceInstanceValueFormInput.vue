@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Dropdown, Menu, Tooltip } from 'floating-vue'
 import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import * as monaco from 'monaco-editor'
 
 // @TODO Handle required/non-null fields
 
@@ -122,6 +123,25 @@ function removeArrayItem(index: number) {
   newValue.splice(index, 1)
   emit('update:modelValue', newValue)
 }
+
+// Code editor
+
+const editCode = ref(false)
+
+function setupEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+  editor.focus()
+  editor.setSelection(editor.getModel()?.getFullModelRange() ?? new monaco.Range(1, 1, 1, 1))
+
+  // Close on escape
+  editor.addAction({
+    id: 'close',
+    label: 'Close',
+    keybindings: [monaco.KeyCode.Escape],
+    run: () => {
+      editCode.value = false
+    },
+  })
+}
 </script>
 
 <template>
@@ -197,6 +217,25 @@ function removeArrayItem(index: number) {
           </template>
         </Tooltip>
 
+        <template v-if="field.type === 'resource' && childResourceType?.inline">
+          <UButton
+            v-if="editCode"
+            icon="i-ph-check-circle"
+            color="gray"
+            variant="link"
+            :padded="false"
+            @click="editCode = false"
+          />
+          <UButton
+            v-else
+            icon="i-ph-pencil-simple"
+            color="gray"
+            variant="link"
+            :padded="false"
+            @click="editCode = true"
+          />
+        </template>
+
         <slot name="hint-end" />
       </div>
     </template>
@@ -204,6 +243,7 @@ function removeArrayItem(index: number) {
     <template v-if="field.type === 'resource'">
       <template v-if="childResourceType?.inline">
         <MonacoEditor
+          v-if="editCode"
           :filename="`field-${resourceType.name}-${field.name}-inline-edit.js`"
           :source="JSON.stringify(modelValue, null, 2)"
           :options="{
@@ -214,6 +254,13 @@ function removeArrayItem(index: number) {
           }"
           class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
           @update:source="$emit('update:modelValue', JSON.parse($event))"
+          @setup="setupEditor"
+        />
+        <pre
+          v-else
+          class="text-xs text-gray-700 dark:text-gray-400 whitespace-pre-wrap"
+          @dblclick="editCode = true"
+          v-text="JSON.stringify(modelValue, null, 2)"
         />
       </template>
       <Menu

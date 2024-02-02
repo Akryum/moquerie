@@ -160,7 +160,7 @@ const filteredFields = computed(() => {
       </div>
 
       <!-- @TODO sticky actions bar with focus scroll + offset -->
-      <FormActions>
+      <FormActions class="bottom-0">
         <UButton
           color="gray"
           :disabled="!instance || !stateChanged"
