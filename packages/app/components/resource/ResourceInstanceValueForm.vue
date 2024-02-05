@@ -108,7 +108,10 @@ const filteredFields = computed(() => {
 
   if (result.length > MIN_COUNT_TO_ENABLE_SEARCH && searchField.value) {
     const reg = new RegExp(searchField.value, 'i')
-    return result.filter(([key]) => reg.test(key))
+    return result.filter(([key]) => {
+      const field = props.resourceType.fields[key]
+      return reg.test(key) || reg.test(field.description ?? '') || field.tags.some(tag => reg.test(tag))
+    })
   }
 
   return result

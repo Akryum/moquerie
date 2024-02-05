@@ -71,7 +71,7 @@ const filteredFields = computed(() => {
 
   if (result.length > MIN_COUNT_TO_ENABLE_SEARCH && searchField.value) {
     const reg = new RegExp(searchField.value, 'i')
-    return result.filter(field => reg.test(field.fullKey))
+    return result.filter(field => reg.test(field.fullKey) || reg.test(field.field.description ?? '') || field.field.tags.some(tag => reg.test(tag)))
   }
 
   return result
