@@ -13,6 +13,7 @@ export interface FieldActionContext {
   input: any
   db: QueryManagerProxy
   pubsub: PubSubs
+  generateId: () => string
 }
 
 export type FieldActionBaseDefinitions = Record<string, Record<string, FieldAction['action']>>

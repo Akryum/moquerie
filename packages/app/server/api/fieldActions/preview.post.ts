@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid'
+
 export default defineEventHandler(async (event) => {
   const {
     resourceName,
@@ -20,5 +22,6 @@ export default defineEventHandler(async (event) => {
     input: {},
     db: ctx.db,
     pubsub: ctx.pubSubs,
+    generateId: nanoid,
   })
 })

@@ -1,4 +1,5 @@
 import type { IResolvers, ISchemaLevelResolver } from '@graphql-tools/utils'
+import { nanoid } from 'nanoid'
 import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 import type { MoquerieInstance } from '../instance.js'
 
@@ -60,6 +61,7 @@ export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IRes
       input,
       db: ctx.db,
       pubsub: ctx.pubSubs,
+      generateId: nanoid,
     })
   }
 
