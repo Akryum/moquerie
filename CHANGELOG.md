@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.1.0...v0.1.1)
+
+### 🩹 Fixes
+
+- Improve support of cjs workspaces ([bf30fd6](https://github.com/Akryum/moquerie/commit/bf30fd6))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.1.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.7...v0.1.0)
