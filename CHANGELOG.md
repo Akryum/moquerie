@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.2.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.1.2...v0.2.0)
+
+### 🚀 Enhancements
+
+- Filter fields on tags ([b7630a8](https://github.com/Akryum/moquerie/commit/b7630a8))
+
+### 🩹 Fixes
+
+- Db save not updating resource ([eb5cf06](https://github.com/Akryum/moquerie/commit/eb5cf06))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.1.2
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.1.1...v0.1.2)
