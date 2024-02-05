@@ -94,6 +94,12 @@ const routes = computed(() => [
     icon: 'i-ph-bug',
     label: 'Debug',
   },
+  {
+    id: '_route.debug-schema',
+    to: '/debug-schema',
+    icon: 'i-ph-bug',
+    label: 'Debug Schema',
+  },
 ])
 
 // Resource
