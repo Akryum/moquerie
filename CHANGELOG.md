@@ -1,6 +1,39 @@
 # Changelog
 
 
+## v0.1.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.0.7...v0.1.0)
+
+### 🚀 Enhancements
+
+- Use 0 as default number value ([8f198f0](https://github.com/Akryum/moquerie/commit/8f198f0))
+- Search fields in forms ([76de312](https://github.com/Akryum/moquerie/commit/76de312))
+- Improve column size ([c40acb6](https://github.com/Akryum/moquerie/commit/c40acb6))
+- Basic support for virtual types (gql interface/union) ([75a27fa](https://github.com/Akryum/moquerie/commit/75a27fa))
+- **gql:** Sort type fields ([5eb5692](https://github.com/Akryum/moquerie/commit/5eb5692))
+- History ([183336b](https://github.com/Akryum/moquerie/commit/183336b))
+- Improved inline resource code editor UX ([5f537b7](https://github.com/Akryum/moquerie/commit/5f537b7))
+
+### 🩹 Fixes
+
+- **LinkList:** Auto scroll to selected items in ([dc7296f](https://github.com/Akryum/moquerie/commit/dc7296f))
+- Singleton resource being deactivated on page load ([38e0864](https://github.com/Akryum/moquerie/commit/38e0864))
+- Issue restoring saved route ([2f7f013](https://github.com/Akryum/moquerie/commit/2f7f013))
+
+### 💅 Refactors
+
+- Main instance ([5d37752](https://github.com/Akryum/moquerie/commit/5d37752))
+
+### 🏡 Chore
+
+- Clear commented log ([b3a4614](https://github.com/Akryum/moquerie/commit/b3a4614))
+- Remove unused imports ([763e00f](https://github.com/Akryum/moquerie/commit/763e00f))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.0.7
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.0.6...v0.0.7)
