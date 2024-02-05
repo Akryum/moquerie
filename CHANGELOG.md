@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.2.0...v0.2.1)
+
+### 🚀 Enhancements
+
+- Improved resource fields form search ([6db11da](https://github.com/Akryum/moquerie/commit/6db11da))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.2.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.1.2...v0.2.0)
