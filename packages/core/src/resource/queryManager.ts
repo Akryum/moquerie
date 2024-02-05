@@ -36,7 +36,12 @@ export interface QueryManager<TData> {
    * Update multiple resource instances that match the predicate.
    * @param data Will override existing values.
    */
-  update (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]>
+  updateMany (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]>
+  /**
+   * Update one resource instance that match the predicate.
+   * @param data Will override existing values.
+   */
+  updateFirst (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData | null>
   /**
    * Delete multiple resource instances that match the predicate.
    */
@@ -365,7 +370,7 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
   }
 
   if (instance) {
-    instance = await updateResourceInstanceById(mq, resourceName, instance.id, resultValue)
+    instance = await updateResourceInstanceById(mq, resourceName, instance.id, { value: resultValue })
   }
   else {
     instance = await createResourceInstance(mq, {
@@ -463,7 +468,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return predicate ? valuesWithInstances.filter(({ value }) => predicate(value)) : valuesWithInstances
   }
 
-  async function update(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]> {
+  async function updateMany(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]> {
     const selected = await selectForChange(predicate)
 
     // Update instances
@@ -472,6 +477,23 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
       ...data,
     })))).filter(Boolean) as ResourceInstanceReference[]
     return Promise.all(result.map(r => findByInstanceIdOrThrow(r.__id)))
+  }
+
+  async function updateFirst(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData | null> {
+    const selected = (await selectForChange(predicate))[0]
+    if (!selected) {
+      return null
+    }
+
+    // Update instances
+    const result = await serializeInstanceValue(mq, options.resourceName, null, {
+      ...selected.value,
+      ...data,
+    })
+    if (!result) {
+      return null
+    }
+    return findByInstanceIdOrThrow(result.__id)
   }
 
   async function _delete(predicate: (data: TData) => boolean): Promise<void> {
@@ -529,7 +551,8 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     findFirst,
     findFirstOrThrow,
     create,
-    update,
+    updateMany,
+    updateFirst,
     delete: _delete,
     createInstance,
     getReference,

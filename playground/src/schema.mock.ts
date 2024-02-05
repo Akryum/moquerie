@@ -14,7 +14,7 @@ export default {
         const query = await db.Query.findFirst()
         const manyHellos = query?.manyHellos ?? []
         manyHellos.push(input.message)
-        await db.Query.update({
+        await db.Query.updateFirst({
           manyHellos,
         })
         pubsub.graphql.publish('helloAdded', {
@@ -29,7 +29,7 @@ export default {
         const index = manyHellos.indexOf(input.message)
         if (index !== -1) {
           manyHellos.splice(index, 1)
-          await db.Query.update({
+          await db.Query.updateFirst({
             manyHellos,
           })
         }
