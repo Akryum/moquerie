@@ -101,7 +101,7 @@ defineShortcuts({
 
 const MIN_COUNT_TO_ENABLE_SEARCH = 10
 
-const searchField = useLocalStorage('form-search-field', '')
+const searchField = useLocalStorage(`form-search-field-${props.resourceType.name}`, '')
 
 const filteredFields = computed(() => {
   const result = Object.entries(props.resourceType.fields)
@@ -116,6 +116,8 @@ const filteredFields = computed(() => {
 
   return result
 })
+
+const searchInputFocused = ref(false)
 </script>
 
 <template>
@@ -145,6 +147,8 @@ const filteredFields = computed(() => {
             icon="i-ph-magnifying-glass"
             placeholder="Search field..."
             size="xs"
+            @focus="searchInputFocused = true"
+            @blur="searchInputFocused = false"
           />
         </div>
 
@@ -155,7 +159,7 @@ const filteredFields = computed(() => {
           :resource-type="resourceType"
           :child-resource-type="field.type === 'resource' ? resourceTypeStore.getResourceType(field.resourceName) : undefined"
           :field="field"
-          :autofocus="index === 0"
+          :autofocus="index === 0 && !searchInputFocused"
           :show-apply="!!instance"
           :has-changes="instance && stateChanged"
           @apply="onSubmit()"
