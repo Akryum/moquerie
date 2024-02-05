@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const mq = getMq()
   const ctx = await mq.getResolvedContext()
 
-  const fieldAction = ctx.fieldActions.allActions.find(fa => fa.resourceName === resourceName && fa.fieldName === fieldName)
+  const fieldAction = ctx.fieldActions.items.find(fa => fa.resourceName === resourceName && fa.fieldName === fieldName)
   if (!fieldAction) {
     throw new Error(`Field action not found for resource ${resourceName} and field ${fieldName}`)
   }

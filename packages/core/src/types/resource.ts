@@ -2,8 +2,8 @@ export type ResourceSchemaCommon = {
   name: string
   tags: string[]
   description?: string
-  nonNull: boolean
-  isDeprecated: boolean
+  nonNull?: boolean
+  isDeprecated?: boolean
   deprecationReason?: string
 } & (
   {
@@ -106,3 +106,17 @@ export interface ResourceInstanceReference {
 }
 
 export type FilterActive = 'active' | 'inactive' | 'all'
+
+export interface SchemaTransformContext {
+  schema: ResourceSchema
+  createField: (name: string, type: ResourceSchemaField['type'], options?: Partial<Omit<ResourceSchemaField, 'name' | 'type'>>) => ResourceSchemaField
+  createResourceField: (name: string, resourceName: string, array?: boolean) => ResourceSchemaField & { type: 'resource' }
+  createEnumField: (name: string, values: ResourceSchemaFieldEnumValue[]) => ResourceSchemaField & { type: 'enum' }
+}
+
+export type SchemaTransformAction = (ctx: SchemaTransformContext) => any
+
+export interface SchemaTransform {
+  action: SchemaTransformAction
+  file: string
+}

@@ -18,6 +18,7 @@ import { type SettingsManager, createSettingsManager } from './settings/settings
 import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 import type { MoquerieInstance } from './instance.js'
 import type { HistoryRecord } from './types/history.js'
+import { SchemaTransformStore } from './resource/schemaTransformStore.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -103,6 +104,7 @@ export interface ResolvedContext {
   server: Server
   mockFiles: MockFileWatcher
   fieldActions: FieldActionStore
+  schemaTransforms: SchemaTransformStore
   // @TODO type
   db: QueryManagerProxy
   // @TODO type
@@ -114,7 +116,55 @@ export interface ResolvedContext {
 async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedContext> {
   const ctx = await mq.getContext()
 
-  const { schema, graphqlSchema } = await getResourceSchema(mq)
+  // Mock files
+
+  let mockFileWatcher = mq.data.resolvedContext?.mockFiles
+  const isMockFileWatcherNew = !mockFileWatcher
+
+  if (!mockFileWatcher) {
+    mockFileWatcher = new MockFileWatcher(mq)
+    mq.onDestroy(() => mockFileWatcher?.destroy())
+  }
+
+  // Field actions
+
+  let fieldActions = mq.data.resolvedContext?.fieldActions
+
+  if (!fieldActions) {
+    fieldActions = new FieldActionStore()
+    mockFileWatcher.onUpdate(fieldActions.handleMockFile.bind(fieldActions))
+    mockFileWatcher.onRemove(fieldActions.handleMockFileRemoved.bind(fieldActions))
+    mq.onDestroy(() => fieldActions?.destroy())
+  }
+
+  // Schema transforms
+
+  let schemaTransforms = mq.data.resolvedContext?.schemaTransforms
+
+  if (!schemaTransforms) {
+    schemaTransforms = new SchemaTransformStore()
+    mockFileWatcher.onUpdate(schemaTransforms.handleMockFile.bind(schemaTransforms))
+    mockFileWatcher.onRemove(schemaTransforms.handleMockFileRemoved.bind(schemaTransforms))
+    mq.onDestroy(() => schemaTransforms?.destroy())
+
+    // Update schema
+    schemaTransforms.onChange(async () => {
+      if (mq.data.resolvedContext && schemaTransforms) {
+        const { schema } = await getResourceSchema(mq, schemaTransforms)
+        mq.data.resolvedContext.schema = schema
+      }
+    })
+  }
+
+  if (isMockFileWatcherNew) {
+    await mockFileWatcher.waitForReady()
+  }
+
+  // Schema
+
+  const { schema, graphqlSchema } = await getResourceSchema(mq, schemaTransforms)
+
+  // API Server
 
   let server = mq.data.resolvedContext?.server
   if (server) {
@@ -126,26 +176,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     server = await createServer(mq)
   }
 
-  let mockFileWatcher = mq.data.resolvedContext?.mockFiles
-  const isMockFileWatcherNew = !mockFileWatcher
-
-  if (!mockFileWatcher) {
-    mockFileWatcher = new MockFileWatcher(mq)
-    mq.onDestroy(() => mockFileWatcher?.destroy())
-  }
-
-  let fieldActions = mq.data.resolvedContext?.fieldActions
-
-  if (!fieldActions) {
-    fieldActions = new FieldActionStore()
-    mockFileWatcher.onUpdate(fieldActions.handleMockFile.bind(fieldActions))
-    mockFileWatcher.onRemove(fieldActions.handleMockFileRemoved.bind(fieldActions))
-    mq.onDestroy(() => fieldActions?.destroy())
-  }
-
-  if (isMockFileWatcherNew) {
-    await mockFileWatcher.waitForReady()
-  }
+  // Create context object
 
   return {
     context: ctx,
@@ -154,6 +185,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     server,
     mockFiles: mockFileWatcher,
     fieldActions,
+    schemaTransforms,
     db: createQueryManagerProxy(mq),
     pubSubs: mq.data.resolvedContext?.pubSubs ?? await createPubSubs(),
     jiti: mq.data.resolvedContext?.jiti ?? createJITI(mq.data.cwd, {

@@ -3,11 +3,6 @@ import createJITI, { type JITI } from 'jiti'
 import path from 'pathe'
 import type { MoquerieInstance } from '../instance.js'
 
-export interface MockFileHandler {
-  handleMockFile(file: string, data: any): unknown
-  handleMockFileRemoved(file: string): unknown
-}
-
 export class MockFileWatcher {
   watcher: FSWatcher
 

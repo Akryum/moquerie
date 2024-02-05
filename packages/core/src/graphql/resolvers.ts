@@ -50,7 +50,7 @@ export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IRes
   }
 
   // Field actions
-  for (const fieldAction of ctx.fieldActions.allActions) {
+  for (const fieldAction of ctx.fieldActions.items) {
     const { resourceName, fieldName, action } = fieldAction
     if (!resolvers[resourceName]) {
       resolvers[resourceName] = {}

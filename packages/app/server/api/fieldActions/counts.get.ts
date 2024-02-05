@@ -1,7 +1,7 @@
 export default defineEventHandler(async () => {
   const mq = getMq()
   const ctx = await mq.getResolvedContext()
-  const actions = ctx.fieldActions.allActions.map(fa => ({
+  const actions = ctx.fieldActions.items.map(fa => ({
     resourceName: fa.resourceName,
     fieldName: fa.fieldName,
     file: fa.file,
