@@ -12,8 +12,8 @@ import type { Server } from './server.js'
 import { createServer } from './server.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
-import type { FieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
-import { createFieldActionWatcher } from './fieldActions/fieldActionWatcher.js'
+import { MockFileWatcher } from './mock/index.js'
+import { FieldActionStore } from './fieldActions/index.js'
 import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
 import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 import type { MoquerieInstance } from './instance.js'
@@ -101,7 +101,8 @@ export interface ResolvedContext {
   schema: ResourceSchema
   graphqlSchema?: ResolvedGraphQLSchema
   server: Server
-  fieldActions: FieldActionWatcher
+  mockFiles: MockFileWatcher
+  fieldActions: FieldActionStore
   // @TODO type
   db: QueryManagerProxy
   // @TODO type
@@ -125,12 +126,25 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     server = await createServer(mq)
   }
 
+  let mockFileWatcher = mq.data.resolvedContext?.mockFiles
+  const isMockFileWatcherNew = !mockFileWatcher
+
+  if (!mockFileWatcher) {
+    mockFileWatcher = new MockFileWatcher(mq)
+    mq.onDestroy(() => mockFileWatcher?.destroy())
+  }
+
   let fieldActions = mq.data.resolvedContext?.fieldActions
 
   if (!fieldActions) {
-    fieldActions = await createFieldActionWatcher(mq)
-
+    fieldActions = new FieldActionStore()
+    mockFileWatcher.onUpdate(fieldActions.handleMockFile.bind(fieldActions))
+    mockFileWatcher.onRemove(fieldActions.handleMockFileRemoved.bind(fieldActions))
     mq.onDestroy(() => fieldActions?.destroy())
+  }
+
+  if (isMockFileWatcherNew) {
+    await mockFileWatcher.waitForReady()
   }
 
   return {
@@ -138,6 +152,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     schema,
     graphqlSchema,
     server,
+    mockFiles: mockFileWatcher,
     fieldActions,
     db: createQueryManagerProxy(mq),
     pubSubs: mq.data.resolvedContext?.pubSubs ?? await createPubSubs(),
