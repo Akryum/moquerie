@@ -29,6 +29,8 @@
     },
     "./*": "./*"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "dev": "tsc --watch"
