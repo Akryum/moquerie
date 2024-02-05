@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.1.1...v0.1.2)
+
+### 🚀 Enhancements
+
+- **fieldAction:** GenerateId ([3331a99](https://github.com/Akryum/moquerie/commit/3331a99))
+- Schema transforms ([6f2fcbd](https://github.com/Akryum/moquerie/commit/6f2fcbd))
+- Debug schema page ([f3fe2f1](https://github.com/Akryum/moquerie/commit/f3fe2f1))
+
+### 💅 Refactors
+
+- MockFileWatcher ([e8b3d02](https://github.com/Akryum/moquerie/commit/e8b3d02))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.1.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.1.0...v0.1.1)
