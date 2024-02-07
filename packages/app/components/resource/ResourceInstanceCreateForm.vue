@@ -43,18 +43,14 @@ function fetchFactories() {
   })
 }
 
-watchEffect(() => {
-  fetchFactories()
-})
-
 const selectedFactory = ref<ResourceFactory | undefined>()
 
-if (route.query.factory) {
-  selectedFactory.value = factoryStore.factories.find(f => f.id === route.query.factory)
-  manual.value = false
-}
-
 onMounted(async () => {
+  await fetchFactories()
+  if (route.query.factory) {
+    selectedFactory.value = factoryStore.factories.find(f => f.id === route.query.factory)
+    manual.value = false
+  }
   if (!manual.value && !selectedFactory.value) {
     openFactorySelectMenu()
   }
