@@ -11,7 +11,7 @@ const route = useRoute()
 
 // Recent commands
 
-const recentCommands = useLocalStorage<any[]>('recentCommands', [])
+const recentCommands = useLocalStorage<any[]>('moquerie.recentCommands', [])
 
 // Routes
 
@@ -219,18 +219,20 @@ const groups = computed(() => [
 
 const router = useRouter()
 
-function onSelect(command: any) {
+async function onSelect(command: any) {
+  recentCommands.value = [
+    command,
+    ...recentCommands.value.filter(c => c.id !== command.id).slice(0, 10),
+  ]
+
+  await nextTick()
+
   if (command.click) {
     command.click()
   }
   else if (command.to) {
     router.push(command.to)
   }
-
-  recentCommands.value = [
-    command,
-    ...recentCommands.value.filter(c => c.id !== command.id),
-  ].slice(0, 10)
 
   emit('close')
 }
