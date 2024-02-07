@@ -39,6 +39,25 @@ onWindowFocus(refreshReferenced)
 const instances = computed(() => instancesRaw.value?.filter(i => filterActive.value === 'all' || i.active === (filterActive.value === 'active')) ?? [])
 
 const firstActive = computed(() => instances.value?.find(i => i.active))
+
+// Selection
+
+const selectedIds = ref<string[]>([])
+
+const router = useRouter()
+
+function openSelection() {
+  const [id] = selectedIds.value
+  if (id) {
+    router.push({
+      name: 'db-resources-resourceName-instances-instanceId',
+      params: {
+        resourceName: props.field.resourceName,
+        instanceId: id,
+      },
+    })
+  }
+}
 </script>
 
 <template>
@@ -64,6 +83,8 @@ const firstActive = computed(() => instances.value?.find(i => i.active))
       empty-placeholder="No instances referenced"
       dim-inactive-instances
       class="resource-table flex-1"
+      @select="instance => selectedIds = [instance.id]"
+      @dblclick="openSelection()"
     >
       <template v-if="!field.array" #header-start>
         <div class="w-[42px] flex-none" />
