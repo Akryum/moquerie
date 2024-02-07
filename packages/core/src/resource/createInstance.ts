@@ -11,6 +11,7 @@ export interface CreateInstanceOptions {
   tags?: string[]
   comment?: string
   id?: string
+  factoryId?: string
   save: boolean
 }
 
@@ -28,7 +29,7 @@ export async function createResourceInstance(mq: MoquerieInstance, options: Crea
     value,
     tags: tags ?? [],
     comment: comment ?? null,
-    factoryId: null,
+    factoryId: options.factoryId ?? null,
   }
 
   if (options.save) {

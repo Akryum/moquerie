@@ -58,6 +58,7 @@ export async function createInstanceFromFactory(mq: MoquerieInstance, options: C
       id,
       tags: [...(factory.info.applyTags ?? [])],
       comment: factory.info.applyComment,
+      factoryId: factory.id,
     })
     : await createResourceInstance(mq, {
       id: 'preview',
@@ -65,6 +66,7 @@ export async function createInstanceFromFactory(mq: MoquerieInstance, options: C
       value: data,
       tags: [...(factory.info.applyTags ?? [])],
       comment: factory.info.applyComment,
+      factoryId: factory.id,
       save: false,
     })
 
