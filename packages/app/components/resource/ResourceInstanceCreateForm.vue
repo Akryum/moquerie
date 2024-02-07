@@ -35,13 +35,11 @@ function openFactorySelectMenu() {
 
 // Generate
 
-const factoryDbLocation = ref<DBLocation>('local')
 const factoryStore = useFactoryStore()
 
 function fetchFactories() {
   return factoryStore.fetchFactories({
     resourceName: route.params.resourceName as string,
-    location: factoryDbLocation.value,
   })
 }
 
