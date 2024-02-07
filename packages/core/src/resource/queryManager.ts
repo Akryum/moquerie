@@ -12,6 +12,8 @@ import { getResourceInstanceStorage } from './storage.js'
 
 type QueryManagerCreateInstanceOptions = Omit<CreateInstanceOptions, 'resourceName' | 'value' | 'save'>
 
+export type QueryPredicate<TData> = (data: TData, instance: ResourceInstance) => boolean
+
 /**
  * Used to return final values for the API.
  */
@@ -19,15 +21,15 @@ export interface QueryManager<TData> {
   /**
    * Find multiple resource values.
    */
-  findMany (predicate?: (data: TData) => boolean): Promise<TData[]>
+  findMany (predicate?: QueryPredicate<TData>): Promise<TData[]>
   /**
    * Find first resource value that matches the predicate.
    */
-  findFirst (predicate?: (data: TData) => boolean): Promise<TData | null>
+  findFirst (predicate?: QueryPredicate<TData>): Promise<TData | null>
   /**
    * Find first resource value that matches the predicate or throw an error if none is found.
    */
-  findFirstOrThrow (predicate: (data: TData) => boolean): Promise<TData>
+  findFirstOrThrow (predicate: QueryPredicate<TData>): Promise<TData>
   /**
    * Create a new resource instance from the supplied data.
    */
@@ -36,16 +38,16 @@ export interface QueryManager<TData> {
    * Update multiple resource instances that match the predicate.
    * @param data Will override existing values.
    */
-  updateMany (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]>
+  updateMany (data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData[]>
   /**
    * Update one resource instance that match the predicate.
    * @param data Will override existing values.
    */
-  updateFirst (data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData | null>
+  updateFirst (data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData | null>
   /**
    * Delete multiple resource instances that match the predicate.
    */
-  delete (predicate: (data: TData) => boolean): Promise<void>
+  delete (predicate: QueryPredicate<TData>): Promise<void>
   /**
    * Create a new resource instance from the supplied data.
    * Returns the actual instance.
@@ -59,11 +61,11 @@ export interface QueryManager<TData> {
   /**
    * Find first resource instance that matches the predicate and return a reference to it.
    */
-  findFirstReference (predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference | null>
+  findFirstReference (predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference | null>
   /**
    * Find multiple resource instances that match the predicate and return references to them.
    */
-  findManyReferences (predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference[]>
+  findManyReferences (predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference[]>
   /**
    * Pick a random resource instance value.
    */
@@ -409,7 +411,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return instance
   }
 
-  async function _findMany(predicate?: (data: TData) => boolean) {
+  async function _findMany(predicate?: QueryPredicate<TData>) {
     const instances = await findAllResourceInstances(mq, options.resourceName, {
       filterActive: 'active',
     })
@@ -417,19 +419,19 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
       instance: i,
       value: await deserializeInstanceValue<TData>(mq, i),
     })))
-    return predicate ? result.filter(r => predicate(r.value)) : result
+    return predicate ? result.filter(r => predicate(r.value, r.instance)) : result
   }
 
-  async function findMany(predicate?: (data: TData) => boolean): Promise<TData[]> {
+  async function findMany(predicate?: QueryPredicate<TData>): Promise<TData[]> {
     return (await _findMany(predicate)).map(r => r.value)
   }
 
-  async function findFirst(predicate?: (data: TData) => boolean): Promise<TData | null> {
-    const values = await findMany()
-    return (predicate ? values.find(predicate) : values[0]) ?? null
+  async function findFirst(predicate?: QueryPredicate<TData>): Promise<TData | null> {
+    const refs = await _findMany(predicate)
+    return refs[0]?.value ?? null
   }
 
-  async function findFirstOrThrow(predicate?: (data: TData) => boolean): Promise<TData> {
+  async function findFirstOrThrow(predicate?: QueryPredicate<TData>): Promise<TData> {
     const value = await findFirst(predicate)
     if (value == null) {
       throw new Error(`Resource instance "${options.resourceName}" not found`)
@@ -457,7 +459,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     throw new Error(`Failed to create resource instance ${options.resourceName}: ${JSON.stringify(data)}`)
   }
 
-  async function selectForChange(predicate?: (data: TData) => boolean) {
+  async function selectForChange(predicate?: QueryPredicate<TData>) {
     const instances = await findAllResourceInstances(mq, options.resourceName, {
       filterActive: 'active',
     })
@@ -465,10 +467,10 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
       instance: i,
       value: await deserializeInstanceValue<TData>(mq, i),
     })))
-    return predicate ? valuesWithInstances.filter(({ value }) => predicate(value)) : valuesWithInstances
+    return predicate ? valuesWithInstances.filter(r => predicate(r.value, r.instance)) : valuesWithInstances
   }
 
-  async function updateMany(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData[]> {
+  async function updateMany(data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData[]> {
     const selected = await selectForChange(predicate)
 
     // Update instances
@@ -479,7 +481,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return Promise.all(result.map(r => findByInstanceIdOrThrow(r.__id)))
   }
 
-  async function updateFirst(data: Partial<TData>, predicate?: (data: TData) => boolean): Promise<TData | null> {
+  async function updateFirst(data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData | null> {
     const selected = (await selectForChange(predicate))[0]
     if (!selected) {
       return null
@@ -496,7 +498,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return findByInstanceIdOrThrow(result.__id)
   }
 
-  async function _delete(predicate: (data: TData) => boolean): Promise<void> {
+  async function _delete(predicate: QueryPredicate<TData>): Promise<void> {
     const selected = await selectForChange(predicate)
     await Promise.all(selected.map(r => removeResourceInstanceById(mq, options.resourceName, r.instance.id)))
   }
@@ -534,7 +536,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return createResourceInstanceReference(options.resourceName, instanceId)
   }
 
-  async function findFirstReference(predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference | null> {
+  async function findFirstReference(predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference | null> {
     const instance = (await _findMany(predicate))[0]?.instance
     if (instance) {
       return createResourceInstanceReference(instance.resourceName, instance.id)
@@ -542,7 +544,7 @@ export function createQueryManager<TData>(mq: MoquerieInstance, options: CreateQ
     return null
   }
 
-  async function findManyReferences(predicate?: (data: TData) => boolean): Promise<ResourceInstanceReference[]> {
+  async function findManyReferences(predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference[]> {
     return (await _findMany(predicate)).map(r => createResourceInstanceReference(r.instance.resourceName, r.instance.id))
   }
 
