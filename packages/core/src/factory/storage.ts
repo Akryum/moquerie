@@ -29,9 +29,8 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
 
   async function readFactory(file: string, location: DBLocation) {
     const resourceName = path.basename(path.dirname(file))
-    const fileName = path.basename(file).replace(/\.[jt]s$/, '')
-    const [, name] = /(.+?)(?:@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
-    const id = `${resourceName}-${fileName}`
+    const [, name, idPart] = /(.+?)(@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
+    const id = `${resourceName}-${idPart ?? name}`
 
     const content = await fs.promises.readFile(file, 'utf8')
     const result = await deserializeFactory(content)
@@ -39,13 +38,13 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
     const extra = await getRepoMetaFactoryStorage(mq).then(s => s.findById(id))
 
     const factory: ResourceFactory = {
+      ...extra,
+      ...result,
       id,
       name,
       resourceName,
       location,
       file,
-      ...extra,
-      ...result,
     }
 
     return factory
@@ -80,7 +79,8 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
         })
         for (const file of files) {
           const resourceName = path.basename(path.dirname(file))
-          const id = `${resourceName}-${path.basename(file).replace(/\.[jt]s$/, '')}`
+          const [, name, idPart] = /(.+?)(@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
+          const id = `${resourceName}-${idPart ?? name}`
           manifest.files[id] = file
         }
         return manifest

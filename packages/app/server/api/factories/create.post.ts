@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import path from 'pathe'
 import { getCurrentUser, getFactoryFilename, getFactoryStorage } from '@moquerie/core'
 import type { ResourceFactory } from '@moquerie/core'
+import SuperJSON from 'superjson'
 import type { FactoryData } from '~/components/factory/formTypes.js'
 
 export default defineEventHandler(async (event) => {
@@ -28,5 +29,8 @@ export default defineEventHandler(async (event) => {
     },
   }
   await storage.save(factory, factory.location)
-  return factory
+  return SuperJSON.stringify({
+    ...factory,
+    ast: undefined,
+  })
 })

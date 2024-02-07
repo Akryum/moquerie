@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Dropdown } from 'floating-vue'
 import type { ResourceFactory, ResourceSchemaType } from '@moquerie/core'
+import SuperJSON from 'superjson'
 import type { FactoryData } from './formTypes.js'
 import { useTagModel } from '~/utils/form.js'
 
@@ -38,13 +39,13 @@ function getStateInitialValues(factory = props.factory): FactoryData {
     resourceName: props.resourceName,
     location: factory?.location ?? getDbLocationFromRouteQuery('factoryLocation') ?? 'local',
     info: {
-      description: factory?.info.description ?? '',
-      tags: factory?.info.tags ? structuredClone(toRaw(factory.info.tags)) : [],
-      createPrompts: factory?.info.createPrompts ? structuredClone(toRaw(factory.info.createPrompts)) : [],
-      fakerSeed: factory?.info.fakerSeed ?? '',
-      fakerLocale: factory?.info.fakerLocale,
-      applyTags: factory?.info.applyTags ? structuredClone(toRaw(factory.info.applyTags)) : [],
-      applyComment: factory?.info.applyComment ?? '',
+      description: factory?.info?.description ?? '',
+      tags: factory?.info?.tags ? structuredClone(toRaw(factory.info.tags)) : [],
+      createPrompts: factory?.info?.createPrompts ? structuredClone(toRaw(factory.info.createPrompts)) : [],
+      fakerSeed: factory?.info?.fakerSeed ?? '',
+      fakerLocale: factory?.info?.fakerLocale,
+      applyTags: factory?.info?.applyTags ? structuredClone(toRaw(factory.info.applyTags)) : [],
+      applyComment: factory?.info?.applyComment ?? '',
     },
     fields: factory?.fields
       ? structuredClone(toRaw(factory.fields))
@@ -120,12 +121,12 @@ async function onSubmit() {
 
     if (props.factory) {
       // Update factory
-      factory = await $fetch(`/api/factories/${props.factory.id}`, {
+      factory = SuperJSON.parse(await $fetch(`/api/factories/${props.factory.id}`, {
         method: 'PATCH',
         body: {
           ...state.value,
         },
-      })
+      }))
       toast.add({
         id: 'factory-updated',
         title: 'Factory updated!',
@@ -135,10 +136,10 @@ async function onSubmit() {
     }
     else {
       // Create factory
-      factory = await $fetch(`/api/factories/create`, {
+      factory = SuperJSON.parse(await $fetch(`/api/factories/create`, {
         method: 'POST',
         body: state.value,
-      })
+      }))
       toast.add({
         id: 'factory-created',
         title: 'Factory created!',
