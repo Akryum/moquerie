@@ -19,6 +19,7 @@ import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 import type { MoquerieInstance } from './instance.js'
 import type { HistoryRecord } from './types/history.js'
 import { SchemaTransformStore } from './resource/schemaTransformStore.js'
+import { ScriptStore } from './script/scriptStore.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -105,6 +106,7 @@ export interface ResolvedContext {
   mockFiles: MockFileWatcher
   fieldActions: FieldActionStore
   schemaTransforms: SchemaTransformStore
+  scripts: ScriptStore
   // @TODO type
   db: QueryManagerProxy
   // @TODO type
@@ -156,6 +158,17 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     })
   }
 
+  // Scripts
+
+  let scripts = mq.data.resolvedContext?.scripts
+
+  if (!scripts) {
+    scripts = new ScriptStore()
+    mockFileWatcher.onUpdate(scripts.handleMockFile.bind(scripts))
+    mockFileWatcher.onRemove(scripts.handleMockFileRemoved.bind(scripts))
+    mq.onDestroy(() => scripts?.destroy())
+  }
+
   if (isMockFileWatcherNew) {
     await mockFileWatcher.waitForReady()
   }
@@ -186,6 +199,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     mockFiles: mockFileWatcher,
     fieldActions,
     schemaTransforms,
+    scripts,
     db: createQueryManagerProxy(mq),
     pubSubs: mq.data.resolvedContext?.pubSubs ?? await createPubSubs(),
     jiti: mq.data.resolvedContext?.jiti ?? createJITI(mq.data.cwd, {

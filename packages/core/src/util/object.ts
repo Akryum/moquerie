@@ -29,3 +29,38 @@ export function set(target: any, path: string, value: any) {
   }, target)
   lastObj[lastKey] = value
 }
+
+export function createSpyProxy<T extends object>(target: T, maxDepth: number, handler: (path: string[], params: any[]) => void, parentPath: string[] = []): T {
+  const proxyCache = new Map<string, any>()
+  const proxy = new Proxy(target as any, {
+    get(target, prop, receiver) {
+      if (typeof prop === 'string') {
+        const isFunction = typeof target[prop] === 'function'
+        const isObject = typeof target[prop] === 'object'
+
+        if (isFunction || isObject) {
+          const path = [...parentPath, prop]
+          if (path.length <= maxDepth) {
+            const key = path.join('.')
+            let result = proxyCache.get(key)
+            if (!result) {
+              if (isFunction) {
+                result = (...params: any[]) => {
+                  handler(path, params)
+                  return Reflect.apply(target[prop], receiver, params)
+                }
+              }
+              else {
+                result = createSpyProxy(target[prop], maxDepth, handler, path)
+              }
+              proxyCache.set(key, result)
+            }
+            return result
+          }
+        }
+      }
+      return Reflect.get(target, prop, receiver)
+    },
+  }) as T
+  return proxy
+}

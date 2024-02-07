@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import SuperJSON from 'superjson'
-import type { ResourceFactory } from '@moquerie/core'
+import type { ResourceFactory, ScriptItem } from '@moquerie/core'
 
 const emit = defineEmits<{
   close: []
@@ -206,6 +206,26 @@ const branchCommands = computed(() => branches.value?.map(branch => ({
   },
 })) ?? [])
 
+// Scripts
+
+const { data: scripts, refresh: refreshScripts } = await useFetch<ScriptItem[]>('/api/scripts')
+onWindowFocus(refreshScripts)
+
+const scriptCommands = computed(() => scripts.value?.map(script => ({
+  id: `scripts.${script.id}`,
+  icon: 'i-ph-code-block',
+  label: script.id,
+  to: {
+    name: 'db-scripts-scriptId',
+    params: {
+      scriptId: script.id,
+    },
+    query: {
+      run: 'true',
+    },
+  },
+})) ?? [])
+
 // Final command list
 
 const groups = computed(() => [
@@ -215,6 +235,7 @@ const groups = computed(() => [
   { key: 'factories', commands: [createFactoryCommand.value, ...factoryCommands.value], label: 'Factories' },
   { key: 'snapshots', commands: snapshotCommands, label: 'Snapshots' },
   { key: 'branches', commands: branchCommands.value, label: 'Branches' },
+  { key: 'scripts', commands: scriptCommands.value, label: 'Scripts' },
 ])
 
 const router = useRouter()

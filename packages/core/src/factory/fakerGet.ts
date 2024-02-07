@@ -5,7 +5,7 @@ export interface GetFakerOptions {
   seed?: any
 }
 
-export async function getFaker(mq: MoquerieInstance, options: GetFakerOptions) {
+export async function getFaker(mq: MoquerieInstance, options: GetFakerOptions = {}) {
   const ctx = await mq.getContext()
 
   const allFakers = await import('@faker-js/faker')

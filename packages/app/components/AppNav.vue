@@ -28,16 +28,22 @@ defineShortcuts({
       router.push('/db/snapshots')
     },
   },
-  'meta_shift_h': {
-    usingInput: true,
-    handler: () => {
-      router.push('/db/history')
-    },
-  },
   'meta_shift_p': {
     usingInput: true,
     handler: () => {
       router.push('/pubsub')
+    },
+  },
+  'meta_shift_e': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/scripts')
+    },
+  },
+  'meta_shift_h': {
+    usingInput: true,
+    handler: () => {
+      router.push('/db/history')
     },
   },
 })
@@ -76,13 +82,6 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
-      to="/db/history"
-      icon="i-ph-clock-clockwise"
-      title="History"
-      shortcuts="meta_shift_h"
-    />
-
-    <AppNavItem
       to="/pubsub"
       icon="i-ph-broadcast"
       title="PubSub (Realtime publications)"
@@ -90,9 +89,23 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
+      to="/db/scripts"
+      icon="i-ph-code-block"
+      title="Scripts"
+      shortcuts="meta_shift_e"
+    />
+
+    <AppNavItem
       to="/db/fieldActions"
       icon="i-ph-lightning"
       title="Field actions"
+    />
+
+    <AppNavItem
+      to="/db/history"
+      icon="i-ph-clock-clockwise"
+      title="History"
+      shortcuts="meta_shift_h"
     />
 
     <AppNavItem

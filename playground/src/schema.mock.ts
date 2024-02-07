@@ -1,4 +1,4 @@
-import { defineFieldActions, defineSchemaTransforms } from 'moquerie/mocks'
+import { defineFieldActions, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
 
 export default {
   ...defineFieldActions({
@@ -76,5 +76,24 @@ export default {
       { value: 2, description: 'Two' },
       { value: 3, description: 'Three' },
     ])
+  }),
+
+  ...defineScripts({
+    createSimpleMessage: {
+      description: `Create a simple message sent by current user`,
+      fn: async ({ generateResource, db }) => {
+        // Create message
+        const [ref] = await generateResource('Message', 'SimpleMessageFactory')
+
+        // Update message with current user
+        const me = await db.User.findFirstReference((data, { tags }) => tags.includes('me'))
+        if (!me) {
+          throw new Error(`User with tag 'me' not found`)
+        }
+        await db.Message.updateFirst({
+          from: me,
+        }, (_, instance) => instance.id === ref.__id)
+      },
+    },
   }),
 }

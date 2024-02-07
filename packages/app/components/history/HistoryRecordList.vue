@@ -54,7 +54,7 @@ function onOpen(record: HistoryRecordForList) {
     id="history-record-list"
     :items="records"
     :filter="filter"
-    :selected-item="(factory, route) => factory.id === route.params.factoryId"
+    :selected-item="(record, route) => record.id === route.params.recordId"
     filter-placeholder="Filter records by resource name..."
     class="p-2"
     @select="onOpen"

@@ -1,9 +1,8 @@
-export interface MockFileItem<ActionContext> {
+export interface MockFileItem {
   file: string
-  action: (ctx: ActionContext) => any
 }
 
-export class MockFileHandler<TItem extends MockFileItem<any>> {
+export class MockFileHandler<TItem extends MockFileItem> {
   key: string
   items: TItem[] = []
   changeHandlers: Array<() => unknown> = []
