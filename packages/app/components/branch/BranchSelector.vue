@@ -81,7 +81,7 @@ async function onCreateBranch(branch: string) {
         <UButton
           icon="i-ph-git-branch"
           trailing-icon="i-ph-caret-down"
-          variant="outline"
+          color="gray"
           block
         >
           <div class="w-full text-left">

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { vTooltip } from 'floating-vue'
+
 const { data: projectData, refresh: refreshProjectData } = useFetch('/api/project')
 onWindowFocus(refreshProjectData)
 
@@ -20,6 +22,14 @@ const commandPaletteStore = useCommandPaletteStore()
       </button>
 
       <BranchSelector />
+
+      <div v-tooltip="'Take snapshot'">
+        <UButton
+          icon="i-ph-camera"
+          to="/db/snapshots/create"
+          color="gray"
+        />
+      </div>
     </template>
 
     <div class="flex-1" />
