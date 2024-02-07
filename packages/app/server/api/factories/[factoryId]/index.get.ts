@@ -7,5 +7,8 @@ export default defineEventHandler(async (event) => {
   const mq = getMq()
   const storage = await getFactoryStorage(mq)
   const data = await storage.findById(factoryId)
-  return SuperJSON.stringify(data) as unknown as ResourceFactory
+  return SuperJSON.stringify({
+    ...data,
+    ast: undefined,
+  }) as unknown as ResourceFactory
 })
