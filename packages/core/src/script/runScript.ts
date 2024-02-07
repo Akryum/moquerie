@@ -144,12 +144,10 @@ export async function runScript(mq: MoquerieInstance, scriptId: string) {
   for (const log of report.logs) {
     if (log.data?.params) {
       for (const key in log.data.params) {
-        console.log(key, log.data.params[key])
         if (typeof log.data.params[key] === 'function') {
           log.data.params[key] = { __fn: log.data.params[key].toString() }
         }
       }
-      console.log(log.data.params)
     }
   }
 
