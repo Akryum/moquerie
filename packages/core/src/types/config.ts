@@ -1,4 +1,5 @@
 import type { fakerLocales } from '../factory/fakerLocales.js'
+import type { Plugin } from './plugin.js'
 
 export interface Config {
   /**
@@ -51,4 +52,9 @@ export interface Config {
    * Locale used by all calls to faker when not specified. Default is English.
    */
   defaultFakerLocale?: keyof typeof fakerLocales
+
+  /**
+   * Plugins
+   */
+  plugins?: Array<Plugin | Promise<Plugin>>
 }

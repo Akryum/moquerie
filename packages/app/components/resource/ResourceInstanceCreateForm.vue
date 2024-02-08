@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Tooltip } from 'floating-vue'
 import SuperJSON from 'superjson'
-import type { DBLocation, ResourceFactory, ResourceInstance } from '@moquerie/core'
+import type { ResourceFactory, ResourceInstance } from '@moquerie/core'
 import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{

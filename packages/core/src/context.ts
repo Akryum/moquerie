@@ -20,12 +20,15 @@ import type { MoquerieInstance } from './instance.js'
 import type { HistoryRecord } from './types/history.js'
 import { SchemaTransformStore } from './resource/schemaTransformStore.js'
 import { ScriptStore } from './script/scriptStore.js'
+import type { Plugin, PluginInstance } from './types/plugin.js'
+import { type Hooks, hooks } from './hooks.js'
 
 export interface Context {
   contextWatcher: FSWatcher
   config: Config
   settings: SettingsManager
   port: number
+  plugins: Array<PluginInstance>
 }
 
 async function getContextRelatedToConfig(mq: MoquerieInstance) {
@@ -36,9 +39,37 @@ async function getContextRelatedToConfig(mq: MoquerieInstance) {
       port: config?.server?.port ?? 5658,
     })
   }
+
+  // Plugins
+  // Clean up previous plugins
+  const previousPlugins = mq.data.context?.plugins ?? []
+  for (const plugin of previousPlugins) {
+    for (const destroyHandler of plugin.destroyHandlers) {
+      await destroyHandler()
+    }
+  }
+  // Register new plugins hooks
+  const plugins = config?.plugins ?? []
+  const pluginInstances: PluginInstance[] = []
+  for (const option of plugins) {
+    const plugin = await option
+    const instance: PluginInstance = {
+      plugin,
+      destroyHandlers: [],
+    }
+    for (const key in plugin) {
+      if (key !== 'name') {
+        const value = plugin[key as keyof Plugin]
+        instance.destroyHandlers.push(hooks.hook(key as keyof Hooks, value as any))
+      }
+    }
+    pluginInstances.push(instance)
+  }
+
   return {
     config: config ?? {},
     port,
+    plugins: pluginInstances,
   }
 }
 

@@ -29,7 +29,7 @@ export function defineScripts(scripts: Record<string, ScriptOption>) {
   }
 }
 
-export function defineFactory<TInfo extends ResourceFactoryInfo, TFn extends ResourceFactoryFn>(info: TInfo, fn: TFn) {
+export function defineFactory<TInfo extends Partial<ResourceFactoryInfo>, TFn extends ResourceFactoryFn>(info: TInfo, fn: TFn) {
   return {
     info,
     fn,

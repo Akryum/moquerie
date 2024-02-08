@@ -8,6 +8,7 @@ import { type Storage, type StorageManifest, useStorage } from '../storage/stora
 import type { DBLocation } from '../types/db.js'
 import { printCode } from '../ast/print.js'
 import type { MoquerieInstance } from '../instance.js'
+import { hooks } from '../hooks.js'
 import { deserializeFactory } from './deserialize.js'
 import { serializeFactory } from './serialize.js'
 
@@ -57,7 +58,22 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
     }))
 
     const ast = await serializeFactory(item)
-    const content = printCode(ast)
+    let content = printCode(ast)
+
+    try {
+      await hooks.callHookWith(async (cbs) => {
+        for (const cb of cbs) {
+          const result = await cb({ path: file, content })
+          if (typeof result === 'string') {
+            content = result
+          }
+        }
+      }, 'saveFactory')
+    }
+    catch (error: any) {
+      console.error(`Error in plugin hook "saveFactory"`, error.stack ?? error)
+    }
+
     await fs.promises.writeFile(file, content, 'utf8')
   }
 

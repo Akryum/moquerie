@@ -4,21 +4,23 @@ export const version = '0.0.1'
 
 export default defineFactory({
   author: {
-    name: "Guillaume Chau",
-    email: "guillaume.b.chau@gmail.com",
-    avatar: "https://avatars.githubusercontent.com/u/2798204?v=4",
+    name: 'Guillaume Chau',
+    email: 'guillaume.b.chau@gmail.com',
+    avatar: 'https://avatars.githubusercontent.com/u/2798204?v=4',
 
     github: {
-      login: "Akryum",
-      profilePageUrl: "https://github.com/Akryum",
+      login: 'Akryum',
+      profilePageUrl: 'https://github.com/Akryum',
     },
   },
+
+  description: 'Used in script example',
 }, (
   {
     db,
     faker,
     pickRandom,
-    repeat
+    repeat,
   },
 ) => ({
   archived: faker.datatype.boolean(),

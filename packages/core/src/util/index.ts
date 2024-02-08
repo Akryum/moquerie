@@ -1,6 +1,7 @@
 export * from './env.js'
 export * from './find-up.js'
 export * from './fs.js'
+export * from './hookable.js'
 export * from './object.js'
 export * from './queue.js'
 export * from './random.js'
