@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v0.2.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.2.1...v0.2.2)
+
+### 🚀 Enhancements
+
+- **db:** Access instance metadata in predicate ([da8c362](https://github.com/Akryum/moquerie/commit/da8c362))
+- Dbclick ref preview to open ([ee31f5c](https://github.com/Akryum/moquerie/commit/ee31f5c))
+- Take snapshot button ([b237aee](https://github.com/Akryum/moquerie/commit/b237aee))
+- Scripts ([8ff82d2](https://github.com/Akryum/moquerie/commit/8ff82d2))
+- Improved error handling ([b63a1b7](https://github.com/Akryum/moquerie/commit/b63a1b7))
+- Plugins to lint factories ([1f650e3](https://github.com/Akryum/moquerie/commit/1f650e3))
+
+### 🩹 Fixes
+
+- **factory:** Don't send ast to UI ([2d58fe5](https://github.com/Akryum/moquerie/commit/2d58fe5))
+- **search:** Recent commands ([55fb6c2](https://github.com/Akryum/moquerie/commit/55fb6c2))
+- **factory:** Save ([b1e566b](https://github.com/Akryum/moquerie/commit/b1e566b))
+- **factory:** List all factories in select ([12448fd](https://github.com/Akryum/moquerie/commit/12448fd))
+- **factory:** Create instance doesn't have factoryId anymore ([d475cec](https://github.com/Akryum/moquerie/commit/d475cec))
+- **factory:** Select from url ([a08ba50](https://github.com/Akryum/moquerie/commit/a08ba50))
+
+### 🏡 Chore
+
+- Clean console log ([a76f98f](https://github.com/Akryum/moquerie/commit/a76f98f))
+- Update nuxt ([7ccde08](https://github.com/Akryum/moquerie/commit/7ccde08))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.2.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.2.0...v0.2.1)
