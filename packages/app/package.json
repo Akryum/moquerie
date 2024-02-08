@@ -62,7 +62,7 @@
     "monaco-editor": "^0.45.0",
     "monaco-graphql": "^1.4.0",
     "nanoid": "^5.0.4",
-    "nuxt": "^3.10.0",
+    "nuxt": "^3.10.1",
     "pathe": "^1.1.2",
     "pinia": "^2.1.7",
     "superjson": "^2.2.1",
