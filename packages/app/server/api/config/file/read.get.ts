@@ -8,5 +8,8 @@ export default defineEventHandler(async () => {
       content: await fs.readFile(configFile, 'utf-8'),
     }
   }
-  throw new Error('config not found')
+  throw createError({
+    status: 404,
+    statusMessage: 'config not found',
+  })
 })

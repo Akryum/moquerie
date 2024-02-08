@@ -3,7 +3,18 @@
     <AppHeader class="flex-none" />
     <div class="flex flex-1 h-0">
       <AppNav />
-      <NuxtPage class="flex-1 w-full overflow-y-auto" />
+      <ErrorBoundary>
+        <NuxtPage class="flex-1 w-full overflow-y-auto" />
+
+        <template #error="{ error, clearError }">
+          <div class="flex-1 flex flex-col gap-4 items-center justify-center p-12">
+            <ErrorMessage :error="error" />
+            <UButton icon="i-ph-house" @click="clearError({ redirect: '/' })">
+              Go to home
+            </UButton>
+          </div>
+        </template>
+      </ErrorBoundary>
     </div>
   </div>
 

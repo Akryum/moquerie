@@ -10,7 +10,10 @@ export default defineEventHandler(async (event) => {
   const storage = await getFactoryStorage(mq)
   const data = await storage.findById(factoryId)
   if (!data) {
-    throw new Error(`Factory ${factoryId} not found`)
+    throw createError({
+      status: 404,
+      statusMessage: `Factory ${factoryId} not found`,
+    })
   }
   return SuperJSON.stringify({
     ...data,

@@ -85,7 +85,13 @@ defineShortcuts({
 
         <template #last>
           <div class="flex-1 overflow-y-auto h-full">
-            <NuxtPage class="w-full h-full" />
+            <ErrorBoundary>
+              <NuxtPage class="w-full h-full" />
+
+              <template #error="{ error }">
+                <ErrorMessage :error="error" class="p-12" />
+              </template>
+            </ErrorBoundary>
           </div>
         </template>
       </SplitPane>
