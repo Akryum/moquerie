@@ -2,6 +2,7 @@ import type { ResourceSchema, ResourceSchemaField } from './types/resource.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import type { MoquerieInstance } from './instance.js'
 import type { SchemaTransformStore } from './resource/schemaTransformStore.js'
+import { hooks } from './hooks.js'
 
 export async function getResourceSchema(mq: MoquerieInstance, schemaTransformStore: SchemaTransformStore) {
   const ctx = await mq.getContext()
@@ -51,6 +52,17 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
         }
       },
     })
+  }
+
+  try {
+    await hooks.callHookWith(async (cbs) => {
+      for (const cb of cbs) {
+        await cb({ schema })
+      }
+    }, 'transformSchema')
+  }
+  catch (error: any) {
+    console.error(`Error in plugin hook "transformSchema"`, error.stack ?? error)
   }
 
   return {
