@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.3.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.2.2...v0.3.0)
+
+### 🚀 Enhancements
+
+- **plugin:** TransformSchema ([2e499e7](https://github.com/Akryum/moquerie/commit/2e499e7))
+- REST api support ([3c7fb1f](https://github.com/Akryum/moquerie/commit/3c7fb1f))
+- **config:** Rest and graphql basePath ([d3892f9](https://github.com/Akryum/moquerie/commit/d3892f9))
+- **rest:** Playground sort saved queries by name ([abb05a1](https://github.com/Akryum/moquerie/commit/abb05a1))
+
+### 🩹 Fixes
+
+- Resource ref selector ([00dd750](https://github.com/Akryum/moquerie/commit/00dd750))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.2.2
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.2.1...v0.2.2)
