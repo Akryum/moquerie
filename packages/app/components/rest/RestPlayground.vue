@@ -117,6 +117,12 @@ const filteredSavedQueries = computed(() => {
     return savedQuery.name.toLowerCase().includes(searchSavedQuery.value.toLowerCase())
   })
 })
+
+const sortedSavedQueries = computed(() => {
+  return filteredSavedQueries.value.sort((a, b) => {
+    return a.name.localeCompare(b.name)
+  })
+})
 </script>
 
 <template>
@@ -151,7 +157,7 @@ const filteredSavedQueries = computed(() => {
 
       <div class="flex-1 h-0 overflow-y-auto flex flex-col">
         <div
-          v-for="(savedQuery, index) in filteredSavedQueries"
+          v-for="(savedQuery, index) in sortedSavedQueries"
           :key="index"
           class="flex items-center pl-3 pr-1 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded select-none"
           @dblclick.prevent="load(savedQuery)"
