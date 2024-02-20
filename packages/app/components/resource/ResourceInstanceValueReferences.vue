@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
       </UButton>
     </div>
 
-    <div class="flex flex-1 divide-x divide-gray-200 dark:divide-gray-800 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex flex-1 h-0 divide-x divide-gray-200 dark:divide-gray-800 border-b border-gray-200 dark:border-gray-800">
       <div v-if="isMultiTypes">
         <ResourceList
           v-model:resource-name="selectedType"
@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
           :key="m"
           class="w-1/2 flex flex-col gap-2"
         >
-          <div class="flex-1">
+          <div class="flex-1 h-0">
             <ResourceTable
               :resource-name="currentResourceName"
               :instances="getInstances(m)"
