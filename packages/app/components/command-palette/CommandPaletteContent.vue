@@ -16,6 +16,7 @@ const recentCommands = useLocalStorage<any[]>('moquerie.recentCommands', [])
 // Routes
 
 const hasGraphQL = await useHasGraphql()
+const hasRest = await useHasRest()
 
 const routes = computed(() => [
   {
@@ -65,6 +66,16 @@ const routes = computed(() => [
     icon: 'i-ph-lightning',
     label: 'Database > Field actions',
   },
+  ...hasRest.value
+    ? [
+        {
+          id: '_route.rest',
+          to: '/rest',
+          icon: 'i-carbon-api',
+          label: 'RESTful playground',
+        },
+      ]
+    : [],
   ...hasGraphQL.value
     ? [
         {

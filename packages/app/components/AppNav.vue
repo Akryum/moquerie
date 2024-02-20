@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import { useHasRest } from '~/utils/rest.js'
+
 const hasGraphQL = await useHasGraphql()
+const hasRest = await useHasRest()
 
 const router = useRouter()
 
@@ -106,6 +109,14 @@ const colorMode = useColorMode()
       icon="i-ph-clock-clockwise"
       title="History"
       shortcuts="meta_shift_h"
+    />
+
+    <AppNavItem
+      v-if="hasRest"
+      to="/rest"
+      active-route="/rest"
+      icon="i-carbon-api"
+      title="RESTful"
     />
 
     <AppNavItem

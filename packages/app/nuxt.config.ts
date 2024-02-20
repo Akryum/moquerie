@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   ],
 
   ui: {
-    icons: ['ph', 'mdi'],
+    icons: ['ph', 'mdi', 'carbon'],
   },
 
   css: [

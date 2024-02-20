@@ -36,6 +36,17 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
   const routeInfos: ServerRouteInfo[] = []
   const expressApp = express()
 
+  if (context.config.rest) {
+    const { setupRestApi } = await import('./rest/index.js')
+    await setupRestApi(mq, expressApp)
+    routeInfos.push({
+      url: `http://localhost:${context.port}/rest`,
+      label: 'RESTful endpoint',
+      type: 'rest',
+      icon: 'i-carbon-api',
+    })
+  }
+
   if (context.config.graphql) {
     const { createYogaServer } = await import('./graphql/index.js')
     const { yoga } = await createYogaServer(mq)

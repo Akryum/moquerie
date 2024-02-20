@@ -1,4 +1,4 @@
-import type { FieldActionBaseDefinitions, ResourceFactoryFn, ResourceFactoryInfo, SchemaTransformAction, ScriptFn, ScriptItem } from '@moquerie/core'
+import type { DefineApiRouteSetupFn, FieldActionBaseDefinitions, ResourceFactoryFn, ResourceFactoryInfo, SchemaTransformAction, ScriptFn, ScriptItem } from '@moquerie/core'
 
 export function defineFieldActions<TActions extends FieldActionBaseDefinitions>(actions: TActions) {
   return {
@@ -26,6 +26,12 @@ export function defineScripts(scripts: Record<string, ScriptOption>) {
   }
   return {
     __scripts: list,
+  }
+}
+
+export function defineApiRoutes(fn: DefineApiRouteSetupFn) {
+  return {
+    __apiRouteFn: fn,
   }
 }
 

@@ -14,6 +14,13 @@ export interface Config {
   }
 
   /**
+   * Enable REST support
+   */
+  rest?: {
+    typeFiles: string[]
+  }
+
+  /**
    * Enable GraphQL support
    */
   graphql?: {

@@ -1,4 +1,4 @@
-import type { ResourceSchema, ResourceSchemaField } from './types/resource.js'
+import type { ResourceSchema, ResourceSchemaField, ResourceSchemaType } from './types/resource.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import type { MoquerieInstance } from './instance.js'
 import type { SchemaTransformStore } from './resource/schemaTransformStore.js'
@@ -12,13 +12,34 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
     ignoredInExplorer: ctx.config.ignoredResourcesInExplorer,
   }
 
+  const types: ResourceSchemaType[] = []
+
+  if (ctx.config.rest?.typeFiles) {
+    const { getRestResourceSchema } = await import('./rest/index.js')
+    const resourceSchemaFromRest = await getRestResourceSchema(mq)
+    types.push(...resourceSchemaFromRest.types)
+  }
+
   let graphqlSchema: ResolvedGraphQLSchema | undefined
 
   if (ctx.config.graphql?.schema) {
     const { resolveGraphQLSchema, getGraphQLResourceSchema } = await import('./graphql/index.js')
     graphqlSchema = await resolveGraphQLSchema(mq)
     const resourceSchemaFromGraphQL = await getGraphQLResourceSchema(graphqlSchema)
-    Object.assign(schema.types, resourceSchemaFromGraphQL.types)
+    types.push(...resourceSchemaFromGraphQL.types)
+  }
+
+  const sortedTypes = types.sort((a, b) => {
+    const aRoot = a.tags.includes('root')
+    const bRoot = b.tags.includes('root')
+    if (aRoot !== bRoot) {
+      return aRoot ? -1 : 1
+    }
+    return a.name.localeCompare(b.name)
+  })
+
+  for (const type of sortedTypes) {
+    schema.types[type.name] = type
   }
 
   for (const transform of schemaTransformStore.items) {

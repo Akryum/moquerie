@@ -10,5 +10,8 @@
     "outDir": "dist",
     "sourceMap": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

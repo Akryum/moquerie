@@ -11,6 +11,12 @@ export default defineConfig({
     },
   },
 
+  rest: {
+    typeFiles: [
+      'src/rest/types.ts',
+    ],
+  },
+
   ignoredResourcesInExplorer: [
     /Payload$/,
   ],

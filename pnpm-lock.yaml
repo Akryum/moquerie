@@ -131,6 +131,9 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@whatwg-node/server':
+        specifier: ^0.9.25
+        version: 0.9.25
       ast-types:
         specifier: ^0.14.2
         version: 0.14.2
@@ -170,6 +173,9 @@ importers:
       nanoid:
         specifier: ^5.0.4
         version: 5.0.4
+      path-to-regexp:
+        specifier: ^6.2.1
+        version: 6.2.1
       pathe:
         specifier: ^1.1.2
         version: 1.1.2
@@ -4798,8 +4804,8 @@ packages:
       fast-url-parser: 1.1.3
       tslib: 2.6.2
 
-  /@whatwg-node/server@0.9.18:
-    resolution: {integrity: sha512-rfI2ZhKWakfkhyVA4v95cnkMF5k5B4k57yLH4bYkEORnLJj+SL7sger0q4hyA47bdp1KOY1raeIBIBEXSpwTvw==}
+  /@whatwg-node/server@0.9.25:
+    resolution: {integrity: sha512-DlPqPPcfyzh4/9Lz1fl4c5bZsGp/1wCh7B+cK8FE1bWoW7tlZkVguvGn/XnYPKthGzEIwo/fLdHwevH44z+eeg==}
     engines: {node: '>=16.0.0'}
     dependencies:
       '@whatwg-node/fetch': 0.9.14
@@ -7508,7 +7514,7 @@ packages:
       '@graphql-yoga/logger': 1.0.0
       '@graphql-yoga/subscription': 4.0.0
       '@whatwg-node/fetch': 0.9.14
-      '@whatwg-node/server': 0.9.18
+      '@whatwg-node/server': 0.9.25
       dset: 3.1.3
       graphql: 16.8.1
       lru-cache: 10.1.0
@@ -7528,7 +7534,7 @@ packages:
       '@graphql-yoga/logger': 2.0.0
       '@graphql-yoga/subscription': 5.0.0
       '@whatwg-node/fetch': 0.9.14
-      '@whatwg-node/server': 0.9.18
+      '@whatwg-node/server': 0.9.25
       dset: 3.1.3
       graphql: 16.8.1
       lru-cache: 10.1.0
@@ -9831,7 +9837,6 @@ packages:
 
   /path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
-    dev: true
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}

@@ -4,8 +4,7 @@ import type { ResolvedGraphQLSchema } from './schema.js'
 export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSchema) {
   const gqlIntrospection = graphqlSchema.introspection
 
-  const typesTemp: Record<string, ResourceSchemaType> = {}
-  let typesListTemp: ResourceSchemaType[] = []
+  const types: ResourceSchemaType[] = []
 
   const queryName = gqlIntrospection.__schema.queryType?.name ?? 'Query'
   const mutationName = gqlIntrospection.__schema.mutationType?.name ?? 'Mutation'
@@ -145,8 +144,7 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
         inline: inline && !isRootType,
       } satisfies ResourceSchemaType
 
-      typesTemp[resType.name] = resType
-      typesListTemp.push(resType)
+      types.push(resType)
     }
     else if (gqlType.kind === 'INTERFACE' || gqlType.kind === 'UNION') {
       const interfaceType = {
@@ -160,23 +158,11 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
         implementations: gqlType.possibleTypes.map(t => t.name).sort(),
       } satisfies ResourceSchemaType
 
-      typesTemp[interfaceType.name] = interfaceType
-      typesListTemp.push(interfaceType)
+      types.push(interfaceType)
     }
   }
 
   // Sort
-
-  const types: Record<string, ResourceSchemaType> = {}
-
-  typesListTemp = [
-    ...rootTypes.map(n => typesTemp[n]).filter(Boolean),
-    ...typesListTemp.filter(t => !rootTypes.includes(t.name)).sort((a, b) => a.name.localeCompare(b.name)),
-  ]
-
-  for (const type of typesListTemp) {
-    types[type.name] = type
-  }
 
   return {
     types,

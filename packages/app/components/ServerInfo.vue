@@ -21,9 +21,9 @@ const { copy } = useClipboard()
       :key="index"
       class="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-800"
     >
-      <UIcon :name="item.icon ?? 'i-ph-globe-simple'" class="w-6 h-6 text-gray-500" />
+      <UIcon :name="item.icon ?? 'i-ph-globe-simple'" dynamic class="w-6 h-6 text-gray-500" />
 
-      <div>
+      <div class="flex-1">
         <div>{{ item.label }}</div>
         <div class="font-mono text-gray-500">
           {{ item.url }}

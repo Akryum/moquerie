@@ -22,6 +22,7 @@ import { SchemaTransformStore } from './resource/schemaTransformStore.js'
 import { ScriptStore } from './script/scriptStore.js'
 import type { Plugin, PluginInstance } from './types/plugin.js'
 import { type Hooks, hooks } from './hooks.js'
+import { ApiRouteStore } from './rest/apiRouteStore.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -138,6 +139,7 @@ export interface ResolvedContext {
   fieldActions: FieldActionStore
   schemaTransforms: SchemaTransformStore
   scripts: ScriptStore
+  apiRoutes: ApiRouteStore
   // @TODO type
   db: QueryManagerProxy
   // @TODO type
@@ -200,6 +202,19 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     mq.onDestroy(() => scripts?.destroy())
   }
 
+  // Api Routes
+
+  let apiRoutes = mq.data.resolvedContext?.apiRoutes
+
+  if (!apiRoutes) {
+    apiRoutes = new ApiRouteStore()
+    mockFileWatcher.onUpdate(apiRoutes.handleMockFile.bind(apiRoutes))
+    mockFileWatcher.onRemove(apiRoutes.handleMockFileRemoved.bind(apiRoutes))
+    mq.onDestroy(() => apiRoutes?.destroy())
+  }
+
+  // Wait for mock files to be ready
+
   if (isMockFileWatcherNew) {
     await mockFileWatcher.waitForReady()
   }
@@ -222,6 +237,13 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
 
   // Create context object
 
+  const db = createQueryManagerProxy(mq)
+  const pubSubs = mq.data.resolvedContext?.pubSubs ?? await createPubSubs()
+  const jiti = mq.data.resolvedContext?.jiti ?? createJITI(mq.data.cwd, {
+    requireCache: false,
+    esmResolve: true,
+  })
+
   return {
     context: ctx,
     schema,
@@ -231,12 +253,10 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     fieldActions,
     schemaTransforms,
     scripts,
-    db: createQueryManagerProxy(mq),
-    pubSubs: mq.data.resolvedContext?.pubSubs ?? await createPubSubs(),
-    jiti: mq.data.resolvedContext?.jiti ?? createJITI(mq.data.cwd, {
-      requireCache: false,
-      esmResolve: true,
-    }),
+    apiRoutes,
+    db,
+    pubSubs,
+    jiti,
     historyRecords: mq.data.resolvedContext?.historyRecords ?? [],
   }
 }
