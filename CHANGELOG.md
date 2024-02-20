@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.3.0...v0.3.1)
+
+### 🩹 Fixes
+
+- **rest:** Handle errors ([30b3b5d](https://github.com/Akryum/moquerie/commit/30b3b5d))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.3.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.2.2...v0.3.0)
