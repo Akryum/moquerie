@@ -5,9 +5,13 @@ import { getTypesFromFile } from './types.js'
 export async function getRestResourceSchema(mq: MoquerieInstance) {
   const ctx = await getContext(mq)
 
-  const { types } = await getTypesFromFile(mq, ctx.config.rest!.typeFiles)
-
+  if (ctx.config.rest?.typeFiles) {
+    const { types } = await getTypesFromFile(mq, ctx.config.rest.typeFiles)
+    return {
+      types,
+    }
+  }
   return {
-    types,
+    types: [],
   }
 }

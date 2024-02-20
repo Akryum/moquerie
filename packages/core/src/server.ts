@@ -40,7 +40,7 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
     const { setupRestApi } = await import('./rest/index.js')
     await setupRestApi(mq, expressApp)
     routeInfos.push({
-      url: `http://localhost:${context.port}/rest`,
+      url: `http://localhost:${context.port}${mq.data.context?.config.rest?.basePath ?? '/rest'}`,
       label: 'RESTful endpoint',
       type: 'rest',
       icon: 'i-carbon-api',

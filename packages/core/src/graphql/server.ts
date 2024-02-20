@@ -17,6 +17,7 @@ export async function createYogaServer(mq: MoquerieInstance) {
       })
       return schema
     },
+    graphqlEndpoint: mq.data.context?.config.graphql?.basePath ?? '/graphql',
   })
 
   return {

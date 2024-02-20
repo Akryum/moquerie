@@ -17,13 +17,27 @@ export interface Config {
    * Enable REST support
    */
   rest?: {
-    typeFiles: string[]
+    /**
+     * Base path for the REST API.
+     * @default "/rest"
+     */
+    basePath?: string
+    /**
+     * Specify which TypeScript files to scan for REST objects.
+     * All exported interfaces from those files will be used to generate RESTful endpoints.
+     */
+    typeFiles?: string[]
   }
 
   /**
    * Enable GraphQL support
    */
   graphql?: {
+    /**
+     * Base path for the GraphQL API.
+     * @default "/graphql"
+     */
+    basePath?: string
     /**
      * GraphQL schema
      */

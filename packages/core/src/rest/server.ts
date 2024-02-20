@@ -13,7 +13,7 @@ import { createResourceInstanceReference } from '../resource/resourceReference.j
 import { isPlainObject } from '../util/object.js'
 
 export async function setupRestApi(mq: MoquerieInstance, expressApp: Application) {
-  expressApp.use('/rest', async (req, res) => {
+  expressApp.use(mq.data.context?.config.rest?.basePath ?? '/rest', async (req, res) => {
     const route = req.path.split('/')
     const routeType = route[1]
 
