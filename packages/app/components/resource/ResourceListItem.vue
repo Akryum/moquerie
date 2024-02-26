@@ -31,7 +31,12 @@ const icon = computed(() => {
     :icon="icon"
   >
     <div class="flex items-center">
-      <div class="text-sm truncate">
+      <div
+        class="text-sm truncate"
+        :class="{
+          'line-through': resourceType.isDeprecated,
+        }"
+      >
         {{ resourceType.name }}
       </div>
       <slot name="trailing" />

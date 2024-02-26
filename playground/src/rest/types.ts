@@ -25,3 +25,12 @@ export interface MyOtherObject {
    */
   deprecatedField: string
 }
+
+/**
+ * @deprecated Use `MyOtherObject` instead
+ */
+export interface OldObject {
+  id: string
+  name: string
+  count: number
+}

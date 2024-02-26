@@ -9,6 +9,10 @@ defineProps<{
 
 <template>
   <div>{{ type.name }}</div>
+  <div v-if="type.deprecationReason" class="text-xs text-orange-500 flex items-center gap-1">
+    <UIcon name="i-ph-warning" class="w-4 h-4 flex-none" />
+    {{ type.deprecationReason }}
+  </div>
   <div v-if="type.description" class="text-xs text-gray-500 dark:text-gray-400 flex-shrink truncate">
     {{ type.description }}
   </div>

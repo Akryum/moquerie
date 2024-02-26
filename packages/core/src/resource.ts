@@ -35,6 +35,12 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
     if (aRoot !== bRoot) {
       return aRoot ? -1 : 1
     }
+    if (a.isDeprecated && !b.isDeprecated) {
+      return 1
+    }
+    if (!a.isDeprecated && b.isDeprecated) {
+      return -1
+    }
     return a.name.localeCompare(b.name)
   })
 
