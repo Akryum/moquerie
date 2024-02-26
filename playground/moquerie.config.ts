@@ -46,5 +46,17 @@ export default defineConfig({
         }
       },
     },
+
+    {
+      name: 'transform-responses',
+
+      beforeSendResponse: async ({ type, response, generatedResolver }) => {
+        if (type === 'rest' && generatedResolver) {
+          return {
+            data: response,
+          }
+        }
+      },
+    },
   ],
 })

@@ -11,12 +11,28 @@ import { getFactoryStorage } from '../factory/storage.js'
 import { generateResourceInstances } from '../resource/generateInstances.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
 import { isPlainObject } from '../util/object.js'
+import { type HookBeforeSendResponseContext, hooks } from '../hooks.js'
 
 export async function setupRestApi(mq: MoquerieInstance, expressApp: Application) {
   expressApp.use(mq.data.context?.config.rest?.basePath ?? '/rest', async (req, res) => {
     try {
       const route = req.path.split('/')
       const routeType = route[1]
+      const request = normalizeNodeRequest(req, Request)
+
+      async function transformResponse(data: any, options: Omit<HookBeforeSendResponseContext, 'response' | 'type' | 'request'>) {
+        const result = await hooks.callHook('beforeSendResponse', {
+          response: data,
+          type: 'rest',
+          request,
+          ...options,
+        })
+
+        if (result !== undefined) {
+          return result
+        }
+        return data
+      }
 
       const ctx = await mq.getResolvedContext()
 
@@ -32,10 +48,9 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
           for (let i = 1; i < result.length; i++) {
             params[route.keys?.[i - 1]?.name ?? `unknown${i}`] = result[i]
           }
-          const request = normalizeNodeRequest(req, Request)
           let type: string | undefined
           const time = Date.now()
-          const data = await route.handler({
+          let data = await route.handler({
             request,
             params,
             db: ctx.db,
@@ -83,6 +98,10 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
             else if (isPlainObject(data) || Array.isArray(data) || typeof data === 'number' || typeof data === 'boolean' || data == null) {
               res.setHeader('Content-Type', 'application/json')
             }
+            data = await transformResponse(data, {
+              generatedResolver: false,
+              params,
+            })
             res.send(data)
             return
           }
@@ -140,6 +159,13 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
             data = await ctx.db[resourceType.name].create({ data: req.body })
           }
         }
+        data = await transformResponse(data, {
+          generatedResolver: true,
+          resourceName: resourceType.name,
+          params: {
+            id: idParams,
+          },
+        })
         res.json(data)
         return
       }
