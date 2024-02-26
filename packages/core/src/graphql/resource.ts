@@ -134,6 +134,12 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
         if (b.name === 'id' || b.name === '_id') {
           return 1
         }
+        if (a.isDeprecated && !b.isDeprecated) {
+          return 1
+        }
+        if (!a.isDeprecated && b.isDeprecated) {
+          return -1
+        }
         return a.name.localeCompare(b.name)
       })
       const sortedFieldsMap: Record<string, ResourceSchemaField> = {}
