@@ -199,7 +199,9 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
       res.status(404).send('Not found')
     }
     catch (e: any) {
-      res.status(500).send(e.stack ?? e.message)
+      console.error(e)
+      res.statusMessage = e.message
+      res.status(500).end()
     }
   })
 }
