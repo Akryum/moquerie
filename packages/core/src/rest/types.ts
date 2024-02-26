@@ -136,9 +136,16 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
     const meta: Record<string, any> = {}
 
     const jsDocTags = typeSymbol?.getJsDocTags()
+    let isDeprecated = false
+    let deprecationReason: string | undefined
     if (jsDocTags) {
       for (const tag of jsDocTags) {
         meta[tag.name] = tag.text?.map(t => t.text).join('\n')
+
+        if (tag.name === 'deprecated') {
+          isDeprecated = true
+          deprecationReason = tag.text?.map(t => t.text).join('\n')
+        }
       }
     }
 
@@ -149,7 +156,8 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
       array: true,
       fields: sortedFieldsMap,
       nonNull: false,
-      isDeprecated: false,
+      isDeprecated,
+      deprecationReason,
       inline,
       meta,
     } satisfies ResourceSchemaType
