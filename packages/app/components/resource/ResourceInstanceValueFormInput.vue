@@ -148,7 +148,11 @@ function setupEditor(editor: monaco.editor.IStandaloneCodeEditor) {
   <UFormGroup class="group">
     <template #label>
       <div class="mb-0.5 flex items-center gap-2 group-hover:text-primary-500 group-focus-within:text-primary-500">
-        <span>{{ field.name }}</span>
+        <span
+          :class="{
+            'line-through': field.isDeprecated,
+          }"
+        >{{ field.name }}</span>
 
         <ResourceFieldInfoIcons
           :field="field"

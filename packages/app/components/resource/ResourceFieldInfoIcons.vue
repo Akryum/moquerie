@@ -15,4 +15,5 @@ defineProps<{
     <UIcon v-if="childResourceType?.inline" v-tooltip="'Inline resource'" name="i-ph-brackets-curly" />
     <UIcon v-else v-tooltip="'Single reference'" name="i-ph-database" />
   </template>
+  <UIcon v-if="field.deprecationReason" v-tooltip="field.deprecationReason" name="i-ph-warning" />
 </template>
