@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.3.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.3.1...v0.3.2)
+
+### 🚀 Enhancements
+
+- BeforeSendResponse plugin hook ([d66f7d3](https://github.com/Akryum/moquerie/commit/d66f7d3))
+- **rest:** Extract JSDoc ([ddb36bf](https://github.com/Akryum/moquerie/commit/ddb36bf))
+- **rest:** Deprecate types ([1997655](https://github.com/Akryum/moquerie/commit/1997655))
+- **rest:** ResolveResourceFromRequest plugin hook ([31fa4cf](https://github.com/Akryum/moquerie/commit/31fa4cf))
+- Sort id fields at the top ([4d013d5](https://github.com/Akryum/moquerie/commit/4d013d5))
+- Display deprecation warning in field input ([d06c5a8](https://github.com/Akryum/moquerie/commit/d06c5a8))
+- Sort deprecated fields to the bottom ([1cad819](https://github.com/Akryum/moquerie/commit/1cad819))
+- Handle deprecated types in the ui ([d3ea4fa](https://github.com/Akryum/moquerie/commit/d3ea4fa))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.3.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.3.0...v0.3.1)
