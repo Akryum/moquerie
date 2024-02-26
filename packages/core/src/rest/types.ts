@@ -27,7 +27,7 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
   }
 
   for (const node of typeNodes) {
-    const fields: Record<string, ResourceSchemaField> = {}
+    const fields: Array<ResourceSchemaField> = []
 
     let inline = true
 
@@ -119,13 +119,21 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
         deprecationReason,
       }
 
-      fields[fieldName] = resField
+      fields.push(resField)
     })
 
     const tags = ['rest', 'object']
 
     // Sort fields
-    const sortedFields = Object.values(fields).sort((a, b) => a.name.localeCompare(b.name))
+    const sortedFields = fields.sort((a, b) => {
+      if (a.name === 'id' || a.name === '_id') {
+        return -1
+      }
+      if (b.name === 'id' || b.name === '_id') {
+        return 1
+      }
+      return a.name.localeCompare(b.name)
+    })
     const sortedFieldsMap: Record<string, ResourceSchemaField> = {}
     for (const field of sortedFields) {
       sortedFieldsMap[field.name] = field

@@ -22,7 +22,7 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
     }
 
     if (gqlType.kind === 'OBJECT') {
-      const fields: Record<string, ResourceSchemaField> = {}
+      const fields: Array<ResourceSchemaField> = []
       let inline = true
 
       for (const field of gqlType.fields) {
@@ -116,7 +116,7 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
           deprecationReason: field.deprecationReason ?? undefined,
         }
 
-        fields[resField.name] = resField
+        fields.push(resField)
       }
 
       const isRootType = rootTypes.includes(gqlType.name)
@@ -127,7 +127,15 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
       }
 
       // Sort fields
-      const sortedFields = Object.values(fields).sort((a, b) => a.name.localeCompare(b.name))
+      const sortedFields = fields.sort((a, b) => {
+        if (a.name === 'id' || a.name === '_id') {
+          return -1
+        }
+        if (b.name === 'id' || b.name === '_id') {
+          return 1
+        }
+        return a.name.localeCompare(b.name)
+      })
       const sortedFieldsMap: Record<string, ResourceSchemaField> = {}
       for (const field of sortedFields) {
         sortedFieldsMap[field.name] = field
