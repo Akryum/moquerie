@@ -45,11 +45,14 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
       let nullable = false
       let type: Partial<ResourceSchemaField> = {}
 
-      let typeName = checker.typeToString(checker.getTypeAtLocation(member))
-
       const tsType = checker.getTypeAtLocation(member)
+      const memberSymbol = tsType.getSymbol()
+      let typeName = checker.typeToString(tsType)
+
+      const nameSymbol = checker.getSymbolAtLocation(member.name)
+
       // Is array
-      if (tsType.symbol?.name === 'Array') {
+      if (memberSymbol?.name === 'Array') {
         const [elementType] = checker.getTypeArguments(tsType as ts.TypeReference)
         array = true
         typeName = checker.typeToString(elementType)
@@ -94,15 +97,26 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
         inline = false
       }
 
+      const jsDoc = nameSymbol?.getJsDocTags()
+      let isDeprecated = false
+      let deprecationReason: string | undefined
+      if (jsDoc) {
+        const deprecatedTag = jsDoc.find(t => t.name === 'deprecated')
+        if (deprecatedTag) {
+          isDeprecated = true
+          deprecationReason = deprecatedTag.text?.map(t => t.text).join('\n')
+        }
+      }
+
       const resField: ResourceSchemaField = {
         ...type as ResourceSchemaField,
         name: fieldName,
         tags,
-        description: undefined,
+        description: nameSymbol?.getDocumentationComment(checker)?.find(c => c.kind === 'text')?.text ?? undefined,
         array,
         nonNull: !nullable,
-        isDeprecated: false,
-        deprecationReason: undefined,
+        isDeprecated,
+        deprecationReason,
       }
 
       fields[fieldName] = resField
@@ -117,15 +131,27 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
       sortedFieldsMap[field.name] = field
     }
 
+    const typeSymbol = checker.getTypeAtLocation(node).getSymbol()
+
+    const meta: Record<string, any> = {}
+
+    const jsDocTags = typeSymbol?.getJsDocTags()
+    if (jsDocTags) {
+      for (const tag of jsDocTags) {
+        meta[tag.name] = tag.text?.map(t => t.text).join('\n')
+      }
+    }
+
     const resType = {
       name: node.name.text,
       tags,
-      description: undefined, // @TODO
+      description: typeSymbol?.getDocumentationComment(checker)?.find(c => c.kind === 'text')?.text ?? undefined,
       array: true,
       fields: sortedFieldsMap,
       nonNull: false,
       isDeprecated: false,
       inline,
+      meta,
     } satisfies ResourceSchemaType
 
     types.push(resType)

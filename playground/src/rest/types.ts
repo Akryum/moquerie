@@ -8,6 +8,7 @@ export interface MyObject {
 
 /**
  * Another object
+ * @restPath /my-rest-object
  */
 export interface MyOtherObject {
   id: string
@@ -19,4 +20,8 @@ export interface MyOtherObject {
   thirdDescription: null | string
   objects: MyObject[]
   notExported: MyObjectNotExported
+  /**
+   * @deprecated Use `otherDescription` instead
+   */
+  deprecatedField: string
 }
