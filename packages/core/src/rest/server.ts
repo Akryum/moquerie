@@ -110,28 +110,54 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
 
       // Generated routes
       let resourceType: ResourceSchemaType | undefined
-      for (const key in ctx.schema.types) {
+
+      const additionalResourceNames: string[] = []
+      try {
+        await hooks.callHookWith(async (handlers) => {
+          const names = await Promise.all(handlers.map(h => h({
+            path: req.path,
+            request,
+            schema: ctx.schema,
+          })))
+          additionalResourceNames.push(...names.filter(Boolean) as string[])
+        }, 'resolveResourceFromRequest')
+      }
+      catch (e: any) {
+        console.error(`Error in plugin hook "resolveResourceFromRequest"`, e.stack ?? e)
+      }
+
+      for (const key of additionalResourceNames) {
         const type = ctx.schema.types[key]
-        if (type.tags.includes('rest')) {
-          const pascalCaseName = pascalCase(type.name)
-          if (routeType === pascalCaseName || routeType === `${pascalCaseName}s`) {
-            resourceType = type
-            break
-          }
-          const camelCaseName = camelCase(type.name)
-          if (routeType === camelCaseName || routeType === `${camelCaseName}s`) {
-            resourceType = type
-            break
-          }
-          const snakeCaseName = snakeCase(type.name)
-          if (routeType === snakeCaseName || routeType === `${snakeCaseName}s`) {
-            resourceType = type
-            break
-          }
-          const kebabCaseName = kebabCase(type.name)
-          if (routeType === kebabCaseName || routeType === `${kebabCaseName}s`) {
-            resourceType = type
-            break
+        if (type) {
+          resourceType = type
+          break
+        }
+      }
+
+      if (!resourceType) {
+        for (const key in ctx.schema.types) {
+          const type = ctx.schema.types[key]
+          if (type.tags.includes('rest')) {
+            const pascalCaseName = pascalCase(type.name)
+            if (routeType === pascalCaseName || routeType === `${pascalCaseName}s`) {
+              resourceType = type
+              break
+            }
+            const camelCaseName = camelCase(type.name)
+            if (routeType === camelCaseName || routeType === `${camelCaseName}s`) {
+              resourceType = type
+              break
+            }
+            const snakeCaseName = snakeCase(type.name)
+            if (routeType === snakeCaseName || routeType === `${snakeCaseName}s`) {
+              resourceType = type
+              break
+            }
+            const kebabCaseName = kebabCase(type.name)
+            if (routeType === kebabCaseName || routeType === `${kebabCaseName}s`) {
+              resourceType = type
+              break
+            }
           }
         }
       }

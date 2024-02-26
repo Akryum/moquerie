@@ -20,10 +20,17 @@ export interface HookBeforeSendResponseContext {
   resourceName?: string
 }
 
+export interface HookResolveResourceFromRequestContext {
+  path: string
+  request: Request
+  schema: ResourceSchema
+}
+
 export interface Hooks {
   saveFactory: (context: HookSaveFactoryContext) => Awaitable<string | void>
   transformSchema: (context: HookTransformSchemaContext) => Awaitable<void>
   beforeSendResponse: (context: HookBeforeSendResponseContext) => Awaitable<any | void>
+  resolveResourceFromRequest: (context: HookResolveResourceFromRequestContext) => Awaitable<string | void>
 }
 
 export const hooks = createHooks<Hooks>()

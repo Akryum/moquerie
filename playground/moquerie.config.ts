@@ -48,6 +48,22 @@ export default defineConfig({
     },
 
     {
+      name: 'JSDoc restPath',
+
+      resolveResourceFromRequest: async ({ path, schema }) => {
+        for (const key in schema.types) {
+          const type = schema.types[key]
+          /**
+           * `restPath` is extracted from the JSDoc of the interface
+           */
+          if (path.startsWith(type.meta?.restPath)) {
+            return type.name
+          }
+        }
+      },
+    },
+
+    {
       name: 'transform-responses',
 
       beforeSendResponse: async ({ type, response, generatedResolver }) => {

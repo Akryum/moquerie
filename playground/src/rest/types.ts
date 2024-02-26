@@ -8,7 +8,7 @@ export interface MyObject {
 
 /**
  * Another object
- * @restPath /my-rest-object
+ * @restPath /foo
  */
 export interface MyOtherObject {
   id: string
