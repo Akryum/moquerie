@@ -1,3 +1,4 @@
+import type { CorsOptions } from 'cors'
 import type { fakerLocales } from '../factory/fakerLocales.js'
 import type { Plugin } from './plugin.js'
 
@@ -11,6 +12,11 @@ export interface Config {
      * You can also use the PORT environment variable
      */
     port?: number
+
+    /**
+     * Enable CORS support
+     */
+    cors?: CorsOptions
   }
 
   /**

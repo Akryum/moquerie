@@ -2,6 +2,7 @@ import type { Server as HTTPServer } from 'node:http'
 import { createServer as createHttpServer } from 'node:http'
 import type { Application } from 'express'
 import express from 'express'
+import cors from 'cors'
 import colors from 'picocolors'
 import type { Context } from './context.js'
 import type { ServerRouteInfo } from './types/server.js'
@@ -35,6 +36,10 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
 
   const routeInfos: ServerRouteInfo[] = []
   const expressApp = express()
+
+  if (context.config.server?.cors) {
+    expressApp.use(cors(context.config.server.cors))
+  }
 
   if (context.config.rest) {
     const { setupRestApi } = await import('./rest/index.js')
