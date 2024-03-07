@@ -142,6 +142,15 @@ function setupEditor(editor: monaco.editor.IStandaloneCodeEditor) {
     },
   })
 }
+
+function onSourceUpdate(source: string) {
+  try {
+    emit('update:modelValue', JSON.parse(source))
+  }
+  catch (e) {
+    console.warn(e)
+  }
+}
 </script>
 
 <template>
@@ -257,7 +266,7 @@ function setupEditor(editor: monaco.editor.IStandaloneCodeEditor) {
             wordWrap: 'on',
           }"
           class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
-          @update:source="$emit('update:modelValue', JSON.parse($event))"
+          @update:source="onSourceUpdate"
           @setup="setupEditor"
         />
         <pre
