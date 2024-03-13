@@ -23,6 +23,7 @@ import { ScriptStore } from './script/scriptStore.js'
 import type { Plugin, PluginInstance } from './types/plugin.js'
 import { type Hooks, hooks } from './hooks.js'
 import { ApiRouteStore } from './rest/apiRouteStore.js'
+import { generateTsTypes } from './tsCodegen/genTypes.js'
 
 export interface Context {
   contextWatcher: FSWatcher
@@ -222,6 +223,9 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
   // Schema
 
   const { schema, graphqlSchema } = await getResourceSchema(mq, schemaTransforms)
+
+  // Generate types
+  await generateTsTypes(mq, schema)
 
   // API Server
 
