@@ -3,7 +3,7 @@ import ts from 'typescript'
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
 
-export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
+export async function getTypesFromFile(mq: MoquerieInstance, files: string[], baseTags: string[] = []) {
   const types: ResourceSchemaType[] = []
 
   const program = ts.createProgram(files.map(f => path.resolve(mq.data.cwd, f)), {})
@@ -27,7 +27,7 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
   }
 
   for (const node of typeNodes) {
-    const fields: Array<ResourceSchemaField> = []
+    const fields: Record<string, ResourceSchemaField> = {}
 
     let inline = true
 
@@ -91,7 +91,7 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
         type.type = 'any'
       }
 
-      const tags = ['rest', 'field']
+      const tags = ['field', ...baseTags]
 
       if (['id', '_id'].includes(fieldName)) {
         inline = false
@@ -119,31 +119,10 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
         deprecationReason,
       }
 
-      fields.push(resField)
+      fields[fieldName] = resField
     })
 
-    const tags = ['rest', 'object']
-
-    // Sort fields
-    const sortedFields = fields.sort((a, b) => {
-      if (a.name === 'id' || a.name === '_id') {
-        return -1
-      }
-      if (b.name === 'id' || b.name === '_id') {
-        return 1
-      }
-      if (a.isDeprecated && !b.isDeprecated) {
-        return 1
-      }
-      if (!a.isDeprecated && b.isDeprecated) {
-        return -1
-      }
-      return a.name.localeCompare(b.name)
-    })
-    const sortedFieldsMap: Record<string, ResourceSchemaField> = {}
-    for (const field of sortedFields) {
-      sortedFieldsMap[field.name] = field
-    }
+    const tags = ['object', ...baseTags]
 
     const typeSymbol = checker.getTypeAtLocation(node).getSymbol()
 
@@ -168,7 +147,7 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[]) {
       tags,
       description: typeSymbol?.getDocumentationComment(checker)?.find(c => c.kind === 'text')?.text ?? undefined,
       array: true,
-      fields: sortedFieldsMap,
+      fields,
       nonNull: false,
       isDeprecated,
       deprecationReason,
