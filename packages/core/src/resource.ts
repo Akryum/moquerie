@@ -3,6 +3,7 @@ import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import type { MoquerieInstance } from './instance.js'
 import type { SchemaTransformStore } from './resource/schemaTransformStore.js'
 import { hooks } from './hooks.js'
+import { getTypesFromFile } from './resource/fromTypes.js'
 
 export async function getResourceSchema(mq: MoquerieInstance, schemaTransformStore: SchemaTransformStore) {
   const ctx = await mq.getContext()
@@ -26,6 +27,13 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
     graphqlSchema = await resolveGraphQLSchema(mq)
     const resourceSchemaFromGraphQL = await getGraphQLResourceSchema(graphqlSchema)
     types.push(...resourceSchemaFromGraphQL.types)
+  }
+
+  // Extend
+
+  if (ctx.config.extendTypes?.typeFiles) {
+    const { types: extendTypes } = await getTypesFromFile(mq, ctx.config.extendTypes.typeFiles, ['extended'])
+    types.push(...extendTypes)
   }
 
   // Merge

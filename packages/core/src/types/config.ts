@@ -71,6 +71,17 @@ export interface Config {
   }
 
   /**
+   * Extend the resource types
+   */
+  extendTypes?: {
+    /**
+     * Specify which TypeScript files to scan for resource types.
+     * All exported interfaces from those files will be used to extend the REST and GraphQL types.
+     */
+    typeFiles?: string[]
+  }
+
+  /**
    * Those resource types will not appear in the resource database explorer in the UI.
    */
   ignoredResourcesInExplorer?: Array<string | RegExp>
