@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.3.3...v0.4.0)
+
+### 🚀 Enhancements
+
+- **config:** Server cors ([f4971d8](https://github.com/Akryum/moquerie/commit/f4971d8))
+- Improve script report header ([0e48cc3](https://github.com/Akryum/moquerie/commit/0e48cc3))
+- Merge resource types ([4a7fbf8](https://github.com/Akryum/moquerie/commit/4a7fbf8))
+- **config:** ExtendTypes ([8020e58](https://github.com/Akryum/moquerie/commit/8020e58))
+- **plugin:** ⚠️  Rename saveFactory to writeCode ([f930596](https://github.com/Akryum/moquerie/commit/f930596))
+- Generate types ([3f9b01d](https://github.com/Akryum/moquerie/commit/3f9b01d))
+- Typed ctx.db ([ac79bba](https://github.com/Akryum/moquerie/commit/ac79bba))
+
+### 🩹 Fixes
+
+- Don't show error page if json is invalid ([42d5f45](https://github.com/Akryum/moquerie/commit/42d5f45))
+
+#### ⚠️ Breaking Changes
+
+- **plugin:** ⚠️  Rename saveFactory to writeCode ([f930596](https://github.com/Akryum/moquerie/commit/f930596))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.3.3
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.3.2...v0.3.3)
