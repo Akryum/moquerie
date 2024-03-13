@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ScriptRunReport } from '@moquerie/core'
+import { vTooltip } from 'floating-vue'
 
 const props = defineProps<{
   report: ScriptRunReport
@@ -10,14 +11,19 @@ const ago = useTimeAgo(() => props.report.startTime)
 
 <template>
   <div class="p-4 border border-gray-500/10 hover:border-gray-500/20 rounded-lg space-y-1">
-    <div class="flex items-center justify-center gap-2">
+    <div
+      class="flex items-center justify-end gap-2 select-none"
+      :class="[
+        report.error ? 'text-red-500' : 'text-green-500',
+      ]"
+    >
       <UIcon
-        name="i-ph-terminal" class="w-6 h-6 flex-none"
-        :class="[
-          report.error ? 'text-red-500' : 'text-green-500',
-        ]"
+        :name="report.error ? 'i-ph-x-circle' : 'i-ph-check-circle'" class="w-5 h-5 flex-none"
       />
-      <div class="opacity-50 text-xs">
+      <div
+        v-tooltip="new Date(report.startTime).toLocaleString()"
+        class="text-sm"
+      >
         {{ ago }}
       </div>
     </div>
