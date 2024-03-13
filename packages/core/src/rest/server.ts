@@ -12,6 +12,7 @@ import { generateResourceInstances } from '../resource/generateInstances.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
 import { isPlainObject } from '../util/object.js'
 import { type HookBeforeSendResponseContext, hooks } from '../hooks.js'
+import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
 
 export async function setupRestApi(mq: MoquerieInstance, expressApp: Application) {
   expressApp.use(mq.data.context?.config.rest?.basePath ?? '/rest', async (req, res) => {
@@ -53,7 +54,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
           let data = await route.handler({
             request,
             params,
-            db: ctx.db,
+            db: (ctx.db as UntypedQueryManagerProxy),
             pubsub: ctx.pubSubs,
             faker: await getFaker(mq),
             generateId: () => nanoid(),
@@ -168,21 +169,21 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
         if (idParams != null) {
           const predicate = (data: any) => data.id === idParams || data._id === idParams || data.slug === idParams
           if (req.method === 'GET') {
-            data = await ctx.db[resourceType.name].findFirst(predicate)
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findFirst(predicate)
           }
           if (req.method === 'PUT' || req.method === 'PATCH') {
-            data = await ctx.db[resourceType.name].updateFirst(req.body, predicate)
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].updateFirst(req.body, predicate)
           }
           if (req.method === 'DELETE') {
-            data = await ctx.db[resourceType.name].delete(predicate)
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].delete(predicate)
           }
         }
         else {
           if (req.method === 'GET') {
-            data = await ctx.db[resourceType.name].findMany()
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany()
           }
           if (req.method === 'POST') {
-            data = await ctx.db[resourceType.name].create({ data: req.body })
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].create({ data: req.body })
           }
         }
         data = await transformResponse(data, {

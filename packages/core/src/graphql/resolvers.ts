@@ -2,6 +2,7 @@ import type { IResolvers, ISchemaLevelResolver } from '@graphql-tools/utils'
 import { nanoid } from 'nanoid'
 import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 import type { MoquerieInstance } from '../instance.js'
+import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
 
 export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IResolvers> {
   const resolvers: IResolvers = {}
@@ -34,7 +35,7 @@ export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IRes
       for (const key in resourceType.fields) {
         r[key] = async () => {
           const { db } = await mq.getResolvedContext()
-          const instance = await db[resourceName].findFirst()
+          const instance = await (db as UntypedQueryManagerProxy)[resourceName].findFirst()
           if (instance) {
             return instance[key]
           }

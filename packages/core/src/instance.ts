@@ -28,6 +28,14 @@ export interface MoquerieInstanceData {
   watching: boolean
   resourceStorages: ResourceStorages
   onInstanceDestroyCallbacks: Array<() => Awaitable<void>>
+  /**
+   * Allow skipping writeCode hooks if content hasn't changed
+   */
+  fileHashes: {
+    tsCodegen: {
+      resources: string
+    }
+  }
 }
 
 export interface CreateMoquerieInstanceOptions {
@@ -58,6 +66,11 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
     watching: options.watching ?? true,
     resourceStorages,
     onInstanceDestroyCallbacks: [],
+    fileHashes: {
+      tsCodegen: {
+        resources: '',
+      },
+    },
   }
 
   function onDestroy(cb: () => Awaitable<void>) {

@@ -1,5 +1,6 @@
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceInstanceReference } from '../types/resource.js'
+import type { UntypedQueryManagerProxy } from './queryManagerProxy.js'
 
 export function createResourceInstanceReference(resourceTypeName: string, id: string): ResourceInstanceReference {
   return {
@@ -19,7 +20,7 @@ export async function hydrateResourceInstanceReferences(mq: MoquerieInstance, va
   else if (value && typeof value === 'object') {
     if (isResourceInstanceReference(value)) {
       const ctx = await mq.getResolvedContext()
-      return ctx.db[value.__resourceName].findByInstanceId(value.__id)
+      return (ctx.db as UntypedQueryManagerProxy)[value.__resourceName].findByInstanceId(value.__id)
     }
     else {
       const result: Record<string, any> = {}

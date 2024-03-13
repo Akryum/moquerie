@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid'
 import type { DefineFactoryReturn, ResourceFactory, ResourceFactoryFn, ResourceFactoryInfo } from '../types/factory.js'
 import { createResourceInstance } from '../resource/createInstance.js'
 import type { MoquerieInstance } from '../instance.js'
+import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
 import { executeFactory } from './execute.js'
 
 export interface CreateInstanceFromFactoryOptions {
@@ -54,7 +55,7 @@ export async function createInstanceFromFactory(mq: MoquerieInstance, options: C
   const data = await executeFactory(mq, factory, fn, id)
 
   const instance = options.save
-    ? await ctx.db[factory.resourceName].createInstance(data, {
+    ? await (ctx.db as UntypedQueryManagerProxy)[factory.resourceName].createInstance(data, {
       id,
       tags: [...(factory.info.applyTags ?? [])],
       comment: factory.info.applyComment,
