@@ -31,7 +31,7 @@ export default defineConfig({
     {
       name: 'eslint-autofix',
 
-      saveFactory: async ({ content }) => {
+      writeCode: async ({ code }) => {
         // @ts-expect-error no types
         const { FlatESLint } = await import('eslint/use-at-your-own-risk')
 
@@ -44,7 +44,7 @@ export default defineConfig({
           })
         }
 
-        const results = await eslint.lintText(content)
+        const results = await eslint.lintText(code)
         await FlatESLint.outputFixes(results)
         const [result] = results
         if (result?.output) {

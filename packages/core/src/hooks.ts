@@ -2,9 +2,10 @@ import type { ResourceSchema } from './types/resource.js'
 import { createHooks } from './util/hookable.js'
 import type { Awaitable } from './util/types.js'
 
-export interface HookSaveFactoryContext {
+export interface HookWriteCodeContext {
   path: string
-  content: string
+  code: string
+  type: 'factory' | 'types'
 }
 
 export interface HookTransformSchemaContext {
@@ -27,7 +28,7 @@ export interface HookResolveResourceFromRequestContext {
 }
 
 export interface Hooks {
-  saveFactory: (context: HookSaveFactoryContext) => Awaitable<string | void>
+  writeCode: (context: HookWriteCodeContext) => Awaitable<string | void>
   transformSchema: (context: HookTransformSchemaContext) => Awaitable<void>
   beforeSendResponse: (context: HookBeforeSendResponseContext) => Awaitable<any | void>
   resolveResourceFromRequest: (context: HookResolveResourceFromRequestContext) => Awaitable<string | void>

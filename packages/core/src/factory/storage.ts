@@ -58,23 +58,23 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
     }))
 
     const ast = await serializeFactory(item)
-    let content = printCode(ast)
+    let code = printCode(ast)
 
     try {
       await hooks.callHookWith(async (cbs) => {
         for (const cb of cbs) {
-          const result = await cb({ path: file, content })
+          const result = await cb({ path: file, code, type: 'factory' })
           if (typeof result === 'string') {
-            content = result
+            code = result
           }
         }
-      }, 'saveFactory')
+      }, 'writeCode')
     }
     catch (error: any) {
-      console.error(`Error in plugin hook "saveFactory"`, error.stack ?? error)
+      console.error(`Error in plugin hook "writeCode" (factory) (${file})`, error.stack ?? error)
     }
 
-    await fs.promises.writeFile(file, content, 'utf8')
+    await fs.promises.writeFile(file, code, 'utf8')
   }
 
   storagePromise = useMergedStorage(mq, {
