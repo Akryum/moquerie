@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.4.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.0...v0.4.1)
+
+### 🩹 Fixes
+
+- Module not found in non-ESM env ([ea5e58f](https://github.com/Akryum/moquerie/commit/ea5e58f))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.3.3...v0.4.0)
