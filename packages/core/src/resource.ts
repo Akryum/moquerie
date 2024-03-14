@@ -102,6 +102,20 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
     }
   }
 
+  // Handle leftover types
+
+  for (const type of mergedTypes) {
+    if (type.inline === undefined) {
+      type.inline = !Object.keys(type.fields).some(field => ['id', '_id'].includes(field))
+    }
+    if (type.array === undefined) {
+      (type as any).array = true
+    }
+    if (type.nonNull === undefined) {
+      type.nonNull = false
+    }
+  }
+
   // Sort fields
 
   for (const type of mergedTypes) {
