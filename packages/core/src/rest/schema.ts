@@ -13,16 +13,9 @@ export async function getRestResourceSchema(mq: MoquerieInstance) {
 
     for (const key in types) {
       const type = types[key]
-
-      // Inline
-      let inline = true
-      if (Object.keys(type.fields).some(field => ['id', '_id'].includes(field))) {
-        inline = false
-      }
-
       finalTypes.push({
         ...type,
-        inline,
+        inline: !Object.keys(type.fields).some(field => ['id', '_id'].includes(field)),
         nonNull: false,
         array: true,
       })
