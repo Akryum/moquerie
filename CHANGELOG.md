@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.4.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.1...v0.4.2)
+
+### 🚀 Enhancements
+
+- **resource:** Nested form for non-array inline resource ([d17a34f](https://github.com/Akryum/moquerie/commit/d17a34f))
+- **resource:** Set all nested fields to value ([6e3e9a7](https://github.com/Akryum/moquerie/commit/6e3e9a7))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.0...v0.4.1)
