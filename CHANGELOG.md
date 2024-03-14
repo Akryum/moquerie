@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.4.4
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.3...v0.4.4)
+
+### 🩹 Fixes
+
+- **resource:** Handle merge leftover types ([8eb5135](https://github.com/Akryum/moquerie/commit/8eb5135))
+- Simplify code ([4bfc48c](https://github.com/Akryum/moquerie/commit/4bfc48c))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.3
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.2...v0.4.3)
