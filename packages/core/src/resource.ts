@@ -3,12 +3,12 @@ import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import type { MoquerieInstance } from './instance.js'
 import type { SchemaTransformStore } from './resource/schemaTransformStore.js'
 import { hooks } from './hooks.js'
-import { getTypesFromFile } from './resource/fromTypes.js'
+import { type PartialResourceSchemaType, getTypesFromFile } from './resource/fromTypes.js'
 
 export async function getResourceSchema(mq: MoquerieInstance, schemaTransformStore: SchemaTransformStore) {
   const ctx = await mq.getContext()
 
-  const types: ResourceSchemaType[] = []
+  const types: Array<ResourceSchemaType | PartialResourceSchemaType> = []
 
   // REST
 
@@ -97,8 +97,8 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
       })
     }
     else {
-      mergeMap.set(type.name, type)
-      mergedTypes.push(type)
+      mergeMap.set(type.name, type as ResourceSchemaType)
+      mergedTypes.push(type as ResourceSchemaType)
     }
   }
 

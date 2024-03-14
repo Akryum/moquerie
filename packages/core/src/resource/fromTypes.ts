@@ -3,8 +3,10 @@ import ts from 'typescript'
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
 
+export type PartialResourceSchemaType = Omit<ResourceSchemaType, 'nonNull' | 'array' | 'inline'>
+
 export async function getTypesFromFile(mq: MoquerieInstance, files: string[], baseTags: string[] = []) {
-  const types: ResourceSchemaType[] = []
+  const types: PartialResourceSchemaType[] = []
 
   const program = ts.createProgram(files.map(f => path.resolve(mq.data.cwd, f)), {})
   const checker = program.getTypeChecker()
@@ -28,8 +30,6 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[], ba
 
   for (const node of typeNodes) {
     const fields: Record<string, ResourceSchemaField> = {}
-
-    let inline = true
 
     node.members.forEach((member) => {
       const fieldName = member.name?.getText()
@@ -93,10 +93,6 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[], ba
 
       const tags = ['field', ...baseTags]
 
-      if (['id', '_id'].includes(fieldName)) {
-        inline = false
-      }
-
       const jsDoc = nameSymbol?.getJsDocTags()
       let isDeprecated = false
       let deprecationReason: string | undefined
@@ -129,7 +125,7 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[], ba
     const meta: Record<string, any> = {}
 
     const jsDocTags = typeSymbol?.getJsDocTags()
-    let isDeprecated = false
+    let isDeprecated: boolean | undefined
     let deprecationReason: string | undefined
     if (jsDocTags) {
       for (const tag of jsDocTags) {
@@ -146,14 +142,11 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[], ba
       name: node.name.text,
       tags,
       description: typeSymbol?.getDocumentationComment(checker)?.find(c => c.kind === 'text')?.text ?? undefined,
-      array: true,
       fields,
-      nonNull: false,
       isDeprecated,
       deprecationReason,
-      inline,
       meta,
-    } satisfies ResourceSchemaType
+    } satisfies PartialResourceSchemaType
 
     types.push(resType)
   }
