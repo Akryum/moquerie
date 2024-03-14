@@ -230,7 +230,7 @@ function onSourceUpdate(source: string) {
           </template>
         </Tooltip>
 
-        <template v-if="field.type === 'resource' && childResourceType?.inline">
+        <template v-if="field.type === 'resource' && childResourceType?.inline && field.array">
           <UButton
             v-if="editCode"
             icon="i-ph-check-circle"
@@ -255,25 +255,36 @@ function onSourceUpdate(source: string) {
 
     <template v-if="field.type === 'resource'">
       <template v-if="childResourceType?.inline">
-        <MonacoEditor
-          v-if="editCode"
-          :filename="`field-${resourceType.name}-${field.name}-inline-edit.js`"
-          :source="JSON.stringify(modelValue, null, 2)"
-          :options="{
-            language: 'json',
-            lineNumbers: 'off',
-            folding: false,
-            wordWrap: 'on',
-          }"
-          class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
-          @update:source="onSourceUpdate"
-          @setup="setupEditor"
-        />
-        <pre
+        <template v-if="field.array">
+          <MonacoEditor
+            v-if="editCode"
+            :filename="`field-${resourceType.name}-${field.name}-inline-edit.js`"
+            :source="JSON.stringify(modelValue, null, 2)"
+            :options="{
+              language: 'json',
+              lineNumbers: 'off',
+              folding: false,
+              wordWrap: 'on',
+            }"
+            class="h-[200px] border border-gray-300 dark:border-gray-800 rounded-lg overflow-hidden"
+            @update:source="onSourceUpdate"
+            @setup="setupEditor"
+          />
+          <pre
+            v-else
+            class="text-xs text-gray-700 dark:text-gray-400 whitespace-pre-wrap"
+            @dblclick="editCode = true"
+            v-text="JSON.stringify(modelValue, null, 2)"
+          />
+        </template>
+
+        <ResourceInstanceValueNestedForm
           v-else
-          class="text-xs text-gray-700 dark:text-gray-400 whitespace-pre-wrap"
-          @dblclick="editCode = true"
-          v-text="JSON.stringify(modelValue, null, 2)"
+          :model-value="modelValue"
+          :field="field"
+          :resource-type="resourceType"
+          :child-resource-type="childResourceType"
+          @update:model-value="$emit('update:modelValue', $event)"
         />
       </template>
       <Menu
