@@ -151,6 +151,41 @@ function onSourceUpdate(source: string) {
     console.warn(e)
   }
 }
+
+// Quick set
+
+const allSameTypes = computed(() => {
+  if (!props.childResourceType) {
+    return false
+  }
+  const [first, ...rest] = Object.values(props.childResourceType.fields)
+  if (!first) {
+    return false
+  }
+  for (const field of rest) {
+    if (field.type !== first.type) {
+      return false
+    }
+  }
+  return true
+})
+
+const setAllToShown = ref(false)
+
+function setAllTo(value: any) {
+  setAllToShown.value = false
+
+  if (props.field.array) {
+    // @TODO
+    return
+  }
+
+  const result: any = {}
+  for (const key in props.childResourceType?.fields) {
+    result[key] = value
+  }
+  emit('update:modelValue', result)
+}
 </script>
 
 <template>
@@ -230,23 +265,37 @@ function onSourceUpdate(source: string) {
           </template>
         </Tooltip>
 
-        <template v-if="field.type === 'resource' && childResourceType?.inline && field.array">
-          <UButton
-            v-if="editCode"
-            icon="i-ph-check-circle"
-            color="gray"
-            variant="link"
-            :padded="false"
-            @click="editCode = false"
-          />
-          <UButton
-            v-else
-            icon="i-ph-pencil-simple"
-            color="gray"
-            variant="link"
-            :padded="false"
-            @click="editCode = true"
-          />
+        <template v-if="field.type === 'resource' && childResourceType?.inline">
+          <template v-if="field.array">
+            <UButton
+              v-if="editCode"
+              icon="i-ph-check-circle"
+              color="gray"
+              variant="link"
+              :padded="false"
+              @click="editCode = false"
+            />
+            <UButton
+              v-else
+              icon="i-ph-pencil-simple"
+              color="gray"
+              variant="link"
+              :padded="false"
+              @click="editCode = true"
+            />
+          </template>
+
+          <template v-else>
+            <UButton
+              v-if="allSameTypes"
+              color="gray"
+              variant="link"
+              :padded="false"
+              @click="setAllToShown = true"
+            >
+              Set all to...
+            </UButton>
+          </template>
         </template>
 
         <slot name="hint-end" />
@@ -421,6 +470,19 @@ function onSourceUpdate(source: string) {
       @update:model-value="$emit('update:modelValue', $event)"
       @close="isResourceRefsOpen = false"
       @apply="$emit('apply')"
+    />
+  </UModal>
+
+  <UModal
+    v-model="setAllToShown"
+  >
+    <ResourceInstanceValueFormSetAll
+      v-if="field.type === 'resource'"
+      :resource-type="resourceType"
+      :child-resource-type="childResourceType!"
+      :field="field"
+      @cancel="setAllToShown = false"
+      @submit="setAllTo($event)"
     />
   </UModal>
 </template>
