@@ -106,7 +106,20 @@ export async function getResourceSchema(mq: MoquerieInstance, schemaTransformSto
 
   for (const type of mergedTypes) {
     if (type.inline === undefined) {
-      type.inline = !Object.keys(type.fields).some(field => ['id', '_id'].includes(field))
+      if (type.implementations?.length) {
+        let inline = true
+        for (const implementation of type.implementations) {
+          const implementationType = mergedTypes.find(t => t.name === implementation)
+          if (implementationType && Object.keys(implementationType.fields).some(field => ['id', '_id'].includes(field))) {
+            inline = false
+            break
+          }
+        }
+        type.inline = inline
+      }
+      else {
+        type.inline = !Object.keys(type.fields).some(field => ['id', '_id'].includes(field))
+      }
     }
     if (type.array === undefined) {
       (type as any).array = true
