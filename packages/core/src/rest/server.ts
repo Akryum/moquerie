@@ -98,6 +98,13 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
                 return text
               }
             },
+            createError: (message, data) => {
+              const e = new Error(message)
+              if (data) {
+                (e as any).data = data
+              }
+              return e
+            },
           })
           // eslint-disable-next-line no-console
           console.log(`[ApiRoute] ${req.method} ${req.path} handler ${Date.now() - time}ms`)
@@ -217,7 +224,11 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
     catch (e: any) {
       console.error(e)
       res.statusMessage = e.message
-      res.status(500).end()
+      res.status(500)
+      if (e.data) {
+        res.json(e.data)
+      }
+      res.end()
     }
   })
 }

@@ -31,6 +31,7 @@ export interface ApiRouteContext {
   query: Record<string, string>
   readBody: () => Promise<any>
   setResponseType (type: string): void
+  createError(message: string, data?: any): Error
 }
 
 export type ApiRouteHandlerFn = (context: ApiRouteContext) => Awaitable<any>
