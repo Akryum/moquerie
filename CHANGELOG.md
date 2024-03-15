@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.4.6
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.5...v0.4.6)
+
+### 🚀 Enhancements
+
+- **apiRoute:** ReadBody util ([ce1ce8b](https://github.com/Akryum/moquerie/commit/ce1ce8b))
+- **apiRoute:** Query ([bce00df](https://github.com/Akryum/moquerie/commit/bce00df))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.5
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.4...v0.4.5)
