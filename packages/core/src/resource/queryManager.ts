@@ -339,31 +339,19 @@ async function serializeInstanceValue<TType extends ResourceSchemaType>(
         return r
       }
 
-      if (field.array) {
-        if (fieldResourceType.inline) {
+      if (fieldResourceType.inline) {
+        if (field.array) {
           resultValue[key] = instanceValues.filter(Boolean)
         }
         else {
-          // Process and save referenced object into database
-          const refValues = await Promise.all(instanceValues.map(v => processChild(field, v)))
-          // Put resource instance references on current object
-          resultValue[key] = refValues.filter(Boolean)
+          resultValue[key] = value
         }
-      }
-      else if (fieldResourceType.inline) {
-        resultValue[key] = value
       }
       else {
-        // Process and save the first valid object or id into database
-        let selected: ResourceInstanceReference | null = null
-        for (const v of instanceValues) {
-          const r = await processChild(field, v)
-          if (r) {
-            selected = r
-            break
-          }
-        }
-        resultValue[key] = selected
+        // Process and save referenced object into database
+        const refValues = await Promise.all(instanceValues.map(v => processChild(field, v)))
+        // Put resource instance references on current object
+        resultValue[key] = refValues.filter(Boolean)
       }
     }
     else {
