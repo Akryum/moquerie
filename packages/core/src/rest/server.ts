@@ -20,6 +20,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
       const route = req.path.split('/')
       const routeType = route[1]
       const request = normalizeNodeRequest(req, Request)
+      const query = Object.fromEntries(new URLSearchParams(request.url.split('?')[1] ?? '').entries())
 
       async function transformResponse(data: any, options: Omit<HookBeforeSendResponseContext, 'response' | 'type' | 'request'>) {
         const result = await hooks.callHook('beforeSendResponse', {
@@ -54,6 +55,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
           let data = await route.handler({
             request,
             params,
+            query,
             db: (ctx.db as UntypedQueryManagerProxy),
             pubsub: ctx.pubSubs,
             faker: await getFaker(mq),
