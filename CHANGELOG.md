@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.4.7
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.6...v0.4.7)
+
+### 🚀 Enhancements
+
+- **apiRoute:** CreateError allowing sending error data ([42898d7](https://github.com/Akryum/moquerie/commit/42898d7))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.6
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.5...v0.4.6)
