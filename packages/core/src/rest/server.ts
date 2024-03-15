@@ -83,6 +83,19 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
             setResponseType: (t) => {
               type = t
             },
+            readBody: async () => {
+              const body = request.body as ReadableStream
+              const text = ((await body.getReader().read()).value as Buffer).toString('utf-8')
+              if (request.headers.get('content-type') === 'application/json') {
+                return JSON.parse(text)
+              }
+              else if (request.headers.get('content-type') === 'application/x-www-form-urlencoded') {
+                return new URLSearchParams(text)
+              }
+              else {
+                return text
+              }
+            },
           })
           // eslint-disable-next-line no-console
           console.log(`[ApiRoute] ${req.method} ${req.path} handler ${Date.now() - time}ms`)

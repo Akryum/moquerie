@@ -28,6 +28,7 @@ export interface ApiRouteContext {
   pickRandom<T extends string | number | boolean = any> (list: T[]): T | null
   request: RequestLike
   params: Record<string, string>
+  readBody: () => Promise<any>
   setResponseType (type: string): void
 }
 
