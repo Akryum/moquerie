@@ -16,9 +16,26 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Animal = {
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type Avatar = {
   __typename?: 'Avatar';
   url: Scalars['String']['output'];
+};
+
+export type Cat = Animal & {
+  __typename?: 'Cat';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type Dog = Animal & {
+  __typename?: 'Dog';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 /** Message sent between users */
@@ -172,11 +189,18 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
+  Animal: ( Cat ) | ( Dog );
+};
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Animal: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Animal']>;
   Avatar: ResolverTypeWrapper<Avatar>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Cat: ResolverTypeWrapper<Cat>;
+  Dog: ResolverTypeWrapper<Dog>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Message: ResolverTypeWrapper<Message>;
@@ -193,8 +217,11 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Animal: ResolversInterfaceTypes<ResolversParentTypes>['Animal'];
   Avatar: Avatar;
   Boolean: Scalars['Boolean']['output'];
+  Cat: Cat;
+  Dog: Dog;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Message: Message;
@@ -208,8 +235,26 @@ export type ResolversParentTypes = {
   User: User;
 };
 
+export type AnimalResolvers<ContextType = any, ParentType extends ResolversParentTypes['Animal'] = ResolversParentTypes['Animal']> = {
+  __resolveType: TypeResolveFn<'Cat' | 'Dog', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type AvatarResolvers<ContextType = any, ParentType extends ResolversParentTypes['Avatar'] = ResolversParentTypes['Avatar']> = {
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cat'] = ResolversParentTypes['Cat']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DogResolvers<ContextType = any, ParentType extends ResolversParentTypes['Dog'] = ResolversParentTypes['Dog']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -270,7 +315,10 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Animal?: AnimalResolvers<ContextType>;
   Avatar?: AvatarResolvers<ContextType>;
+  Cat?: CatResolvers<ContextType>;
+  Dog?: DogResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   MutationAPayload?: MutationAPayloadResolvers<ContextType>;

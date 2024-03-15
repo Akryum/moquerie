@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.4.5
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.4...v0.4.5)
+
+### 🩹 Fixes
+
+- **resource:** Gen union types for implemented types ([952c805](https://github.com/Akryum/moquerie/commit/952c805))
+
+### 🏡 Chore
+
+- Updated generated types in playground ([e2c3fcb](https://github.com/Akryum/moquerie/commit/e2c3fcb))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.4
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.3...v0.4.4)
