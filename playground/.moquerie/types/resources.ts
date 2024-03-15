@@ -18,8 +18,20 @@ export interface Subscription {
   simpleAdded: Simple
 }
 
+export type Animal = Cat | Dog
+
 export interface Avatar {
   url: string
+}
+
+export interface Cat {
+  id: string
+  name: string
+}
+
+export interface Dog {
+  id: string
+  name: string
 }
 
 export interface Message {

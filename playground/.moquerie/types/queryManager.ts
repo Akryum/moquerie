@@ -1,6 +1,8 @@
 import type { QueryManager } from 'moquerie'
 
 import type {
+  Cat,
+  Dog,
   Message,
   Mutation,
   MutationAPayload,
@@ -20,6 +22,8 @@ declare module 'moquerie' {
     Mutation: QueryManager<Mutation>
     Query: QueryManager<Query>
     Subscription: QueryManager<Subscription>
+    Cat: QueryManager<Cat>
+    Dog: QueryManager<Dog>
     Message: QueryManager<Message>
     MutationAPayload: QueryManager<MutationAPayload>
     MutationBPayload: QueryManager<MutationBPayload>

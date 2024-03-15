@@ -2,7 +2,13 @@ import { builders } from 'ast-types'
 import type { namedTypes } from 'ast-types'
 import type { ResourceSchemaType } from '../types/resource.js'
 
-export function generateTsInterfaceFromResourceType(type: ResourceSchemaType): namedTypes.TSInterfaceDeclaration {
+export function generateTsInterfaceFromResourceType(type: ResourceSchemaType): namedTypes.TSInterfaceDeclaration | namedTypes.TSTypeAliasDeclaration {
+  // If the type has implementations, we generate a union type
+  if (type.implementations?.length) {
+    return builders.tsTypeAliasDeclaration(builders.identifier(type.name), builders.tsUnionType(type.implementations.map(impl => builders.tsTypeReference(builders.identifier(impl)))))
+  }
+
+  // Generate interface declaration
   const interfaceDeclaration = builders.tsInterfaceDeclaration(builders.identifier(type.name), builders.tsInterfaceBody(
     Object.values(type.fields).map(field =>
       builders.tsPropertySignature(builders.identifier(field.name), builders.tsTypeAnnotation(

@@ -69,6 +69,21 @@ export const schema = makeExecutableSchema({
     type MutationBPayload {
       id: ID!
     }
+
+    interface Animal {
+      id: ID!
+      name: String!
+    }
+
+    type Cat implements Animal {
+      id: ID!
+      name: String!
+    }
+
+    type Dog implements Animal {
+      id: ID!
+      name: String!
+    }
   `,
   resolvers: {
     Query: {
