@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.4.8
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.7...v0.4.8)
+
+### 🩹 Fixes
+
+- **resource:** Compute inline using implementations ([df9dff7](https://github.com/Akryum/moquerie/commit/df9dff7))
+- **db:** Always serialize refs to array ([763c2e2](https://github.com/Akryum/moquerie/commit/763c2e2))
+- Lint ([5cb2ee7](https://github.com/Akryum/moquerie/commit/5cb2ee7))
+
+### 🏡 Chore
+
+- Update deps ([baf9efc](https://github.com/Akryum/moquerie/commit/baf9efc))
+- Add todo ([7827b41](https://github.com/Akryum/moquerie/commit/7827b41))
+- Eslint vscode settings ([fd95e2c](https://github.com/Akryum/moquerie/commit/fd95e2c))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.7
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.6...v0.4.7)
