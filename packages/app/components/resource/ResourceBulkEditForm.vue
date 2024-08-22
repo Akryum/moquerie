@@ -51,7 +51,7 @@ const filter = ref('')
 
 const fields = computed(() => {
   let result = Object.values(props.resourceType.fields)
-  if (filter) {
+  if (filter.value) {
     const reg = new RegExp(filter.value, 'i')
     result = result.filter(field => field.name.match(reg) || field.description?.match(reg) || field.tags.some(tag => tag.match(reg)))
   }

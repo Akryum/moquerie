@@ -11,6 +11,7 @@ function updateQuery(value: string) {
   try {
     query.value = JSON.parse(value)
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     // noop
   }
@@ -20,6 +21,7 @@ function updateBody(value: string) {
   try {
     body.value = JSON.parse(value)
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     // noop
   }
@@ -119,7 +121,7 @@ const filteredSavedQueries = computed(() => {
 })
 
 const sortedSavedQueries = computed(() => {
-  return filteredSavedQueries.value.sort((a, b) => {
+  return filteredSavedQueries.value.slice().sort((a, b) => {
     return a.name.localeCompare(b.name)
   })
 })

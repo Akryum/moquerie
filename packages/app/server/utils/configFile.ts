@@ -18,6 +18,7 @@ export async function findConfigFile() {
     const result = await resolveConfig(mq.data.cwd)
     configFile = result.configFile
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     configFile = await resolveConfigFile()
   }

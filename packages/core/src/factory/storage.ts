@@ -13,7 +13,8 @@ import { deserializeFactory } from './deserialize.js'
 import { serializeFactory } from './serialize.js'
 
 export function getFactoryFilename(mq: MoquerieInstance, resourceName: string, id: string, name: string, location: DBLocation) {
-  const [, idPart] = /(?:.+?)(@@.+)?$/.exec(id) ?? []
+  // eslint-disable-next-line regexp/no-super-linear-backtracking
+  const [, idPart] = /.+?(@@.+)?$/.exec(id) ?? []
   return `${resourceName}/${name}${location === 'local' ? idPart : ''}.${projectHasTypescript(mq) ? 'ts' : 'js'}`
 }
 
@@ -30,6 +31,7 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
 
   async function readFactory(file: string, location: DBLocation) {
     const resourceName = path.basename(path.dirname(file))
+    // eslint-disable-next-line regexp/no-super-linear-backtracking
     const [, name, idPart] = /(.+?)(@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
     const id = `${resourceName}-${idPart ?? name}`
 
@@ -95,6 +97,7 @@ export async function getFactoryStorage(mq: MoquerieInstance) {
         })
         for (const file of files) {
           const resourceName = path.basename(path.dirname(file))
+          // eslint-disable-next-line regexp/no-super-linear-backtracking
           const [, name, idPart] = /(.+?)(@@.+)?\.[jt]s$/.exec(path.basename(file)) ?? []
           const id = `${resourceName}-${idPart ?? name}`
           manifest.files[id] = file

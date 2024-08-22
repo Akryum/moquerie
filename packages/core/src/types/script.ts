@@ -10,8 +10,8 @@ export interface ScriptContext {
   generateId: () => string
   generateResource: (resourceName: string, factoryId: string, count?: number) => Promise<ResourceInstanceReference[]>
   faker: Faker
-  repeat<T = any> (fn: () => T, min: number, max: number): Promise<Array<T>>
-  pickRandom<T extends string | number | boolean = any> (list: T[]): T | null
+  repeat: <T = any>(fn: () => T, min: number, max: number) => Promise<Array<T>>
+  pickRandom: <T extends string | number | boolean = any>(list: T[]) => T | null
 }
 
 export type ScriptFn = (context: ScriptContext) => Awaitable<void>

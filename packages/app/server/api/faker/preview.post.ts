@@ -30,6 +30,7 @@ export default defineEventHandler<{ body: Body }>(async (event) => {
       paramsContext,
     })
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (error) {
     return generateValueFromFaker({
       factory: body.factory,

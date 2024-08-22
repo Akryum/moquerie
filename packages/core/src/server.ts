@@ -14,7 +14,7 @@ export interface Server {
   expressApp: Application
   routeInfos: ServerRouteInfo[]
 
-  restart(): void
+  restart: () => void
 }
 
 async function listen(context: Context, expressApp: Application) {

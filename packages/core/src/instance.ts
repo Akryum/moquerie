@@ -5,10 +5,10 @@ import { onSettingsChange } from './settings/onChange.js'
 import type { Awaitable } from './util/types.js'
 
 export interface MoquerieInstance {
-  getContext (): Promise<Context>
-  getResolvedContext (): Promise<ResolvedContext>
-  destroy (): Promise<void>
-  onDestroy (cb: () => Awaitable<void>): void
+  getContext: () => Promise<Context>
+  getResolvedContext: () => Promise<ResolvedContext>
+  destroy: () => Promise<void>
+  onDestroy: (cb: () => Awaitable<void>) => void
   /**
    * @private
    */

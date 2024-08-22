@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'setup': [editor: monaco.editor.IDiffEditor]
+  setup: [editor: monaco.editor.IDiffEditor]
 }>()
 
 const colorMode = useColorMode()

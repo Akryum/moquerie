@@ -148,7 +148,7 @@ function onEditorSetup(_editor: monaco.editor.IStandaloneCodeEditor) {
     }
 
     // Search for code with object of the form { __resourceName: '...', __id: '...' }
-    const reg = /{[\s\n]*"__resourceName"[\s\n]*:[\s\n]*"([^"]+)"[\s\n]*,[\s\n]*"__id"[\s\n]*:[\s\n]*"([^"]+)"[\s\n]*}/g
+    const reg = /\{\s*"__resourceName"\s*:\s*"[^"]+"\s*,\s*"__id"\s*:\s*"[^"]+"\s*\}/g
     const text = editor.getValue()
     let match
     // eslint-disable-next-line no-cond-assign

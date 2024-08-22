@@ -151,8 +151,8 @@ export interface ResourceFactory {
 export interface ResourceFactoryContext {
   faker: Faker
   db: QueryManagerProxy
-  repeat<T = any> (fn: (context: ResourceFactoryLazyContext) => T, min: number, max: number): Promise<Array<T>>
-  pickRandom<T extends string | number | boolean = any> (list: T[]): T | null
+  repeat: <T = any>(fn: (context: ResourceFactoryLazyContext) => T, min: number, max: number) => Promise<Array<T>>
+  pickRandom: <T extends string | number | boolean = any>(list: T[]) => T | null
 }
 
 export interface ResourceFactoryLazyContext<TItem = any> {

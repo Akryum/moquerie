@@ -74,6 +74,7 @@ export function useSaveRoute(options: UseSaveRouteOptions) {
           })
         }, 100)
       }
+      // eslint-disable-next-line unused-imports/no-unused-vars
       catch (e) {
         // Ignore
       }

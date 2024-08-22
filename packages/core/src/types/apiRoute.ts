@@ -7,13 +7,13 @@ import type { Awaitable } from '../util/types.js'
 import type { ResourceInstanceReference } from './resource.js'
 
 export interface ApiRouter {
-  get (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  post (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  put (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  patch (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  delete (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  use (path: string | RegExp, setup: ApiRouteHandlerFn): void
-  middleware (setup: ApiRouteHandlerFn): void
+  get: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  post: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  put: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  patch: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  delete: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  use: (path: string | RegExp, setup: ApiRouteHandlerFn) => void
+  middleware: (setup: ApiRouteHandlerFn) => void
 }
 
 export type DefineApiRouteSetupFn = (router: ApiRouter) => void
@@ -24,14 +24,14 @@ export interface ApiRouteContext {
   generateId: () => string
   generateResource: (resourceName: string, factoryId: string, count?: number) => Promise<ResourceInstanceReference[]>
   faker: Faker
-  repeat<T = any> (fn: () => T, min: number, max: number): Promise<Array<T>>
-  pickRandom<T extends string | number | boolean = any> (list: T[]): T | null
+  repeat: <T = any>(fn: () => T, min: number, max: number) => Promise<Array<T>>
+  pickRandom: <T extends string | number | boolean = any>(list: T[]) => T | null
   request: RequestLike
   params: Record<string, string>
   query: Record<string, string>
   readBody: () => Promise<any>
-  setResponseType (type: string): void
-  createError(message: string, data?: any): Error
+  setResponseType: (type: string) => void
+  createError: (message: string, data?: any) => Error
 }
 
 export type ApiRouteHandlerFn = (context: ApiRouteContext) => Awaitable<any>

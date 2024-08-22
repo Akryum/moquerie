@@ -1,4 +1,4 @@
-export const fakerLocales = {
+export const fakerLocales: Record<string, { name: string, faker: string }> = {
   af_ZA: {
     name: 'Afrikaans (South Africa)',
     faker: 'fakerAF_ZA',
@@ -271,4 +271,4 @@ export const fakerLocales = {
     name: 'Zulu (South Africa)',
     faker: 'fakerZU_ZA',
   },
-} as const
+}

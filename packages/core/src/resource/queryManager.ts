@@ -21,69 +21,69 @@ export interface QueryManager<TData> {
   /**
    * Find multiple resource values.
    */
-  findMany (predicate?: QueryPredicate<TData>): Promise<TData[]>
+  findMany: (predicate?: QueryPredicate<TData>) => Promise<TData[]>
   /**
    * Find first resource value that matches the predicate.
    */
-  findFirst (predicate?: QueryPredicate<TData>): Promise<TData | null>
+  findFirst: (predicate?: QueryPredicate<TData>) => Promise<TData | null>
   /**
    * Find first resource value that matches the predicate or throw an error if none is found.
    */
-  findFirstOrThrow (predicate: QueryPredicate<TData>): Promise<TData>
+  findFirstOrThrow: (predicate: QueryPredicate<TData>) => Promise<TData>
   /**
    * Create a new resource instance from the supplied data.
    */
-  create (data: TData): Promise<TData>
+  create: (data: TData) => Promise<TData>
   /**
    * Update multiple resource instances that match the predicate.
    * @param data Will override existing values.
    */
-  updateMany (data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData[]>
+  updateMany: (data: Partial<TData>, predicate?: QueryPredicate<TData>) => Promise<TData[]>
   /**
    * Update one resource instance that match the predicate.
    * @param data Will override existing values.
    */
-  updateFirst (data: Partial<TData>, predicate?: QueryPredicate<TData>): Promise<TData | null>
+  updateFirst: (data: Partial<TData>, predicate?: QueryPredicate<TData>) => Promise<TData | null>
   /**
    * Delete multiple resource instances that match the predicate.
    */
-  delete (predicate: QueryPredicate<TData>): Promise<void>
+  delete: (predicate: QueryPredicate<TData>) => Promise<void>
   /**
    * Create a new resource instance from the supplied data.
    * Returns the actual instance.
    */
-  createInstance (data: TData, options?: QueryManagerCreateInstanceOptions): Promise<ResourceInstance>
+  createInstance: (data: TData, options?: QueryManagerCreateInstanceOptions) => Promise<ResourceInstance>
   /**
    * Returns a reference to a resource instance.
    * @param id Instance id.
    */
-  getReference (instanceId: string): ResourceInstanceReference
+  getReference: (instanceId: string) => ResourceInstanceReference
   /**
    * Find first resource instance that matches the predicate and return a reference to it.
    */
-  findFirstReference (predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference | null>
+  findFirstReference: (predicate?: QueryPredicate<TData>) => Promise<ResourceInstanceReference | null>
   /**
    * Find multiple resource instances that match the predicate and return references to them.
    */
-  findManyReferences (predicate?: QueryPredicate<TData>): Promise<ResourceInstanceReference[]>
+  findManyReferences: (predicate?: QueryPredicate<TData>) => Promise<ResourceInstanceReference[]>
   /**
    * Pick a random resource instance value.
    */
-  pickOneRandom (): Promise<ResourceInstanceReference | null>
+  pickOneRandom: () => Promise<ResourceInstanceReference | null>
   /**
    * Pick multiple random resource instance values.
    * @param min Mininum number of instances to pick.
    * @param max Maximum number of instances to pick.
    */
-  pickManyRandom (min: number, max: number): Promise<ResourceInstanceReference[]>
+  pickManyRandom: (min: number, max: number) => Promise<ResourceInstanceReference[]>
   /**
    * @private
    */
-  findByInstanceId (id: string): Promise<TData | null>
+  findByInstanceId: (id: string) => Promise<TData | null>
   /**
    * @private
    */
-  findByInstanceIdOrThrow (id: string): Promise<TData>
+  findByInstanceIdOrThrow: (id: string) => Promise<TData>
 }
 
 export interface CreateQueryManagerOptions {

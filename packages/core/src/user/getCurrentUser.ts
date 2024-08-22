@@ -26,6 +26,7 @@ export async function getCurrentUser() {
       user.email = gitUser.email
     }
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     // ignore
   }
@@ -41,6 +42,7 @@ export async function getCurrentUser() {
         }
       }
     }
+    // eslint-disable-next-line unused-imports/no-unused-vars
     catch (e) {
       // ignore
     }

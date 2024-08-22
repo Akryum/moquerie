@@ -15,8 +15,11 @@ export async function copyDir(src: string, dest: string) {
     const srcPath = path.join(src, entry)
     const destPath = path.join(dest, entry)
 
-    fs.statSync(srcPath).isDirectory()
-      ? await copyDir(srcPath, destPath)
-      : await fs.promises.copyFile(srcPath, destPath)
+    if (fs.statSync(srcPath).isDirectory()) {
+      await copyDir(srcPath, destPath)
+    }
+    else {
+      await fs.promises.copyFile(srcPath, destPath)
+    }
   }
 }

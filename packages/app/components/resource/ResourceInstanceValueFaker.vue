@@ -11,8 +11,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'cancel': []
-  'generate': [any, { factory: string, locale?: string, paramsCode?: string }]
+  cancel: []
+  generate: [any, { factory: string, locale?: string, paramsCode?: string }]
 }>()
 
 // Faker locales
@@ -87,6 +87,7 @@ const docUrl = computed(() => {
     const { category, name } = parsedFactory.value
     return `https://fakerjs.dev/api/${category}.html#${name.toLowerCase()}`
   }
+  return null
 })
 
 function onSubmit() {

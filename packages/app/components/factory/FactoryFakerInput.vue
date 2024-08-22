@@ -51,6 +51,7 @@ const docUrl = computed(() => {
     const { category, name } = parsedFactory.value
     return `https://fakerjs.dev/api/${category}.html#${name.toLowerCase()}`
   }
+  return null
 })
 
 function update(updated: Partial<ResourceFactoryField>) {
