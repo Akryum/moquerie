@@ -69,6 +69,11 @@ export async function getTypesFromFile(mq: MoquerieInstance, files: string[], ba
         }
       }
 
+      if (ts.isUnionTypeNode(member.type)) {
+        // @TODO enum from union of scalars
+        // @TODO interface types (implementations)
+      }
+
       if (interfaceNames.has(typeName)) {
         type = {
           type: 'resource',
