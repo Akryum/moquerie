@@ -1,6 +1,49 @@
 # Changelog
 
 
+## v0.5.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.4.8...v0.5.0)
+
+### 🚀 Enhancements
+
+- Allow js import ([4598bf2](https://github.com/Akryum/moquerie/commit/4598bf2))
+- Improve JSON preview ([24d6cfb](https://github.com/Akryum/moquerie/commit/24d6cfb))
+- Auto convert JSON strings ([fe2e739](https://github.com/Akryum/moquerie/commit/fe2e739))
+- Improve resource form ui ([ee5e517](https://github.com/Akryum/moquerie/commit/ee5e517))
+- Loading indicator ([aac817b](https://github.com/Akryum/moquerie/commit/aac817b))
+- Scroll to top when expanding ([b75329b](https://github.com/Akryum/moquerie/commit/b75329b))
+- SkipWrites option ([f62dec3](https://github.com/Akryum/moquerie/commit/f62dec3))
+- StartServer ([98bf4ef](https://github.com/Akryum/moquerie/commit/98bf4ef))
+- GetFactoryByName ([1000334](https://github.com/Akryum/moquerie/commit/1000334))
+
+### 🩹 Fixes
+
+- Refresh factories on delete ([6cb89af](https://github.com/Akryum/moquerie/commit/6cb89af))
+- **factory:** Handle undefined id in file name ([ec31bdd](https://github.com/Akryum/moquerie/commit/ec31bdd))
+
+### 💅 Refactors
+
+- Renamed field action to resolver ([0c1b6fd](https://github.com/Akryum/moquerie/commit/0c1b6fd))
+
+### 📖 Documentation
+
+- DOCS ([7bef636](https://github.com/Akryum/moquerie/commit/7bef636))
+- Add sponsors ([572cfba](https://github.com/Akryum/moquerie/commit/572cfba))
+
+### 🏡 Chore
+
+- Update example ([2654078](https://github.com/Akryum/moquerie/commit/2654078))
+- More jsdoc ([52334b5](https://github.com/Akryum/moquerie/commit/52334b5))
+
+### ✅ Tests
+
+- **lint:** Fix ([744d775](https://github.com/Akryum/moquerie/commit/744d775))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.4.8
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.7...v0.4.8)
