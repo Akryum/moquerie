@@ -61,8 +61,8 @@ const routes = computed(() => [
     shortcuts: [metaSymbol.value, '⇧', 'P'],
   },
   {
-    id: '_route.db.fieldActions',
-    to: '/db/fieldActions',
+    id: '_route.db.resolvers',
+    to: '/db/resolvers',
     icon: 'i-ph-lightning',
     label: 'Database > Field actions',
   },

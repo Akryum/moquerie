@@ -4,7 +4,7 @@ export interface Col {
   label: string
   field: string
   size: number
-  fieldAction?: { file: string }
+  resolver?: { file: string }
   fieldData?: ResourceSchemaField
   childResourceType?: ResourceSchemaType
 }

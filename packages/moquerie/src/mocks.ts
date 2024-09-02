@@ -1,8 +1,58 @@
-import type { DefineApiRouteSetupFn, FieldActionBaseDefinitions, ResourceFactoryFn, ResourceFactoryInfo, SchemaTransformAction, ScriptFn, ScriptItem } from '@moquerie/core'
+import type { DefineApiRouteSetupFn, ResolverBaseDefinitions, ResourceFactoryFn, ResourceFactoryInfo, SchemaTransformAction, ScriptFn, ScriptItem } from '@moquerie/core'
 
-export function defineFieldActions<TActions extends FieldActionBaseDefinitions>(actions: TActions) {
+/**
+ * @deprecated Use `defineResolvers` instead.
+ */
+export function defineFieldActions<TActions extends ResolverBaseDefinitions>(actions: TActions) {
   return {
-    __fieldActions: actions,
+    __resolvers: actions,
+  }
+}
+
+/**
+ * Define actions that are executed whenever a field is accessed.
+ * @param resolvers Object of resolvers.
+ * @example
+ *
+ * ```ts
+  import { defineResolvers } from 'moquerie/mocks'
+
+  export default {
+    // Use a spread operator to be able to use other functions like `defineSchemaTransforms` or `defineScripts`
+    ...defineResolvers({
+      // target type is `Query`
+      Query: {
+        // field name is `hello`
+        hello: () => 'Hello world!'
+      },
+      // target type is `Mutation`
+      Mutation: {
+        // field name is `addHello`
+        addHello: async ({ input, db, pubsub }) => { // Access more using the parameter like the input or the database
+          const query = await db.Query.findFirst()
+          const manyHellos = query?.manyHellos ?? []
+          manyHellos.push(input.message)
+          await db.Query.updateFirst({
+            manyHellos,
+          })
+          pubsub.graphql.publish('helloAdded', {
+            helloAdded: input.message,
+          })
+          return manyHellos
+        },
+      },
+      // target type is `User`
+      User: {
+        // field name is `fullName`
+        fullName: ({ parent: user }) => `${user.firstName} ${user.lastName}`
+      }
+    })
+  }
+ ```
+ */
+export function defineResolvers<TResolvers extends ResolverBaseDefinitions>(resolvers: TResolvers) {
+  return {
+    __resolvers: resolvers,
   }
 }
 

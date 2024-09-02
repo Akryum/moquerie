@@ -1,26 +1,26 @@
 <script lang="ts" setup>
 useSaveRoute({
-  key: 'db.fieldActions.lastRoute',
-  basePath: '/db/fieldActions',
+  key: 'db.resolvers.lastRoute',
+  basePath: '/db/resolvers',
   defaultRoute: {
-    name: 'db-fieldActions-resourceName',
+    name: 'db-resolvers-resourceName',
   },
 })
 
 useHead({
-  title: 'Field actions',
+  title: 'Resolvers',
 })
 </script>
 
 <template>
   <SplitPane
-    save-id="db.fieldActions"
+    save-id="db.resolvers"
     :min="8"
     :max="40"
     :default-split="12"
   >
     <template #first>
-      <FieldActionResourceList />
+      <ResolverResourceList />
     </template>
 
     <template #last>

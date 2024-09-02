@@ -1,95 +1,95 @@
 export interface Mutation {
-  addHello: string
-  addSimple: Simple
-  removeHello: string
-  testMutation: boolean
+    addHello: string;
+    addSimple: Simple;
+    removeHello: string;
+    testMutation: boolean;
 }
 
 export interface Query {
-  currentUser: User
-  hello: string
-  manyHellos: string
-  manyHellosCount: number
+    currentUser: User;
+    hello: string;
+    manyHellos: string;
+    manyHellosCount: number;
 }
 
 export interface Subscription {
-  helloAdded: string
-  helloRemoved: string
-  simpleAdded: Simple
+    helloAdded: string;
+    helloRemoved: string;
+    simpleAdded: Simple;
 }
 
-export type Animal = Cat | Dog
+export type Animal = Cat | Dog;
 
 export interface Avatar {
-  url: string
+    url: string;
 }
 
 export interface Cat {
-  id: string
-  name: string
+    id: string;
+    name: string;
 }
 
 export interface Dog {
-  id: string
-  name: string
+    id: string;
+    name: string;
 }
 
 export interface Message {
-  id: string
-  archived: boolean
-  content: string
-  from: User
-  internalProp: string
-  tags: string
-  to: User
-  type: 'public' | 'private'
+    id: string;
+    archived: boolean;
+    content: string;
+    from: User;
+    internalProp: string;
+    tags: string;
+    to: User;
+    type: "public" | "private";
 }
 
 export interface MutationAPayload {
-  id: string
+    id: string;
 }
 
 export interface MutationBPayload {
-  id: string
+    id: string;
 }
 
 export interface MyObject {
-  id: string
-  count: number
-  name: string
+    id: string;
+    count: number;
+    name: string;
 }
 
 export interface MyObjectNotExported {
-  id: string
-  title: string
+    id: string;
+    title: string;
 }
 
 export interface MyOtherObject {
-  id: string
-  description: string
-  notExported: MyObjectNotExported
-  objects: MyObject
-  otherDescription: string
-  thirdDescription: string
-  deprecatedField: string
+    id: string;
+    description: string;
+    notExported: MyObjectNotExported;
+    objects: MyObject;
+    otherDescription: string;
+    thirdDescription: string;
+    deprecatedField: string;
 }
 
 export interface Simple {
-  id: string
+    id: string;
 }
 
 export interface User {
-  id: string
-  avatar: Avatar
-  avatarUrl: string
-  email: string
-  messages: Message
-  name: string
-  customInternalField: 1 | 2 | 3
+    id: string;
+    avatar: Avatar;
+    avatarUrl: string;
+    email: string;
+    messages: Message;
+    name: string;
+    customInternalField: 1 | 2 | 3;
 }
 
 export interface OldObject {
-  id: string
-  count: number
-  name: string
+    id: string;
+    count: number;
+    name: string;
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { data, refresh } = await useFetch('/api/fieldActions/counts')
+const { data, refresh } = await useFetch('/api/resolvers/counts')
 onWindowFocus(refresh)
 
 interface Item {
@@ -26,7 +26,7 @@ const router = useRouter()
 
 function openResource(item: Item) {
   router.push({
-    name: 'db-fieldActions-resourceName',
+    name: 'db-resolvers-resourceName',
     params: {
       resourceName: item.name,
     },
@@ -64,7 +64,7 @@ defineShortcuts({
     @select="openResource"
   >
     <template #default="{ item, ...props }">
-      <FieldActionResourceListItem
+      <ResolverResourceListItem
         :name="item.name"
         :count="item.count"
         v-bind="props"

@@ -7,7 +7,7 @@ const props = defineProps<{
   field: ResourceSchemaField
 }>()
 
-const { data, refresh } = await useFetch(`/api/fieldActions/preview`, {
+const { data, refresh } = await useFetch(`/api/resolvers/preview`, {
   method: 'POST',
   body: {
     resourceName: props.resourceName,

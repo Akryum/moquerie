@@ -21,7 +21,7 @@ const icon = computed(() => {
 <template>
   <LinkListItem
     :to="{
-      name: 'db-fieldActions-resourceName',
+      name: 'db-resolvers-resourceName',
       params: {
         resourceName: name,
       },

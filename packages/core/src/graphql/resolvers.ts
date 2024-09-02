@@ -66,5 +66,21 @@ export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IRes
     })
   }
 
+  // Resolvers
+  for (const resolver of ctx.resolvers.items) {
+    const { resourceName, fieldName, action } = resolver
+    if (!resolvers[resourceName]) {
+      resolvers[resourceName] = {}
+    }
+    const r = resolvers[resourceName] as Record<string, ISchemaLevelResolver<any, any>>
+    r[fieldName] = (parent, input) => action({
+      parent,
+      input,
+      db: ctx.db,
+      pubsub: ctx.pubSubs,
+      generateId: nanoid,
+    })
+  }
+
   return resolvers
 }

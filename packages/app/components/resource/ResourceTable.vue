@@ -40,7 +40,7 @@ onWindowFocus(refreshResourceType)
 
 // Field actions
 
-const { data: fieldActions, refresh: refreshFieldActions } = await useFetch(`/api/fieldActions`, {
+const { data: resolvers, refresh: refreshFieldActions } = await useFetch(`/api/resolvers`, {
   query: {
     resourceName: props.resourceName,
   },
@@ -58,11 +58,11 @@ const cols = computed(() => {
     for (const field in resourceType.value.fields) {
       const data = colsData[field]
       const fieldData = resourceType.value.fields[field]
-      const fieldAction = fieldActions.value?.find(fa => fa.fieldName === field)
+      const resolver = resolvers.value?.find(fa => fa.fieldName === field)
       cols.push({
         field,
         fieldData,
-        fieldAction,
+        resolver,
         label: field,
         size: data?.size ?? fieldData ? getDefaultColSize(fieldData) : 200,
         childResourceType: fieldData.type === 'resource' ? resourceTypeStore.getResourceType(fieldData.resourceName) : undefined,

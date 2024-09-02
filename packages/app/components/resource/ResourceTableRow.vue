@@ -47,11 +47,11 @@ async function toggleActive() {
 
 // Open field action file
 
-async function openFieldActionFile(col: Col) {
-  if (col.fieldAction) {
+async function openResolverFile(col: Col) {
+  if (col.resolver) {
     $fetch('/api/openInEditor', {
       params: {
-        file: col.fieldAction.file,
+        file: col.resolver.file,
       },
     })
   }
@@ -186,7 +186,7 @@ async function openFieldActionFile(col: Col) {
             width: `${col.size}px`,
           }"
         >
-          <template v-if="col.fieldAction && col.fieldData">
+          <template v-if="col.resolver && col.fieldData">
             <Menu
               placement="top"
               :delay="500"
@@ -214,15 +214,15 @@ async function openFieldActionFile(col: Col) {
 
                   <div class="mb-2 flex items-center gap-2">
                     <div>
-                      Field action
+                      Resolver
                     </div>
 
                     <UButton
-                      v-tooltip="`Open ${col.fieldAction.file}`"
+                      v-tooltip="`Open ${col.resolver.file}`"
                       icon="i-ph-file-arrow-up"
                       variant="link"
                       :padded="false"
-                      @click="openFieldActionFile(col)"
+                      @click="openResolverFile(col)"
                     />
                   </div>
 
@@ -230,7 +230,7 @@ async function openFieldActionFile(col: Col) {
                     v-if="instance.active"
                     class="flex mt-4"
                   >
-                    <ResourceFieldActionPreview
+                    <ResourceResolverPreview
                       :resource-name="resourceType.name"
                       :instance-id="instance.id"
                       :field="col.fieldData"

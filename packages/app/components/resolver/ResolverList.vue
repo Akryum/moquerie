@@ -3,7 +3,7 @@ const props = defineProps<{
   resourceName: string
 }>()
 
-const { data, refresh } = await useFetch('/api/fieldActions', {
+const { data, refresh } = await useFetch('/api/resolvers', {
   query: {
     resourceName: props.resourceName,
     getCode: true,
@@ -13,7 +13,7 @@ onWindowFocus(refresh)
 
 const filter = ref('')
 
-const actions = computed(() => {
+const resolvers = computed(() => {
   const filtered = (data.value ?? []).filter((item) => {
     return item.fieldName.toLowerCase().includes(filter.value)
   })
@@ -28,7 +28,7 @@ const actions = computed(() => {
     <div class="p-4">
       <UInput
         v-model="filter"
-        placeholder="Filter actions by name..."
+        placeholder="Resolvers by name..."
         icon="i-ph-magnifying-glass"
         autofocus
         class="max-w-[400px]"
@@ -36,8 +36,8 @@ const actions = computed(() => {
     </div>
 
     <div class="flex-1 overflow-auto">
-      <FieldActionListItem
-        v-for="(item, index) in actions"
+      <ResolverListItem
+        v-for="(item, index) in resolvers"
         :key="index"
         :resource-name="props.resourceName"
         :field-name="item.fieldName"

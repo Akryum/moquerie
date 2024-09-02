@@ -99,9 +99,9 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
-      to="/db/fieldActions"
+      to="/db/resolvers"
       icon="i-ph-lightning"
-      title="Field actions"
+      title="Resolvers"
     />
 
     <AppNavItem

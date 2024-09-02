@@ -3,7 +3,7 @@ const route = useRoute()
 </script>
 
 <template>
-  <FieldActionList
+  <ResolverList
     :resource-name="String(route.params.resourceName)"
   />
 </template>

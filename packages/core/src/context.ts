@@ -13,7 +13,7 @@ import { createServer } from './server.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import { type QueryManagerProxy, createQueryManagerProxy } from './resource/queryManagerProxy.js'
 import { MockFileWatcher } from './mock/index.js'
-import { FieldActionStore } from './fieldActions/index.js'
+import { FieldActionStore, ResolverStore } from './resolvers/index.js'
 import { type SettingsManager, createSettingsManager } from './settings/settingsManager.js'
 import { type PubSubs, createPubSubs } from './pubsub/createPubSub.js'
 import type { MoquerieInstance } from './instance.js'
@@ -137,7 +137,11 @@ export interface ResolvedContext {
   graphqlSchema?: ResolvedGraphQLSchema
   server: Server
   mockFiles: MockFileWatcher
+  /**
+   * @deprecated use `resolvers` instead
+   */
   fieldActions: FieldActionStore
+  resolvers: ResolverStore
   schemaTransforms: SchemaTransformStore
   scripts: ScriptStore
   apiRoutes: ApiRouteStore
@@ -171,6 +175,17 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     mockFileWatcher.onUpdate(fieldActions.handleMockFile.bind(fieldActions))
     mockFileWatcher.onRemove(fieldActions.handleMockFileRemoved.bind(fieldActions))
     mq.onDestroy(() => fieldActions?.destroy())
+  }
+
+  // Resolvers
+
+  let resolvers = mq.data.resolvedContext?.resolvers
+
+  if (!resolvers) {
+    resolvers = new ResolverStore()
+    mockFileWatcher.onUpdate(resolvers.handleMockFile.bind(resolvers))
+    mockFileWatcher.onRemove(resolvers.handleMockFileRemoved.bind(resolvers))
+    mq.onDestroy(() => resolvers?.destroy())
   }
 
   // Schema transforms
@@ -255,6 +270,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     server,
     mockFiles: mockFileWatcher,
     fieldActions,
+    resolvers,
     schemaTransforms,
     scripts,
     apiRoutes,
