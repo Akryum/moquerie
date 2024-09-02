@@ -220,6 +220,8 @@ async function removeFactory() {
       ...route.query,
     },
   })
+
+  await factoryStore.refreshFactories()
 }
 
 // Shortcuts
