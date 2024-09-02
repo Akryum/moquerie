@@ -159,6 +159,13 @@ async function onSubmitInstance(value: any) {
 // Collapse
 
 const collapse = useLocalStorage<boolean>('resource-instance-collapse', false)
+const scroller = ref<HTMLElement | null>(null)
+
+watchEffect(() => {
+  if (!collapse.value && scroller.value) {
+    scroller.value.scrollTop = 0
+  }
+})
 </script>
 
 <template>
@@ -217,6 +224,7 @@ const collapse = useLocalStorage<boolean>('resource-instance-collapse', false)
   </div>
   <div
     v-else-if="instanceStore.instance"
+    ref="scroller"
     class="overflow-auto divide-y divide-gray-200 dark:divide-gray-800"
     v-bind="$attrs"
   >
