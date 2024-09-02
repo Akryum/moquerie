@@ -156,3 +156,13 @@ async function getRepoMetaFactoryStorage(mq: MoquerieInstance) {
   metaStorage = await metaStoragePromise
   return metaStorage
 }
+
+export async function getFactoryByName(mq: MoquerieInstance, name: string) {
+  const storage = await getFactoryStorage(mq)
+  const factories = await storage.findAll()
+  const factory = factories.find(f => f.name === name)
+  if (!factory) {
+    throw new Error(`Factory not found: ${name}`)
+  }
+  return factory
+}
