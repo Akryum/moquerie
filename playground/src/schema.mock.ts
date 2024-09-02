@@ -1,7 +1,7 @@
-import { defineFieldActions, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
+import { defineResolvers, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
 
 export default {
-  ...defineFieldActions({
+  ...defineResolvers({
     Query: {
       manyHellosCount: async ({ db }) => {
         const query = await db.Query.findFirst()
