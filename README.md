@@ -12,7 +12,7 @@ Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (
 
 - **Local Database** (automatically managed for you)
   - **Deactivate rows** so they are not returned by the API without deleting them
-  - **Factories** to create table row (aka 'Resource Instances') (can be saved and committed to your repository)
+  - **Factories** to create table rows (aka 'Resource Instances') (can be saved and committed to your repository)
   - **Branches** (duplicate or empty)
   - **Snapshots** (full or partial) (can be saved and committed to your repository)
   - History
@@ -50,12 +50,6 @@ export default defineConfig({
   // API port
   server: {
     port: 4002,
-  },
-  // GraphQL schema
-  graphql: {
-    schema: {
-      scanCodeFiles: './src/schema/**/*.ts',
-    },
   },
 })
 ```
