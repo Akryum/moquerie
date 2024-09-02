@@ -304,3 +304,7 @@ export async function getResolvedContext(mq: MoquerieInstance): Promise<Resolved
     mq.data.resolvedContextPromise = null
   }
 }
+
+export async function startServer(mq: MoquerieInstance) {
+  await mq.getResolvedContext()
+}
