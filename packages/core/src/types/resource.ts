@@ -6,6 +6,7 @@ export type ResourceSchemaCommon = {
   isDeprecated?: boolean
   deprecationReason?: string
   meta?: Record<string, any>
+  originalTypeName?: string
 } & (
   {
     array: false

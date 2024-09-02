@@ -16,11 +16,18 @@ const { data, refresh } = await useFetch(`/api/resolvers/preview`, {
   },
 })
 onWindowFocus(refresh)
+
+function type() {
+  if (props.field.type === 'any' && props.field.originalTypeName?.toLowerCase() === 'json') {
+    return 'json'
+  }
+  return props.field.type
+}
 </script>
 
 <template>
   <ValuePreview
     :value="data"
-    :type="field.type"
+    :type="type()"
   />
 </template>

@@ -114,6 +114,7 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
           nonNull,
           isDeprecated: field.isDeprecated ?? false,
           deprecationReason: field.deprecationReason ?? undefined,
+          originalTypeName: gqlFieldType.name,
         }
 
         fields[field.name] = resField

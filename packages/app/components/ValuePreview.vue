@@ -35,6 +35,9 @@ const type = computed(() => {
     />
     <span class="opacity-50">{{ !!value }}</span>
   </div>
+  <div v-else-if="type === 'json'" class="max-w-[400px] max-h-[200px] overflow-auto">
+    <pre v-text="value ? JSON.stringify(value, null, 2) : (value === undefined ? 'undefined' : 'null')" />
+  </div>
   <span
     v-else
     :class="{
