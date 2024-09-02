@@ -1,4 +1,4 @@
-import { createMoquerieInstance } from '@moquerie/core'
+import { createMoquerieInstance, startServer } from '@moquerie/core'
 import { getDefaultCwd } from '@moquerie/core/util'
 import { setMq } from '../utils/instance.js'
 
@@ -8,5 +8,5 @@ export default defineNitroPlugin(async () => {
   })
   setMq(mq)
   // Start server
-  await mq.getResolvedContext()
+  await startServer(mq)
 })

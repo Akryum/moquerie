@@ -98,7 +98,7 @@ export default {
   }),
 
   ...defineApiRoutes((router) => {
-    router.get('/hello', async ({ db }) => {
+    router.get('/messages/count', async ({ db }) => {
       return (await db.Message.findMany()).length
     })
   }),
