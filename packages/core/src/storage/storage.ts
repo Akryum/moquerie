@@ -182,6 +182,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
   })
 
   async function writeManifest() {
+    if (mq.data.skipWrites) {
+      return
+    }
+
     if (options.manifest?.write) {
       return options.manifest.write(folder, manifest)
     }
@@ -194,6 +198,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
   }
 
   async function writeFile(item: TData) {
+    if (mq.data.skipWrites) {
+      return
+    }
+
     const manifestData = manifest.files[item.id]
     if (!manifestData) {
       throw new Error(`Invalid storage file ${item.id} not found in manifest`)
@@ -279,6 +287,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
   const pendingRemovalFiles = new Set<string>()
 
   async function removeFiles() {
+    if (mq.data.skipWrites) {
+      return
+    }
+
     pendingRemovalFiles.forEach((file) => {
       const resolvedPath = getFilePath(file)
       if (fs.existsSync(resolvedPath)) {
@@ -292,6 +304,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
   }
 
   function removeFile(file: string) {
+    if (mq.data.skipWrites) {
+      return
+    }
+
     pendingRemovalFiles.add(file)
     queueRemoveFiles()
   }
@@ -300,12 +316,16 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
 
   // @TODO better system for reloading files using watch for example
 
-  const refreshInterval = setInterval(async () => {
-    if (!writeQueue.size) {
-      manifest = await readManifest()
-      await load()
-    }
-  }, 5000)
+  let refreshInterval: NodeJS.Timeout
+
+  if (!mq.data.skipWrites && mq.data.watching) {
+    refreshInterval = setInterval(async () => {
+      if (!writeQueue.size) {
+        manifest = await readManifest()
+        await load()
+      }
+    }, 5000)
+  }
 
   // Data access
 
@@ -344,6 +364,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
       data[index] = item
     }
 
+    if (mq.data.skipWrites) {
+      return
+    }
+
     // Deduplicate filenames
     let filename = getFilename(item)
     if (options.deduplicateFiles !== false) {
@@ -373,6 +397,10 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
     const index = data.findIndex(i => i.id === id)
     if (index !== -1) {
       data.splice(index, 1)
+
+      if (mq.data.skipWrites) {
+        return
+      }
       const file = manifest.files[id]
       if (file) {
         removeFile(file)

@@ -36,6 +36,7 @@ export interface MoquerieInstanceData {
       resources: string
     }
   }
+  skipWrites: boolean
 }
 
 export interface CreateMoquerieInstanceOptions {
@@ -45,8 +46,14 @@ export interface CreateMoquerieInstanceOptions {
   cwd: string
   /**
    * Whether to watch for changes in context, settings...
+   *
+   * @default true
    */
   watching?: boolean
+  /**
+   * Don't write database changes to disk.
+   */
+  skipWrites?: boolean
 }
 
 export async function createMoquerieInstance(options: CreateMoquerieInstanceOptions): Promise<MoquerieInstance> {
@@ -71,6 +78,7 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
         resources: '',
       },
     },
+    skipWrites: options.skipWrites ?? false,
   }
 
   function onDestroy(cb: () => Awaitable<void>) {
