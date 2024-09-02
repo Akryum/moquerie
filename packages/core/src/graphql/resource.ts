@@ -44,6 +44,8 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
           }
         }
 
+        const tags = ['graphql', 'field']
+
         let type: Partial<ResourceSchemaField> = {}
 
         if (gqlFieldType.kind === 'SCALAR') {
@@ -72,6 +74,7 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
               type: 'any',
             }
           }
+          tags.push('scalar')
         }
         else if (gqlFieldType.kind === 'OBJECT' || gqlFieldType.kind === 'INTERFACE' || gqlFieldType.kind === 'UNION') {
           type = {
@@ -94,8 +97,6 @@ export async function getGraphQLResourceSchema(graphqlSchema: ResolvedGraphQLSch
             })),
           }
         }
-
-        const tags = ['graphql', 'field']
 
         if (field.isDeprecated) {
           tags.push('deprecated')

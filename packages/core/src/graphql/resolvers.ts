@@ -3,11 +3,22 @@ import { nanoid } from 'nanoid'
 import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
+import GraphQLJSON, { GraphQLJSONObject } from './json.js'
 
 export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IResolvers> {
   const resolvers: IResolvers = {}
 
   const ctx = await mq.getResolvedContext()
+  const graphqlSchema = ctx.graphqlSchema!
+  const gqlIntrospection = graphqlSchema.introspection
+
+  // Default resolvers
+  if (gqlIntrospection.__schema.types.some(type => type.kind === 'SCALAR' && type.name === 'JSON')) {
+    resolvers.JSON = GraphQLJSON
+  }
+  if (gqlIntrospection.__schema.types.some(type => type.kind === 'SCALAR' && type.name === 'JSONObject')) {
+    resolvers.JSONObject = GraphQLJSONObject
+  }
 
   for (const resourceName in ctx.schema.types) {
     const resourceType = ctx.schema.types[resourceName]
