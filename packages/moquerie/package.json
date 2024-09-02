@@ -23,7 +23,15 @@
       "types": "./dist/config.d.ts",
       "import": "./dist/config.js"
     },
+    "./config.js": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    },
     "./mocks": {
+      "types": "./dist/mocks.d.ts",
+      "import": "./dist/mocks.js"
+    },
+    "./mocks.js": {
       "types": "./dist/mocks.d.ts",
       "import": "./dist/mocks.js"
     },
