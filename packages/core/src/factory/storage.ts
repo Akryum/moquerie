@@ -15,7 +15,7 @@ import { serializeFactory } from './serialize.js'
 export function getFactoryFilename(mq: MoquerieInstance, resourceName: string, id: string, name: string, location: DBLocation) {
   // eslint-disable-next-line regexp/no-super-linear-backtracking
   const [, idPart] = /.+?(@@.+)?$/.exec(id) ?? []
-  return `${resourceName}/${name}${location === 'local' ? idPart : ''}.${projectHasTypescript(mq) ? 'ts' : 'js'}`
+  return `${resourceName}/${name}${location === 'local' ? idPart ?? '' : ''}.${projectHasTypescript(mq) ? 'ts' : 'js'}`
 }
 
 let storage: MergedStorage<ResourceFactory>
