@@ -59,7 +59,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
             db: (ctx.db as UntypedQueryManagerProxy),
             pubsub: ctx.pubSubs,
             faker: await getFaker(mq),
-            generateId: () => nanoid(),
+            generateId: nanoid,
             generateResource: async (resourceName, factoryId, count = 1) => {
               const resourceType = ctx.schema.types[resourceName]
               if (!resourceType) {

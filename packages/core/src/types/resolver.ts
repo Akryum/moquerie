@@ -9,10 +9,27 @@ export interface Resolver {
 }
 
 export interface ResolverContext {
+  /**
+   * The parent object. For example, if the resolver is for a field `user` on a `Post` type, then `parent` will be the `Post` object.
+   */
   parent: any
+  /**
+   * The input object. This is the object that was passed to the resolver as part of the field parameters.
+   *
+   * For example, if the resolver is for a field `user` on a `Post` type, then `input` will be the parameters object that was passed to the `user` field.
+   */
   input: any
+  /**
+   * The database query manager.
+   */
   db: QueryManagerProxy
+  /**
+   * The pubsub instance to send real-time updates.
+   */
   pubsub: PubSubs
+  /**
+   * Generate a random id.
+   */
   generateId: () => string
 }
 

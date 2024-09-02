@@ -1,4 +1,4 @@
-import { defineResolvers, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
+import { defineApiRoutes, defineResolvers, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
 
 export default {
   ...defineResolvers({
@@ -95,5 +95,11 @@ export default {
         }, (_, instance) => instance.id === ref.__id)
       },
     },
+  }),
+
+  ...defineApiRoutes((router) => {
+    router.get('/hello', async ({ db }) => {
+      return (await db.Message.findMany()).length
+    })
   }),
 }

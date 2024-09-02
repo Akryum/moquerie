@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import type { ResourceFactory, ResourceFactoryContext, ResourceFactoryFn } from '../types/factory.js'
 import type { Awaitable } from '../util/types.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
@@ -25,6 +26,7 @@ export async function executeFactory(mq: MoquerieInstance, factory: ResourceFact
     db: ctx.db,
     repeat: repeat.bind(null, result) as (fn: (item: any) => any, min: number, max: number) => Promise<any[]>,
     pickRandom,
+    generateId: nanoid,
   }
 
   const rawResult = fn(factoryContext)

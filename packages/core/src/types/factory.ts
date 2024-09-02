@@ -149,10 +149,26 @@ export interface ResourceFactory {
 }
 
 export interface ResourceFactoryContext {
+  /**
+   * The faker instance.
+   */
   faker: Faker
+  /**
+   * The database query manager.
+   */
   db: QueryManagerProxy
+  /**
+   * Repeat a function multiple times.
+   */
   repeat: <T = any>(fn: (context: ResourceFactoryLazyContext) => T, min: number, max: number) => Promise<Array<T>>
+  /**
+   * Pick a random item from a list.
+   */
   pickRandom: <T extends string | number | boolean = any>(list: T[]) => T | null
+  /**
+   * Generate a random id.
+   */
+  generateId: () => string
 }
 
 export interface ResourceFactoryLazyContext<TItem = any> {
