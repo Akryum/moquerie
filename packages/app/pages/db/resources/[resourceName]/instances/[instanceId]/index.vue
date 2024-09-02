@@ -155,6 +155,10 @@ async function onSubmitInstance(value: any) {
     color: 'green',
   })
 }
+
+// Collapse
+
+const collapse = useLocalStorage<boolean>('resource-instance-collapse', false)
 </script>
 
 <template>
@@ -216,61 +220,74 @@ async function onSubmitInstance(value: any) {
     class="overflow-auto divide-y divide-gray-200 dark:divide-gray-800"
     v-bind="$attrs"
   >
-    <div class="p-2 flex items-center gap-1 text-sm text-gray-500 leading-none">
-      <span class="flex-1">
-        Switch to previous or next
-      </span>
-      <KbShortcut keys="pageup" />
-      <KbShortcut keys="pagedown" />
-    </div>
+    <template v-if="!collapse">
+      <div class="p-2 flex items-center gap-1 text-sm text-gray-500 leading-none">
+        <span class="flex-1">
+          Switch to previous or next
+        </span>
+        <KbShortcut keys="pageup" />
+        <KbShortcut keys="pagedown" />
+      </div>
 
-    <div class="p-2">
-      <ResourceInstanceInfo
-        :instance="instanceStore.instance"
-      />
-    </div>
+      <div class="p-2 opacity-50 hover:opacity-100">
+        <ResourceInstanceInfo
+          :instance="instanceStore.instance"
+        />
+      </div>
 
-    <div class="p-2 grid grid-flow-col auto-cols-[80px] gap-1 justify-center">
-      <VerticalButton
-        :icon="instanceStore.instance.active ? 'i-ph-eye' : 'i-ph-eye-slash'"
-        shortcut="meta_;"
-        @click="bulkToggleActive()"
-      >
-        {{ instanceStore.instance.active ? 'Active' : 'Inactive' }}
+      <div class="p-2 grid grid-flow-col auto-cols-[80px] gap-1 justify-center opacity-50 hover:opacity-100">
+        <VerticalButton
+          :icon="instanceStore.instance.active ? 'i-ph-eye' : 'i-ph-eye-slash'"
+          shortcut="meta_;"
+          @click="bulkToggleActive()"
+        >
+          {{ instanceStore.instance.active ? 'Active' : 'Inactive' }}
 
-        <template #tooltip>
-          <div class="max-w-[300px]">
-            <p>Click to {{ instanceStore.instance.active ? 'deactivate' : 'activate' }} the instance.</p>
-            <p class="italic opacity-70">
-              An inactive instance is not returned when fetching instances.
-            </p>
-          </div>
-        </template>
-      </VerticalButton>
+          <template #tooltip>
+            <div class="max-w-[300px]">
+              <p>Click to {{ instanceStore.instance.active ? 'deactivate' : 'activate' }} the instance.</p>
+              <p class="italic opacity-70">
+                An inactive instance is not returned when fetching instances.
+              </p>
+            </div>
+          </template>
+        </VerticalButton>
 
-      <VerticalButton
-        icon="i-ph-copy"
-        shortcut="meta_d"
-        @click="duplicate()"
-      >
-        Duplicate
-      </VerticalButton>
+        <VerticalButton
+          icon="i-ph-copy"
+          shortcut="meta_d"
+          @click="duplicate()"
+        >
+          Duplicate
+        </VerticalButton>
 
-      <VerticalButton
-        icon="i-ph-trash text-red-500"
-        shortcut="Del"
-        @click="showConfirmDeleteModal = true"
-      >
-        Delete
-      </VerticalButton>
-    </div>
+        <VerticalButton
+          icon="i-ph-trash text-red-500"
+          shortcut="Del"
+          @click="showConfirmDeleteModal = true"
+        >
+          Delete
+        </VerticalButton>
+      </div>
+    </template>
 
     <ResourceInstanceValueForm
       v-if="resourceType"
       :resource-type="resourceType"
       :instance="instanceStore.instance"
+      :compact="collapse"
       @submit="onSubmitInstance"
-    />
+    >
+      <template #toolbar>
+        <UButton
+          v-tooltip="collapse ? 'Expand' : 'Collapse'"
+          :icon="collapse ? 'i-ph-caret-down' : 'i-ph-caret-up'"
+          size="xs"
+          color="gray"
+          @click="collapse = !collapse"
+        />
+      </template>
+    </ResourceInstanceValueForm>
   </div>
 
   <ConfirmModal

@@ -42,12 +42,14 @@ function copyRef() {
           Copy ref
         </UButton>
       </div>
-      <div class="flex items-center gap-1 truncate">
-        <UIcon name="i-ph-calendar-blank" class="w-4 h-4 flex-none" />
-        Created {{ instance.createdAt.toLocaleString() }}
-      </div>
-      <div class="!pl-6 truncate">
-        Updated {{ instance.updatedAt?.toLocaleString() ?? '-' }}
+      <div class="text-xs leading-none">
+        <div class="flex items-center gap-1 truncate">
+          <UIcon name="i-ph-calendar-blank" class="w-4 h-4 flex-none" />
+          Created {{ instance.createdAt.toLocaleString() }}
+        </div>
+        <div class="!pl-5 truncate">
+          Updated {{ instance.updatedAt?.toLocaleString() ?? '-' }}
+        </div>
       </div>
 
       <!-- Factory -->
