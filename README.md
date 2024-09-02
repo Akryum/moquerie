@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./logo.svg" width="150px"/>
+</p>
+
 # moquerie
 
 > Effortlessly mock your entire API with simple configuration and a beautiful UI.
