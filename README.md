@@ -19,6 +19,16 @@ Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (
 - Extensible with `.mock.ts` files or with plugins
 - Typed APIs
 
+## Sponsors
+
+[Become a sponsor!](https://github.com/sponsors/Akryum)
+
+<p align="center">
+  <a href="https://guillaume-chau.info/sponsors/" target="_blank">
+    <img src='https://akryum.netlify.app/sponsors.svg'/>
+  </a>
+</p>
+
 ## Setup
 
 Install the `moquerie` package:
@@ -544,3 +554,7 @@ You can stop and cleanup the moquerie instance and its server:
 ```ts
 await mq.destroy()
 ```
+
+## License
+
+MIT
