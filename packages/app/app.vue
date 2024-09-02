@@ -1,5 +1,8 @@
 <template>
   <div class="h-screen flex flex-col dark:bg-gray-900">
+    <NuxtLoadingIndicator
+      color="#8b5cf6"
+    />
     <AppHeader class="flex-none" />
     <div class="flex flex-1 h-0">
       <AppNav />
