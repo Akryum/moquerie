@@ -8,7 +8,7 @@
 
 Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (or both at the same time). It is designed to be simple to use and easy to configure.
 
-[Continuous Releases ➡️](https://nightly.akryum.dev/akryum/moquerie)
+[Continuous Releases ➡️](https://nightly.akryum.dev/akryum/moquerie) | [Demo on StackBlitz ⚡️](https://stackblitz.com/edit/moquerie-demo?file=README.md)
 
 ## Main features
 
