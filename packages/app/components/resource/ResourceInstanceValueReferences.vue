@@ -52,7 +52,12 @@ const countPerType = computed(() => {
 
 // Current type
 
-const selectedType = ref(fieldResourceType.value?.implementations?.[0])
+const { isFavorite } = await useFavoriteResources()
+
+const implementations = fieldResourceType.value?.implementations ?? []
+const initialSelectedType = implementations.find(impl => isFavorite(impl)) ?? implementations[0]
+
+const selectedType = ref(initialSelectedType)
 
 const currentResourceName = computed(() => selectedType.value ?? props.field.resourceName)
 
