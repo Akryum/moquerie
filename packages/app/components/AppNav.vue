@@ -85,6 +85,12 @@ const colorMode = useColorMode()
     />
 
     <AppNavItem
+      to="/db/branches"
+      icon="i-ph-git-branch"
+      title="Branches"
+    />
+
+    <AppNavItem
       to="/pubsub"
       icon="i-ph-broadcast"
       title="PubSub (Realtime publications)"
