@@ -16,7 +16,7 @@ const resourceName = useLocalStorage('resource-select-resource-name', '')
 
 const instanceStore = useResourceInstanceStore()
 
-const filterActive = useLocalStorage<FilterActive>('resource-select-table-filter-active', 'active')
+const filterActive = useLocalStorage<FilterActive>('resource-select-table-filter-active', 'all')
 
 const table = ref<any>()
 

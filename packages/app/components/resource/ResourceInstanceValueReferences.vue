@@ -63,7 +63,7 @@ const currentResourceName = computed(() => selectedType.value ?? props.field.res
 
 // Referenced instances
 
-const filterActive = useLocalStorage<FilterActive>('resource-reference-table-filter-active', 'active')
+const filterActive = useLocalStorage<FilterActive>('resource-reference-table-filter-active', 'all')
 
 const { data: referencedInstancesRaw, refresh: refreshReferenced } = await useFetch(() => `/api/resources/instances/${currentResourceName.value}/getByIds`, {
   method: 'POST',

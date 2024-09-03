@@ -8,7 +8,7 @@ const props = defineProps<{
 
 const instanceStore = useResourceInstanceStore()
 
-const filterActive = useLocalStorage<FilterActive>('resource-main-table-filter-active', 'active')
+const filterActive = useLocalStorage<FilterActive>('resource-main-table-filter-active', 'all')
 
 const table = ref<any>()
 

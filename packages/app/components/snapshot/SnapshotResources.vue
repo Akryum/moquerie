@@ -13,7 +13,7 @@ const { data: counts, refresh: refreshCounts } = await useFetch(() => `/api/snap
 onWindowFocus(refreshCounts)
 
 const resourceName = useLocalStorage('snapshot-view-resource-name', '')
-const filterActive = useLocalStorage<FilterActive>('snapshot-view-table-filter-active', 'active')
+const filterActive = useLocalStorage<FilterActive>('snapshot-view-table-filter-active', 'all')
 const searchText = useLocalStorage<string>('snapshot-view-table-search-text', '')
 
 const { data, refresh } = await useFetch(() => `/api/snapshots/${props.snapshot.id}/resources/${resourceName.value}`, {
