@@ -303,7 +303,8 @@ async function openResolverFile(col: Col) {
                 <ResourceReferencesPreview
                   :field="col.fieldData"
                   :value="instance.value[col.field as keyof typeof instance]"
-                  class="max-w-[600px] min-h-[200px] max-h-[600px]"
+                  :resource-type
+                  class="max-w-[800px] min-h-[200px] max-h-[600px]"
                 />
               </template>
             </Menu>
