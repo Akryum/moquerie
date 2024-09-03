@@ -477,6 +477,9 @@ Resource instances are stored in a single file each. If an instance contains oth
 }
 ```
 
+> [!TIP]
+> Moquerie will automatically resolve the references when reading resource instances. References will never appear in the result of the database calls, so you can safely use them as response values for your mocked API.
+
 You can get the reference of an instance with the `findFirstReference` method:
 
 ```ts
