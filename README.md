@@ -440,6 +440,151 @@ You can inspect which resolvers are detected by moquerie in the UI.
 
 ![screenshot of the resolvers](./docs/resolvers.png)
 
+## Database Operations
+
+You can perform database operations in resolvers, scripts and API routes. Usually, you can use the `db` object to interact with the database from the context parameter object.
+
+```ts
+import { defineResolvers } from 'moquerie/mocks'
+
+export default {
+  ...defineResolvers({
+    Query: {
+      manyHellosCount: async ({ db }) => {
+        // Access the database
+        const query = await db.Query.findFirst()
+        return query?.manyHellos.length ?? 0
+      },
+    },
+  }),
+}
+```
+
+Each Resource Type has a set of methods that you can use to interact with the database, using the following pattern:
+
+```ts
+const result = await db.ResourceType.methodName(/* Params... */)
+```
+
+### Instance References
+
+Resource instances are stored in a single file each. If an instance contains other instances, they are stored as references. A reference looks like this:
+
+```json
+{
+  "__resourceName": "User",
+  "__id": "SamRdWgbjDqv3BN2ZAHky"
+}
+```
+
+You can get the reference of an instance with the `findFirstReference` method:
+
+```ts
+const reference = await db.Messages.findFirstReference(m => m.id === someId)
+```
+
+You can then use it to update other instances without getting the full object.
+
+You can also get multiple references with the `findManyReferences` method:
+
+```ts
+const references = await db.User.findManyReferences(u => u.email.endsWith('@acme.com'))
+```
+
+### Retrieve instances
+
+Find the first instance that matches a condition:
+
+```ts
+const user = await db.User.findFirst(u => u.email === 'cat@acme.com')
+```
+
+> [!TIP]
+> Only active instances are returned by the database. You can deactivate instances to hide them from the API in the dashboard UI.
+
+You can also omit the condition to get the first instance that is active:
+
+```ts
+const query = await db.Query.findFirst()
+```
+
+There is also a convenience version that throws an error if the instance is not found:
+
+```ts
+const user = await db.User.findFirstOrThrow(u => u.email === 'cat@acme.com')
+```
+
+Find many instances that match a condition:
+
+```ts
+const users = await db.User.findMany(u => u.email.endsWith('@acme.com'))
+```
+
+Pick a random instance:
+
+```ts
+const user = await db.User.pickOneRandom()
+```
+
+Pick multiple random instances:
+
+```ts
+// Randomly pick between 1 and 10 user instances
+const users = await db.User.pickManyRandom(1, 10)
+```
+
+> [!TIP]
+> You can also use the `findMany` method to narrow down the results with the filter, then use the `pickRandom` util function from the context object.
+
+### Tags and instance metadata
+
+Usually when there is a condition predicate, you can also use the second parameter (which is the full instance including metadata) to access the tags of the instance:
+
+```ts
+const me = await db.User.findFirst((_data, { tags }) => tags.includes('me'))
+const userRefs = await db.User.findManyReferences((_u, { tags }) => tags.includes('admin'))
+const users = await db.User.findMany((_u, { tags }) => tags.includes('admin'))
+```
+
+Tags and other metadata are never included in the result of the Database calls. They are only used to facilitate your queries.
+
+### Update instances
+
+Update the first instance that matches a condition:
+
+```ts
+const user = await db.User.updateFirst({
+  someProperty: 'newValue',
+}, u => u.email === 'cat@acme.com')
+```
+
+Or multiple instances:
+
+```ts
+const users = await db.User.updateMany({
+  someProperty: 'newValue',
+}, u => u.email.endsWith('@acme.com'))
+```
+
+### Create instances
+
+Create a new instance:
+
+```ts
+const user = await db.User.create({
+  id: generateId(), // `generateId` is a util from context object
+  email: 'cat@acme.com',
+})
+```
+
+### Delete instances
+
+Delete **all instances** that match a condition:
+
+```ts
+await db.User.delete(u => u.email.endsWith('@acme.com'))
+```
+
 ## History
 
 You can see the history of all the changes made to the database in the History page.
