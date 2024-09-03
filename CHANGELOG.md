@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.5.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.5.1...v0.5.2)
+
+### 🚀 Enhancements
+
+- References modal: auto select first favorite resource ([0eb4dcd](https://github.com/Akryum/moquerie/commit/0eb4dcd))
+- Preview references with multiple types ([b07312d](https://github.com/Akryum/moquerie/commit/b07312d))
+- Inspect instance in new tab ([46d6065](https://github.com/Akryum/moquerie/commit/46d6065))
+- Filter to 'all' by default instead of active only ([598f0ac](https://github.com/Akryum/moquerie/commit/598f0ac))
+
+### 🩹 Fixes
+
+- ResourceTable not refetching correct resource type if changed ([2852b19](https://github.com/Akryum/moquerie/commit/2852b19))
+
+### 📖 Documentation
+
+- Db operations ([5b3d87a](https://github.com/Akryum/moquerie/commit/5b3d87a))
+- Note about refs ([902e1b4](https://github.com/Akryum/moquerie/commit/902e1b4))
+- Typo ([dc6bd83](https://github.com/Akryum/moquerie/commit/dc6bd83))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.5.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.5.0...v0.5.1)
