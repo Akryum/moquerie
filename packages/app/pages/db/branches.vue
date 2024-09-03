@@ -35,6 +35,8 @@ async function switchToBranch(branch: string) {
   resourceInstanceStore.refreshInstance()
 }
 
+const filterFocused = ref(false)
+
 // Create
 
 const createShown = ref(false)
@@ -53,6 +55,7 @@ defineShortcuts({
     handler: () => {
       createBranch(linkList.value?.filter)
     },
+    whenever: [filterFocused],
   },
 })
 
@@ -86,6 +89,51 @@ async function confirmDeleteBranch() {
   })
   await refreshNuxtData('branches')
 }
+
+// Rename branch
+
+const renameShown = ref(false)
+const renameBranchName = ref('')
+const renameBranchNewName = ref('')
+
+async function renameBranch(branch: string) {
+  if (branch === currentBranch.value || branch === 'default') {
+    return
+  }
+
+  renameBranchName.value = branch
+  renameBranchNewName.value = branch
+  renameShown.value = true
+}
+
+async function confirmRenameBranch() {
+  renameShown.value = false
+  await $fetch('/api/branches/rename', {
+    method: 'POST',
+    body: {
+      branch: renameBranchName.value,
+      newName: renameBranchNewName.value,
+    },
+  })
+  await refreshNuxtData('branches')
+}
+
+defineShortcuts({
+  meta_enter: {
+    usingInput: true,
+    handler: () => {
+      confirmRenameBranch()
+    },
+    whenever: [renameShown],
+  },
+  escape: {
+    usingInput: true,
+    handler: () => {
+      renameShown.value = false
+    },
+    whenever: [renameShown],
+  },
+})
 </script>
 
 <template>
@@ -104,6 +152,7 @@ async function confirmDeleteBranch() {
         filter-placeholder="Filter or create branch..."
         class="flex-1"
         @select="switchToBranch"
+        @focus-filter="filterFocused = $event"
       >
         <template #before-items="{ filter }">
           <UButton
@@ -131,7 +180,7 @@ async function confirmDeleteBranch() {
             }"
             @click="switchToBranch(item)"
           >
-            <div class="flex items-center min-h-8 pl-2">
+            <div class="flex items-center min-h-8 pl-2 gap-2">
               <div class="flex-1">
                 {{ item }}
               </div>
@@ -139,15 +188,24 @@ async function confirmDeleteBranch() {
               <div v-if="item === currentBranch" class="pr-2 opacity-50">
                 Current
               </div>
-              <UButton
-                v-else-if="item !== 'default'"
-                icon="i-ph-trash"
-                color="gray"
-                size="sm"
-                @click.stop="deleteBranch(item)"
-              >
-                Delete
-              </UButton>
+              <template v-else-if="item !== 'default'">
+                <UButton
+                  icon="i-ph-note-pencil"
+                  color="gray"
+                  size="sm"
+                  @click.stop="renameBranch(item)"
+                >
+                  Rename
+                </UButton>
+                <UButton
+                  icon="i-ph-trash"
+                  color="gray"
+                  size="sm"
+                  @click.stop="deleteBranch(item)"
+                >
+                  Delete
+                </UButton>
+              </template>
             </div>
           </LinkListItem>
         </template>
@@ -186,5 +244,44 @@ async function confirmDeleteBranch() {
       @confirm="confirmDeleteBranch()"
       @cancel="deleteShown = false"
     />
+
+    <UModal
+      v-model="renameShown"
+    >
+      <UCard>
+        <template #header>
+          <h2 class="text-lg font-bold flex items-center gap-2">
+            <UIcon name="i-ph-note-pencil" class="w-6 h-6" />
+            Rename branch {{ renameBranchName }}
+          </h2>
+        </template>
+
+        <UFormGroup label="Branch name">
+          <UInput v-model="renameBranchNewName" autofocus />
+        </UFormGroup>
+
+        <template #footer>
+          <div class="flex items-center gap-2">
+            <UButton
+              color="gray"
+              @click="renameShown = false"
+            >
+              Cancel
+
+              <KbShortcut :keys="['escape']" />
+            </UButton>
+
+            <UButton
+              color="red"
+              @click="confirmRenameBranch()"
+            >
+              Rename
+
+              <KbShortcut :keys="['meta', 'enter']" />
+            </UButton>
+          </div>
+        </template>
+      </UCard>
+    </UModal>
   </div>
 </template>

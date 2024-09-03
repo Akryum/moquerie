@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   select: [item: TItem]
+  focusFilter: [focused: boolean]
 }>()
 
 const filter = props.id ? useLocalStorage(`link-list.${props.id}.filter`, '') : ref('')
@@ -102,8 +103,8 @@ function onKeyEnter(event: MouseEvent) {
         @keydown.up="hoverIndex = Math.max(hoverIndex - 1, 0)"
         @keydown.down="hoverIndex = Math.min(hoverIndex + 1, displayedItems.length - 1)"
         @keydown.enter="onKeyEnter"
-        @focus="showKeyboardNavigationHints = true"
-        @blur="showKeyboardNavigationHints = false"
+        @focus="showKeyboardNavigationHints = true; $emit('focusFilter', true)"
+        @blur="showKeyboardNavigationHints = false; $emit('focusFilter', false)"
       >
         <template #trailing>
           <slot name="trailing">
