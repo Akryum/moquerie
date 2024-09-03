@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.5.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.5.0...v0.5.1)
+
+### 🚀 Enhancements
+
+- Branch manager + delete button ([761ae55](https://github.com/Akryum/moquerie/commit/761ae55))
+- Rename branches ([1c0ae62](https://github.com/Akryum/moquerie/commit/1c0ae62))
+
+### 📖 Documentation
+
+- Update README.md ([88611f7](https://github.com/Akryum/moquerie/commit/88611f7))
+- Continuous releases link ([87f0add](https://github.com/Akryum/moquerie/commit/87f0add))
+
+### 🏡 Chore
+
+- Social preview ([ea0e0e7](https://github.com/Akryum/moquerie/commit/ea0e0e7))
+
+### 🤖 CI
+
+- Add gh workflows ([52c1a13](https://github.com/Akryum/moquerie/commit/52c1a13))
+- Specify pnpm version ([aff3ece](https://github.com/Akryum/moquerie/commit/aff3ece))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.5.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.4.8...v0.5.0)
