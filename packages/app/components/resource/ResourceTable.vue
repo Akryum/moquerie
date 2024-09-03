@@ -35,7 +35,7 @@ defineExpose({
 
 const resourceTypeStore = useResourceTypeStore()
 
-const { data: resourceType, refresh: refreshResourceType } = await useFetch<ResourceSchemaType>(`/api/resources/${props.resourceName}`)
+const { data: resourceType, refresh: refreshResourceType } = await useFetch<ResourceSchemaType>(() => `/api/resources/${props.resourceName}`)
 onWindowFocus(refreshResourceType)
 
 // Field actions
