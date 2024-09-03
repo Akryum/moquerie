@@ -641,7 +641,7 @@ const mq = await createMoquerieInstance({
 ```
 
 > [!TIP]
-> You can set `watching` and `skipWrites` to `false` to disable watching and writing to the disk during tests.
+> You can set `watching` to `false` and `skipWrites` to `true` to disable watching and writing to the disk during tests.
 
 You can then pass the moquerie instance to most of the functions in the `moquerie` package.
 
