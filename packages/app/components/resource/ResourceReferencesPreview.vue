@@ -119,6 +119,7 @@ function openSelection() {
         :instances="instances"
         empty-placeholder="No instances referenced"
         dim-inactive-instances
+        inspect-column
         class="resource-table flex-1"
         @select="instance => selectedIds = [instance.id]"
         @dblclick="openSelection()"

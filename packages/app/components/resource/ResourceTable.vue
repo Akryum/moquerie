@@ -9,6 +9,7 @@ const props = defineProps<{
   dimInactiveInstances?: boolean
   emptyPlaceholder?: string
   readonly?: boolean
+  inspectColumn?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -158,7 +159,7 @@ watch(() => props.selectedInstanceIds, (value) => {
     <div class="flex divide-x divide-gray-200 dark:divide-gray-800 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10 min-w-max">
       <slot name="header-start" />
 
-      <div v-for="i in 3" :key="i" class="w-[42px] flex-none" />
+      <div v-for="i in inspectColumn ? 4 : 3" :key="i" class="w-[42px] flex-none" />
 
       <ResourceTableColumnHeader
         v-for="col in cols"
@@ -180,7 +181,8 @@ watch(() => props.selectedInstanceIds, (value) => {
         :selected="selectedInstanceIds?.includes(instance.id)"
         :selected-ids="selectedInstanceIds"
         :dim="dimInactiveInstances && !instance.active"
-        :readonly="readonly"
+        :readonly
+        :inspect-column
         class="last:!border-b border-gray-200 dark:border-gray-800"
         @click="onRowClick(instance, $event)"
         @dblclick="emit('activate', instance)"

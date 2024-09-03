@@ -11,6 +11,7 @@ const props = defineProps<{
   selectedIds?: string[]
   dim?: boolean
   readonly?: boolean
+  inspectColumn?: boolean
 }>()
 
 const scrollEl = ref<HTMLElement | null>(null)
@@ -56,6 +57,21 @@ async function openResolverFile(col: Col) {
     })
   }
 }
+
+// Inspect column
+
+const router = useRouter()
+
+function inspectInNewTab() {
+  const route = router.resolve({
+    name: 'db-resources-resourceName-instances-instanceId',
+    params: {
+      resourceName: props.resourceType.name,
+      instanceId: props.instance.id,
+    },
+  })
+  window.open(route.href, '_blank')
+}
 </script>
 
 <template>
@@ -85,6 +101,28 @@ async function openResolverFile(col: Col) {
         }"
       >
         <slot name="start" />
+
+        <!-- Inspect -->
+        <Tooltip
+          v-if="inspectColumn"
+          class="w-[42px] opacity-50 hover:opacity-100 flex-none"
+          :class="{
+            'cursor-pointer': !readonly,
+          }"
+          aria-role="button"
+          aria-label="Toggle active"
+          @click.stop="inspectInNewTab()"
+        >
+          <div class="flex items-center justify-center w-full h-full">
+            <UIcon
+              name="i-ph-arrow-square-out"
+            />
+          </div>
+
+          <template #popper>
+            Inspect instance in new tab
+          </template>
+        </Tooltip>
 
         <!-- Active -->
         <Tooltip

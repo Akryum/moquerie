@@ -340,6 +340,7 @@ onBeforeUnmount(() => {
               :selected-instance-ids="selectedIds[m].value"
               empty-placeholder="No instances referenced"
               dim-inactive-instances
+              inspect-column
               class="h-full"
               @select="instance => selectedIds[m].value = [instance.id]"
               @select-multiple="instances => selectedIds[m].value = instances.map(i => i.id)"
