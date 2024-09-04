@@ -269,6 +269,42 @@ To help you switch between different scenarios, you can create branches. Branche
 
 ![screenshot of creating a branch](./docs/database-branch-create.png)
 
+### No-Code GraphQL Queries
+
+Moquerie allows you to query your mocked GraphQL API without writing any code for reading data. Use the `Query` resource that represents the root query type of your GraphQL schema. Your API will automatically use the active `Query` instance to return data for your GraphQL queries.
+
+For example, if you have a `Query` resource with a `hello` field that returns a string, you can query it like this:
+
+```graphql
+query {
+  hello
+}
+```
+
+In the Dashboard UI, create a `Query` instance and set the value of the `hello` field to `world`.
+
+> [!TIP]
+> It's a  'singleton' resource (it has the `singleton` tag as shown in the UI), meaning you can only have one active instance at a time. If you activate another instance, the previous one will be deactivated automatically.
+
+Now if you run the above query in the GraphQL Playground, you will get the following result:
+
+```json
+{
+  "data": {
+    "hello": "world"
+  }
+}
+```
+
+Any resources referenced in the `Query` instance will be resolved automatically. For example, if the `Query` instance has a `currentUser` field that references a `User` resource, the `User` resource will be resolved and returned as part of the response. To change which `User` resource is returned, you can create a new `User` instance and reference it in the `Query` instance by clicking on the `currentUser` field and adding the newly created `User` instance.
+
+![screenshot of the Query resource](./docs/database-reference.png)
+
+![screenshot of the modal to edit references](./docs/database-reference-edit.png)
+
+> [!TIP]
+> Even if a field is supposed to return a single instance, you can still reference multiple instances. Moquerie will automatically pick the first active instance. You can reorder the instances to change which one is picked first.
+
 ## Factories
 
 Factories are simple functions that create a single row (aka 'Resource Instance') in the database. They can be saved and committed to your repository to be easily shared with your team.
