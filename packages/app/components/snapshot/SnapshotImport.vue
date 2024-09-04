@@ -58,6 +58,7 @@ async function createBranch() {
     })
 
     refreshNuxtData('currentBranch')
+    refreshNuxtData('branches')
   }
   catch (e: any) {
     toast.add({
