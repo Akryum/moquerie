@@ -298,9 +298,14 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
 
   if (shouldWatch) {
     refreshInterval = setInterval(async () => {
-      if (!writeQueue.busy) {
-        manifest = await readManifest()
-        await load()
+      try {
+        if (!writeQueue.busy) {
+          manifest = await readManifest()
+          await load()
+        }
+      }
+      catch (e) {
+        console.warn('Error auto-refreshing storage', e)
       }
     }, 5000)
   }
@@ -401,6 +406,9 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
           try {
             const item = await readFile(id, file)
             newData.push(item)
+            if (writeQueue.busy) {
+              throw new Error('Write queue is busy, aborting load')
+            }
           }
           catch (e) {
             console.error(e)
