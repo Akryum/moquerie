@@ -102,9 +102,7 @@ function onSubmit() {
 
 // Options code
 
-const fakerTypes = import.meta.glob('/node_modules/@faker-js/faker/dist/types/modules/**/index.d.ts', {
-  as: 'raw',
-})
+const fakerTypes = import.meta.glob('/node_modules/@faker-js/faker/dist/types/modules/**/index.d.ts?raw')
 
 const fakerType = computedAsync(async () => {
   if (!fakerFactory.value) {
