@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.5.3
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.5.2...v0.5.3)
+
+### 🚀 Enhancements
+
+- Don't create resource folder in snapshot if no resources ([b109d52](https://github.com/Akryum/moquerie/commit/b109d52))
+
+### 🩹 Fixes
+
+- Update raw import ([c3601df](https://github.com/Akryum/moquerie/commit/c3601df))
+- **storage:** Don't watch local files + improved queue busy logic ([68bf368](https://github.com/Akryum/moquerie/commit/68bf368))
+- Additional guard in load if write queue is busy ([b35585d](https://github.com/Akryum/moquerie/commit/b35585d))
+
+### 📖 Documentation
+
+- Demo link ([e8f608c](https://github.com/Akryum/moquerie/commit/e8f608c))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.5.2
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.5.1...v0.5.2)
