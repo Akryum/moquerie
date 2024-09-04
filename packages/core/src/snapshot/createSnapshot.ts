@@ -49,18 +49,20 @@ export async function createSnapshot(mq: MoquerieInstance, options: CreateSnapsh
   // Copy resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshotItem)
   for (const resourceName in resourceIds) {
-    const sourceFolder = path.join(getCurrentBranchFolder(mq), resourceName)
-    const targetFolder = path.join(snapshotFolder, resourceName)
-    await ensureDir(targetFolder)
+    if (resourceIds[resourceName].length) {
+      const sourceFolder = path.join(getCurrentBranchFolder(mq), resourceName)
+      const targetFolder = path.join(snapshotFolder, resourceName)
+      await ensureDir(targetFolder)
 
-    const resourceStorage = await getResourceInstanceStorage(mq, resourceName)
+      const resourceStorage = await getResourceInstanceStorage(mq, resourceName)
 
-    const ids = resourceIds[resourceName]
-    for (const id of ids) {
-      const file = resourceStorage.manifest.files[id]
-      const sourceFile = path.join(sourceFolder, file)
-      const targetFile = path.join(targetFolder, `${id}.json`)
-      await fs.promises.copyFile(sourceFile, targetFile)
+      const ids = resourceIds[resourceName]
+      for (const id of ids) {
+        const file = resourceStorage.manifest.files[id]
+        const sourceFile = path.join(sourceFolder, file)
+        const targetFile = path.join(targetFolder, `${id}.json`)
+        await fs.promises.copyFile(sourceFile, targetFile)
+      }
     }
   }
 
