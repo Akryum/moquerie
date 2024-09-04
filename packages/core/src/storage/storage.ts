@@ -69,6 +69,7 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
     : getRepositoryDbFolder(mq)
   const folder = path.join(baseFolder, options.path)
   const manifestFile = path.join(folder, 'manifest.json')
+  const shouldWatch = options.location !== 'local' && !mq.data.skipWrites && mq.data.watching
 
   await ensureDir(folder)
 
@@ -151,29 +152,6 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
     }
     return item
   }
-
-  async function load() {
-    data.length = 0
-
-    if (!options.lazyLoading) {
-      const promises = []
-      for (const id in manifest.files) {
-        promises.push((async () => {
-          const file = manifest.files[id]
-          try {
-            const item = await readFile(id, file)
-            data.push(item)
-          }
-          catch (e) {
-            console.error(e)
-          }
-        })())
-      }
-      await Promise.all(promises)
-    }
-  }
-
-  await load()
 
   // Write
 
@@ -318,9 +296,9 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
 
   let refreshInterval: NodeJS.Timeout
 
-  if (!mq.data.skipWrites && mq.data.watching) {
+  if (shouldWatch) {
     refreshInterval = setInterval(async () => {
-      if (!writeQueue.size) {
+      if (!writeQueue.busy) {
         manifest = await readManifest()
         await load()
       }
@@ -409,6 +387,37 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
       }
     }
   }
+
+  // Load
+
+  async function load() {
+    const newData: TData[] = []
+
+    if (!options.lazyLoading) {
+      const promises = []
+      for (const id in manifest.files) {
+        promises.push((async () => {
+          const file = manifest.files[id]
+          try {
+            const item = await readFile(id, file)
+            newData.push(item)
+          }
+          catch (e) {
+            console.error(e)
+          }
+        })())
+      }
+      await Promise.all(promises)
+    }
+
+    // Only update data if no write is pending
+    if (!writeQueue.busy) {
+      data.length = 0
+      data.push(...newData)
+    }
+  }
+
+  await load()
 
   // Cleanup
 

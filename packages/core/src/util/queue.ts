@@ -7,6 +7,7 @@ export interface UseQueueOptions {
 
 export function useQueue(options: UseQueueOptions) {
   const queued = new Map<string, (() => Promise<void>) | null>()
+  const processing = new Set<string>()
 
   function queue(key: string, callback: () => Promise<void>) {
     const alreadyQueued = queued.has(key)
@@ -31,8 +32,10 @@ export function useQueue(options: UseQueueOptions) {
   function run(key: string) {
     const callback = queued.get(key)
     if (callback) {
+      processing.add(key)
       queued.delete(key)
       callback().finally(() => {
+        processing.delete(key)
         if (queued.has(key)) {
           next(key)
         }
@@ -44,6 +47,9 @@ export function useQueue(options: UseQueueOptions) {
     queue,
     get size() {
       return queued.size
+    },
+    get busy() {
+      return queued.size > 0 || processing.size > 0
     },
   }
 }
