@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.5.5
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.5.4...v0.5.5)
+
+### 🚀 Enhancements
+
+- Customize mockFiles and add .moq to defaults, fix #1 ([#1](https://github.com/Akryum/moquerie/issues/1))
+
+### 📖 Documentation
+
+- No-code graphql queries ([ab37108](https://github.com/Akryum/moquerie/commit/ab37108))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.5.4
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.5.3...v0.5.4)
