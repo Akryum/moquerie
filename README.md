@@ -22,7 +22,7 @@ Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (
 - Automatic **GraphQL server**
 - **No-Code read queries** (for GraphQL)
 - **Dashboard UI**
-- Extensible with `.mock.ts` files or with plugins
+- Extensible with `.moq.ts` files or with plugins
 - Typed APIs
 
 ## Sponsors
@@ -189,14 +189,14 @@ export interface Message {
 
 ### API Routes
 
-Every code you write for  moquerie should be placed inside files ending with `.mock.ts`. Moquerie will automatically load these files for you.
+Every code you write for  moquerie should be placed inside files ending with `.moq.ts` (you can change this in the config with `mockFiles`). Moquerie will automatically load these files for you.
 
 In addition to API routes, we can also define resolvers, scripts and much more as described later.
 
 Here is an example of a simple API route:
 
 ```ts
-// file-name.mock.ts
+// file-name.moq.ts
 
 import { defineApiRoutes, defineResolvers, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
 
@@ -211,7 +211,7 @@ export default {
 We recommend using the spread operator to merge the results of the `defineApiRoutes`, `defineResolvers`, `defineSchemaTransforms`, and `defineScripts` functions. For example:
 
 ```ts
-// file-name.mock.ts
+// file-name.moq.ts
 
 export default {
   ...defineApiRoutes((router) => {
@@ -232,7 +232,7 @@ export default {
 You can use the `router` object to define API routes. The `router` object has a method for each HTTP verb and each handler function receive a useful object as the parameter that allow you to access the database and other utilities.
 
 ```ts
-// file-name.mock.ts
+// file-name.moq.ts
 
 import { defineApiRoutes, defineResolvers, defineSchemaTransforms, defineScripts } from 'moquerie/mocks'
 
@@ -341,10 +341,10 @@ You can use the PubSub editor to publish real-time events to your API. This is u
 
 Scripts allows you to create complex scenarios that involve calling multiple factories, database operations and maybe more.
 
-Similar to API Routes, you need to define scripts in `.mock.ts` files.
+Similar to API Routes, you need to define scripts in `.moq.ts` files.
 
 ```ts
-// file-name.mock.ts
+// file-name.moq.ts
 
 import { defineScripts } from 'moquerie/mocks'
 
@@ -379,7 +379,7 @@ You can run scripts from the UI or from the API. In the Dashboard UI, you will s
 
 Resolvers are functions that are called when a query is made to the API. They can be used to customize the response of the API, or to perform complex operations. Each resolver is a function accosiated with a specific field of a specific Resource Type in the schema.
 
-Similar to API Routes and Scripts, you need to define resolvers in `.mock.ts` files.
+Similar to API Routes and Scripts, you need to define resolvers in `.moq.ts` files.
 
 ```ts
 import { defineResolvers } from 'moquerie/mocks'
@@ -647,7 +647,7 @@ You can use the GraphQL Playground to test your GraphQL API.
 You can make changes to the schema programmatically using schema transforms. This is useful for adding new internal fields for example.
 
 ```ts
-// file-name.mock.ts
+// file-name.moq.ts
 
 import { defineSchemaTransforms } from 'moquerie/mocks'
 

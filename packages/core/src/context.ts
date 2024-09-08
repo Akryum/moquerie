@@ -232,7 +232,7 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
   // Wait for mock files to be ready
 
   if (isMockFileWatcherNew) {
-    await mockFileWatcher.waitForReady()
+    await mockFileWatcher.init()
   }
 
   // Schema

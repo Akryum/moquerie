@@ -46,8 +46,7 @@ async function resolveGraphQLTypeDefs(mq: MoquerieInstance): Promise<Source[]> {
     loaders,
     ignore: [
       '**/node_modules/**',
-      '**/*.mock.js',
-      '**/*.mock.ts',
+      ...ctx.config.mockFiles ?? [],
     ],
   })
   return typeDefs

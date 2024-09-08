@@ -10,6 +10,12 @@ export async function resolveConfig(cwd: string) {
         'Mutation',
         'Subscription',
       ],
+      mockFiles: [
+        '**/*.moq.js',
+        '**/*.moq.ts',
+        '**/*.mock.js',
+        '**/*.mock.ts',
+      ],
     },
   })
 }

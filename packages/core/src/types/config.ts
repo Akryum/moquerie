@@ -92,6 +92,16 @@ export interface Config {
   defaultFakerLocale?: keyof typeof fakerLocales
 
   /**
+   * Glob patterns of mock files to load.
+   *
+   * The mock files contain resolvers, api routes, scripts, and schema transforms.
+   *
+   * @default
+   * ['**\/*.moq.js', '**\/*.moq.ts', '**\/*.mock.js', '**\/*.mock.ts']
+   */
+  mockFiles?: Array<string>
+
+  /**
    * Plugins
    */
   plugins?: Array<Plugin | Promise<Plugin>>

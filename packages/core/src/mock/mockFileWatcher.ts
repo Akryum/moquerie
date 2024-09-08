@@ -4,7 +4,7 @@ import path from 'pathe'
 import type { MoquerieInstance } from '../instance.js'
 
 export class MockFileWatcher {
-  watcher: FSWatcher
+  watcher: FSWatcher | undefined
 
   private mq: MoquerieInstance
   private jiti: JITI
@@ -15,41 +15,42 @@ export class MockFileWatcher {
   constructor(mq: MoquerieInstance) {
     this.mq = mq
 
-    const cwd = mq.data.cwd
+    const cwd = this.mq.data.cwd
 
     this.jiti = createJITI(cwd, {
       requireCache: false,
       esmResolve: true,
     })
+  }
 
-    this.watcher = watch([
-      '**/*.mock.js',
-      '**/*.mock.ts',
-    ], {
+  async init() {
+    const ctx = await this.mq.getContext()
+
+    const cwd = this.mq.data.cwd
+
+    const watcher = this.watcher = watch(ctx.config.mockFiles ?? [], {
       cwd,
       ignored: [
         '**/node_modules/**',
       ],
     })
 
-    this.watcher.on('add', (file) => {
+    watcher.on('add', (file) => {
       this.upsertFieldActions(file)
     })
 
-    this.watcher.on('change', (file) => {
+    watcher.on('change', (file) => {
       this.upsertFieldActions(file)
     })
 
-    this.watcher.on('unlink', (file) => {
+    watcher.on('unlink', (file) => {
       for (const handler of this.removeHandlers) {
         handler(file)
       }
     })
-  }
 
-  waitForReady() {
     return new Promise<void>((resolve) => {
-      this.watcher.on('ready', () => {
+      watcher.on('ready', () => {
         resolve()
       })
     })
@@ -64,7 +65,7 @@ export class MockFileWatcher {
   }
 
   destroy() {
-    this.watcher.close()
+    this.watcher?.close()
   }
 
   private async upsertFieldActions(file: string) {
