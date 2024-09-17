@@ -21,7 +21,8 @@ export async function migrateSnapshotFolder(snapshotFolder: string) {
   const dataPerResource = new Map<string, Record<string, any>>()
 
   for (const file of files) {
-    const [resourceName, id] = file.split('/')
+    const [resourceName, filename] = file.split('/')
+    const id = path.basename(filename, '.json')
     const filePath = path.join(snapshotFolder, file)
     const content = await fs.promises.readFile(filePath, 'utf8')
     const fileData = SuperJSON.parse(content)
