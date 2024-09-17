@@ -1,8 +1,10 @@
 import fs from 'node:fs'
 import path from 'pathe'
+import SuperJSON from 'superjson'
 import type { DatabaseSnapshot } from '../types/snapshot.js'
 import type { MoquerieInstance } from '../instance.js'
 import { getSnapshotFolder } from './folder.js'
+import { migrateSnapshotFolder } from './migrate.js'
 
 export interface RemoveResourcesToSnapshotOptions {
   snapshot: DatabaseSnapshot
@@ -14,13 +16,23 @@ export async function removeResourcesFromSnapshot(mq: MoquerieInstance, options:
 
   // Delete resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshot)
+  await migrateSnapshotFolder(snapshotFolder)
+
   for (const resourceName in resourceIds) {
-    const targetFolder = path.join(snapshotFolder, resourceName)
     const ids = resourceIds[resourceName]
-    for (const id of ids) {
-      const targetFile = path.join(targetFolder, `${id}.json`)
-      if (fs.existsSync(targetFile)) {
+    const targetFile = path.join(snapshotFolder, `${resourceName}.res.json`)
+    if (fs.existsSync(targetFile)) {
+      // New format with each resource type in a single file
+      const content = await fs.promises.readFile(targetFile, 'utf-8')
+      const data = SuperJSON.parse<any>(content)
+      for (const id of ids) {
+        delete data[id]
+      }
+      if (Object.keys(data).length === 0) {
         await fs.promises.rm(targetFile)
+      }
+      else {
+        await fs.promises.writeFile(targetFile, JSON.stringify(SuperJSON.serialize(data), null, 2), 'utf-8')
       }
     }
   }

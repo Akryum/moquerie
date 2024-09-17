@@ -1,12 +1,13 @@
 import fs from 'node:fs'
 import path from 'pathe'
+import SuperJSON from 'superjson'
 import type { DBLocation } from '../types/db.js'
 import { getCurrentUser } from '../user/getCurrentUser.js'
 import type { DatabaseSnapshot } from '../types/snapshot.js'
-import { ensureDir } from '../util/fs.js'
 import { getCurrentBranchFolder } from '../resource/branch.js'
 import { getResourceInstanceStorage } from '../resource/storage.js'
 import type { MoquerieInstance } from '../instance.js'
+import { ensureDir } from '../util/fs.js'
 import { getSnapshotFolder } from './folder.js'
 import { getSnapshotStorage } from './storage.js'
 
@@ -48,21 +49,27 @@ export async function createSnapshot(mq: MoquerieInstance, options: CreateSnapsh
 
   // Copy resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshotItem)
+  await ensureDir(snapshotFolder)
+
   for (const resourceName in resourceIds) {
-    if (resourceIds[resourceName].length) {
+    const ids = resourceIds[resourceName]
+    if (ids.length) {
+      const data: { [id: string]: any } = {}
       const sourceFolder = path.join(getCurrentBranchFolder(mq), resourceName)
-      const targetFolder = path.join(snapshotFolder, resourceName)
-      await ensureDir(targetFolder)
+      const targetFile = path.join(snapshotFolder, `${resourceName}.res.json`)
 
       const resourceStorage = await getResourceInstanceStorage(mq, resourceName)
 
-      const ids = resourceIds[resourceName]
       for (const id of ids) {
         const file = resourceStorage.manifest.files[id]
         const sourceFile = path.join(sourceFolder, file)
-        const targetFile = path.join(targetFolder, `${id}.json`)
-        await fs.promises.copyFile(sourceFile, targetFile)
+        const content = await fs.promises.readFile(sourceFile, 'utf8')
+        data[id] = SuperJSON.parse(content)
       }
+
+      // Sort by key to ensure consistent order
+      const sortedData = Object.fromEntries(Object.entries(data).sort(([a], [b]) => a.localeCompare(b)))
+      await fs.promises.writeFile(targetFile, JSON.stringify(SuperJSON.serialize(sortedData), null, 2), 'utf8')
     }
   }
 
