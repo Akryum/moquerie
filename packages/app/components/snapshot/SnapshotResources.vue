@@ -46,6 +46,8 @@ async function removeResources() {
       },
     })
     await snapshotStore.refreshSnapshot()
+    refresh()
+    refreshCounts()
 
     toast.add({
       id: 'snapshot-resources-removed',
@@ -80,6 +82,8 @@ async function onSelectNewResources(resourceIds: Record<string, string[]>) {
       },
     })
     await snapshotStore.refreshSnapshot()
+    refresh()
+    refreshCounts()
 
     toast.add({
       id: 'snapshot-resources-added',
