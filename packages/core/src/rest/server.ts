@@ -17,8 +17,6 @@ import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
 export async function setupRestApi(mq: MoquerieInstance, expressApp: Application) {
   expressApp.use(mq.data.context?.config.rest?.basePath ?? '/rest', async (req, res) => {
     try {
-      const route = req.path.split('/')
-      const routeType = route[1]
       const request = normalizeNodeRequest(req, Request)
       const query = Object.fromEntries(new URLSearchParams(request.url.split('?')[1] ?? '').entries())
 
@@ -157,6 +155,12 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
         }
       }
 
+      const route = req.path.split('/')
+      const routeType = route[1]
+
+      // eslint-disable-next-line no-console
+      console.log(`[Auto REST] ${req.method} ${req.path}`, req.body)
+
       if (!resourceType) {
         for (const key in ctx.schema.types) {
           const type = ctx.schema.types[key]
@@ -205,7 +209,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
             data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany()
           }
           if (req.method === 'POST') {
-            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].create({ data: req.body })
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].create(req.body)
           }
         }
         data = await transformResponse(data, {

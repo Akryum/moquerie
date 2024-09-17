@@ -37,6 +37,9 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
   const routeInfos: ServerRouteInfo[] = []
   const expressApp = express()
 
+  expressApp.use(express.json())
+  expressApp.use(express.urlencoded({ extended: true }))
+
   if (context.config.server?.cors) {
     expressApp.use(cors(context.config.server.cors))
   }
