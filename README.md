@@ -19,6 +19,7 @@ Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (
   - **Snapshots** (full or partial) (can be saved and committed to your repository)
   - History
 - Generate database tables (aka 'Resource Types') from GraphQL schema or TypeScript files
+- Automatic **RESTful endpoints** (GET, POST, PUT, PATCH, DELETE)
 - Automatic **GraphQL server**
 - **No-Code read queries** (for GraphQL)
 - **Dashboard UI**
@@ -113,6 +114,15 @@ export default defineConfig({
   },
 })
 ```
+
+With this configuration, moquerie will automatically create RESTful endpoints for each resource types found with:
+
+- `GET /resourceType`: list all instances
+- `POST /resourceType`: create a new instance
+- `GET /resourceType/:id`: get an instance
+- `PUT /resourceType/:id`: update an instance
+- `PATCH /resourceType/:id`: update an instance
+- `DELETE /resourceType/:id`: delete an instance
 
 Here is an example that demonstrate several supported features such as importing types from other files, optional fields, union types, and deprecated fields:
 
