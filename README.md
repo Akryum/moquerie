@@ -751,6 +751,8 @@ const instance = await createInstanceFromFactory(mq, {
 
 ### Use a Snapshot
 
+This will create a new branch from the snapshot.
+
 ```ts
 import { useSnapshot } from 'moquerie'
 
