@@ -1,6 +1,66 @@
 # Changelog
 
 
+## v0.6.0
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.5.5...v0.6.0)
+
+### 🚀 Enhancements
+
+- New snapshot format ([c37079f](https://github.com/Akryum/moquerie/commit/c37079f))
+- Auto rest ready for use ([13b3e14](https://github.com/Akryum/moquerie/commit/13b3e14))
+- GetSnapshot ([e3c9472](https://github.com/Akryum/moquerie/commit/e3c9472))
+- UseSnapshot + createBranchFromSnapshot accepts snapshot id ([1a1e23c](https://github.com/Akryum/moquerie/commit/1a1e23c))
+- Return context and port in startServer ([39e1fc3](https://github.com/Akryum/moquerie/commit/39e1fc3))
+- Throw if need to migrate snapshot but cant write ([b8899e9](https://github.com/Akryum/moquerie/commit/b8899e9))
+- Context caches when not watching ([4701305](https://github.com/Akryum/moquerie/commit/4701305))
+- Silent option ([937ac17](https://github.com/Akryum/moquerie/commit/937ac17))
+- CreateTestInstance ([c1e2051](https://github.com/Akryum/moquerie/commit/c1e2051))
+- Quick rest api with moquerie.rest.ts ([42ffe18](https://github.com/Akryum/moquerie/commit/42ffe18))
+- **auto rest:** Simple query filters ([9c9a922](https://github.com/Akryum/moquerie/commit/9c9a922))
+- **auto rest:** Pagination ([ef26e06](https://github.com/Akryum/moquerie/commit/ef26e06))
+- **auto rest:** Simple sort ([a44ba1b](https://github.com/Akryum/moquerie/commit/a44ba1b))
+- **auto rest:** Simple text search ([555fc05](https://github.com/Akryum/moquerie/commit/555fc05))
+
+### 🩹 Fixes
+
+- **snapshot:** Refresh resource view on edit ([427159d](https://github.com/Akryum/moquerie/commit/427159d))
+- **snapshot:** Migration wrong item ids ([76325f7](https://github.com/Akryum/moquerie/commit/76325f7))
+- Prevent error when child resource type is not found ([a59e6f7](https://github.com/Akryum/moquerie/commit/a59e6f7))
+- Inline resource type should use inline form ([675716d](https://github.com/Akryum/moquerie/commit/675716d))
+- Close server on destroy ([26accca](https://github.com/Akryum/moquerie/commit/26accca))
+- Prevent some directory recate with skipWrites ([7740f25](https://github.com/Akryum/moquerie/commit/7740f25))
+- Dont write settings if skipWrites ([dec80b5](https://github.com/Akryum/moquerie/commit/dec80b5))
+- Should watch settings even if skipWrites is true ([b08ebcd](https://github.com/Akryum/moquerie/commit/b08ebcd))
+- Dont create storage folder if skipWrites ([aec19ca](https://github.com/Akryum/moquerie/commit/aec19ca))
+- Branches folder doesnt exist error ([71e159b](https://github.com/Akryum/moquerie/commit/71e159b))
+
+### 📖 Documentation
+
+- Auto rest endpoints ([7b9c2af](https://github.com/Akryum/moquerie/commit/7b9c2af))
+- Tests ([15e44ad](https://github.com/Akryum/moquerie/commit/15e44ad))
+- UseSnapshot ([6d4fffa](https://github.com/Akryum/moquerie/commit/6d4fffa))
+
+### 🏡 Chore
+
+- Fix root dev script ([9f3e259](https://github.com/Akryum/moquerie/commit/9f3e259))
+- Playgrounds folder ([dffbe4c](https://github.com/Akryum/moquerie/commit/dffbe4c))
+- Dev:rest ([5ea582e](https://github.com/Akryum/moquerie/commit/5ea582e))
+
+### ✅ Tests
+
+- Added test example ([55c205b](https://github.com/Akryum/moquerie/commit/55c205b))
+- Rest test ([052d970](https://github.com/Akryum/moquerie/commit/052d970))
+- **lint:** Fix ([4bd8385](https://github.com/Akryum/moquerie/commit/4bd8385))
+
+### 🤖 CI
+
+- Run playground tests ([6c23df1](https://github.com/Akryum/moquerie/commit/6c23df1))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.5.5
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.5.4...v0.5.5)
