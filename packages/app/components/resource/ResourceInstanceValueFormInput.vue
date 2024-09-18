@@ -362,11 +362,15 @@ function setAllTo(value: any) {
 
         <template #popper>
           <ResourceReferencesPreview
+            v-if="childResourceType"
             :field="field"
             :value="modelValue"
-            :resource-type="childResourceType!"
+            :resource-type="childResourceType"
             class="max-w-[800px] min-h-[200px] max-h-[600px]"
           />
+          <div v-else class="p-2">
+            Resource type not found
+          </div>
         </template>
       </Menu>
     </template>
