@@ -251,7 +251,8 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
     }
   }
   else {
-    server = await createServer(mq)
+    const s = server = await createServer(mq)
+    mq.onDestroy(() => s.close())
   }
 
   // Create context object

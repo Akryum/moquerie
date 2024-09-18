@@ -14,7 +14,8 @@ export interface Server {
   expressApp: Application
   routeInfos: ServerRouteInfo[]
 
-  restart: () => void
+  restart: () => Promise<void>
+  close: () => Promise<void>
 }
 
 async function listen(context: Context, expressApp: Application) {
@@ -75,10 +76,11 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
     expressApp,
     routeInfos,
     restart,
+    close,
   }
 
-  async function restart() {
-    await new Promise<void>((resolve, reject) => {
+  async function close() {
+    return new Promise<void>((resolve, reject) => {
       server.httpServer.close((err) => {
         if (err) {
           reject(err)
@@ -88,6 +90,10 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
         }
       })
     })
+  }
+
+  async function restart() {
+    await close()
     await listen(context, expressApp)
   }
 
