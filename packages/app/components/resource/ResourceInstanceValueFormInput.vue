@@ -303,7 +303,7 @@ function setAllTo(value: any) {
     </template>
 
     <template v-if="field.type === 'resource'">
-      <template v-if="childResourceType?.inline">
+      <template v-if="!childResourceType || childResourceType.inline">
         <template v-if="field.array">
           <MonacoEditor
             v-if="editCode"
@@ -362,15 +362,11 @@ function setAllTo(value: any) {
 
         <template #popper>
           <ResourceReferencesPreview
-            v-if="childResourceType"
             :field="field"
             :value="modelValue"
             :resource-type="childResourceType"
             class="max-w-[800px] min-h-[200px] max-h-[600px]"
           />
-          <div v-else class="p-2">
-            Resource type not found
-          </div>
         </template>
       </Menu>
     </template>
