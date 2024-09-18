@@ -72,4 +72,35 @@ describe('fetch', () => {
       },
     })
   })
+
+  it('should fetch REST API', async () => {
+    {
+      const response = await fetch(`http://localhost:${port}/rest/my-object`)
+      const data = await response.json()
+      expect(data).toEqual({ data: [] })
+    }
+    await fetch(`http://localhost:${port}/rest/my-object`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: 'abc',
+        name: 'cat',
+        count: 42,
+      }),
+    })
+    const response = await fetch(`http://localhost:${port}/rest/my-object`)
+    const data = await response.json()
+    expect(data).toEqual({
+      data: [
+        {
+          __typename: 'MyObject',
+          id: 'abc',
+          name: 'cat',
+          count: 42,
+        },
+      ],
+    })
+  })
 })
