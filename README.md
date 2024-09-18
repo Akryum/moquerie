@@ -723,6 +723,14 @@ const instance = await createInstanceFromFactory(mq, {
 })
 ```
 
+### Use a Snapshot
+
+```ts
+import { useSnapshot } from 'moquerie'
+
+await useSnapshot(mq, 'some-snapshot-id')
+```
+
 ### Get the resolved context
 
 The resolved context of the moquerie instance is useful to access the database, the pubsub, the resource schema, the list of scripts, resolvers, and so on.
