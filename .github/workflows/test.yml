@@ -52,7 +52,7 @@ jobs:
 
       - name: Playground tests
         run: pnpm run test
-        working-directory: ./playground
+        working-directory: ./playgrounds/playground
 
       # - name: Run tests
       #   run: pnpm run test
