@@ -28,10 +28,15 @@ export async function createBranch(mq: MoquerieInstance, options: CreateBranchOp
     throw new Error(`Branch ${options.name} already exists`)
   }
 
-  await ensureDir(folder)
+  if (!mq.data.skipWrites) {
+    await ensureDir(folder)
+  }
 
   if (!options.empty) {
     // Copy files from current branch
+    if (mq.data.skipWrites) {
+      throw new Error('Cannot copy files from current branch in read-only mode')
+    }
     const currentBranchFolder = getCurrentBranchFolder(mq)
     const newBranchFolder = path.join(getLocalDbFolder(mq), ...resourceInstancesFolders, options.name)
     await copyDir(currentBranchFolder, newBranchFolder)

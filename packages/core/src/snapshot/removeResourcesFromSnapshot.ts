@@ -14,6 +14,10 @@ export interface RemoveResourcesToSnapshotOptions {
 export async function removeResourcesFromSnapshot(mq: MoquerieInstance, options: RemoveResourcesToSnapshotOptions) {
   const { snapshot, resourceIds } = options
 
+  if (mq.data.skipWrites) {
+    throw new Error('Cannot remove resources from a snapshot in read-only mode')
+  }
+
   // Delete resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshot)
   await migrateSnapshotFolder(mq, snapshotFolder)

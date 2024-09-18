@@ -49,7 +49,9 @@ export async function createSnapshot(mq: MoquerieInstance, options: CreateSnapsh
 
   // Copy resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshotItem)
-  await ensureDir(snapshotFolder)
+  if (!mq.data.skipWrites) {
+    await ensureDir(snapshotFolder)
+  }
 
   for (const resourceName in resourceIds) {
     const ids = resourceIds[resourceName]
