@@ -158,12 +158,21 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
 
   // Mock files
 
-  let mockFileWatcher = mq.data.resolvedContext?.mockFiles
+  // Cache for tests
+  const mockFileCache: Record<string, MockFileWatcher> | null = mq.data.watching
+    ? null
+    : (globalThis as any).__mqMockFileCache = (globalThis as any).__mqMockFileCache ?? {}
+
+  let mockFileWatcher = mq.data.resolvedContext?.mockFiles ?? mockFileCache?.[mq.data.cwd]
   const isMockFileWatcherNew = !mockFileWatcher
 
   if (!mockFileWatcher) {
     mockFileWatcher = new MockFileWatcher(mq)
     mq.onDestroy(() => mockFileWatcher?.destroy())
+
+    if (mockFileCache) {
+      mockFileCache[mq.data.cwd] = mockFileWatcher
+    }
   }
 
   // Field actions
@@ -237,10 +246,31 @@ async function createResolvedContext(mq: MoquerieInstance): Promise<ResolvedCont
 
   // Schema
 
-  const { schema, graphqlSchema } = await getResourceSchema(mq, schemaTransforms)
+  // Cache for tests
+  const schemaCache: Record<string, Awaited<ReturnType<typeof getResourceSchema>>> | null = mq.data.watching
+    ? null
+    : (globalThis as any).__mqSchemaCache = (globalThis as any).__mqSchemaCache ?? {}
+
+  let schema = mq.data.resolvedContext?.schema ?? schemaCache?.[mq.data.cwd]?.schema
+  let graphqlSchema = mq.data.resolvedContext?.graphqlSchema ?? schemaCache?.[mq.data.cwd]?.graphqlSchema
+
+  if (!schema || mq.data.watching) {
+    const result = await getResourceSchema(mq, schemaTransforms)
+    schema = result.schema
+    graphqlSchema = result.graphqlSchema
+
+    if (schemaCache) {
+      schemaCache[mq.data.cwd] = {
+        schema,
+        graphqlSchema,
+      }
+    }
+  }
 
   // Generate types
-  await generateTsTypes(mq, schema)
+  if (mq.data.watching) {
+    await generateTsTypes(mq, schema)
+  }
 
   // API Server
 
@@ -287,7 +317,7 @@ const resolvedContextMaxAge = 2000 // 2 seconds
 export async function getResolvedContext(mq: MoquerieInstance): Promise<ResolvedContext> {
   const now = Date.now()
   // If context was resolved less than 2 seconds ago, return it
-  if (mq.data.watching && mq.data.resolvedContext && now - mq.data.resolvedContextTime < resolvedContextMaxAge) {
+  if (mq.data.resolvedContext && now - mq.data.resolvedContextTime < resolvedContextMaxAge) {
     return mq.data.resolvedContext
   }
 
