@@ -18,20 +18,6 @@ export interface Server {
   close: () => Promise<void>
 }
 
-async function listen(context: Context, expressApp: Application) {
-  const httpServer = createHttpServer(expressApp)
-
-  await new Promise<void>((resolve) => {
-    httpServer.listen(context.port, () => {
-      // eslint-disable-next-line no-console
-      console.log(`API available at ${colors.blue(`http://localhost:${context.port}/`)}`)
-      resolve()
-    })
-  })
-
-  return httpServer
-}
-
 export async function createServer(mq: MoquerieInstance): Promise<Server> {
   const context = await mq.getContext()
 
@@ -77,6 +63,22 @@ export async function createServer(mq: MoquerieInstance): Promise<Server> {
     routeInfos,
     restart,
     close,
+  }
+
+  async function listen(context: Context, expressApp: Application) {
+    const httpServer = createHttpServer(expressApp)
+
+    await new Promise<void>((resolve) => {
+      httpServer.listen(context.port, () => {
+        if (!mq.data.silent) {
+          // eslint-disable-next-line no-console
+          console.log(`API available at ${colors.blue(`http://localhost:${context.port}/`)}`)
+        }
+        resolve()
+      })
+    })
+
+    return httpServer
   }
 
   async function close() {

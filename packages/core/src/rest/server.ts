@@ -104,8 +104,10 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
               return e
             },
           })
-          // eslint-disable-next-line no-console
-          console.log(`[ApiRoute] ${req.method} ${req.path} handler ${Date.now() - time}ms`)
+          if (!mq.data.silent) {
+            // eslint-disable-next-line no-console
+            console.log(`[ApiRoute] ${req.method} ${req.path} handler ${Date.now() - time}ms`)
+          }
           if (data !== undefined) {
             if (type != null) {
               res.setHeader('Content-Type', type)
@@ -158,8 +160,10 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
       const route = req.path.split('/')
       const routeType = route[1]
 
-      // eslint-disable-next-line no-console
-      console.log(`[Auto REST] ${req.method} ${req.path}`, req.body)
+      if (!mq.data.silent) {
+        // eslint-disable-next-line no-console
+        console.log(`[Auto REST] ${req.method} ${req.path}`, req.body)
+      }
 
       if (!resourceType) {
         for (const key in ctx.schema.types) {

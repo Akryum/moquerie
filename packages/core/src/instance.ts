@@ -37,6 +37,7 @@ export interface MoquerieInstanceData {
     }
   }
   skipWrites: boolean
+  silent: boolean
 }
 
 export interface CreateMoquerieInstanceOptions {
@@ -54,6 +55,10 @@ export interface CreateMoquerieInstanceOptions {
    * Don't write database changes to disk.
    */
   skipWrites?: boolean
+  /**
+   * Don't log to console
+   */
+  silent?: boolean
 }
 
 export async function createMoquerieInstance(options: CreateMoquerieInstanceOptions): Promise<MoquerieInstance> {
@@ -79,6 +84,7 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
       },
     },
     skipWrites: options.skipWrites ?? false,
+    silent: options.silent ?? false,
   }
 
   function onDestroy(cb: () => Awaitable<void>) {
