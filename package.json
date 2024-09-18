@@ -18,5 +18,10 @@
     "@akryum/sheep": "^0.5.2",
     "@antfu/eslint-config": "^2.6.3",
     "eslint": "^8.57.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "graphql": "^16.8.1"
+    }
   }
 }
