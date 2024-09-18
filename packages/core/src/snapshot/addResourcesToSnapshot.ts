@@ -18,7 +18,7 @@ export async function addResourcesToSnapshot(mq: MoquerieInstance, options: AddR
 
   const snapshotFolder = await getSnapshotFolder(mq, snapshot)
 
-  await migrateSnapshotFolder(snapshotFolder)
+  await migrateSnapshotFolder(mq, snapshotFolder)
 
   for (const resourceName in resourceIds) {
     const sourceFolder = path.join(getCurrentBranchFolder(mq), resourceName)

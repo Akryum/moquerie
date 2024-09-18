@@ -70,7 +70,7 @@ export async function readSnapshotResources(mq: MoquerieInstance, snapshot: Data
 export async function readSnapshotAllResources(mq: MoquerieInstance, snapshot: DatabaseSnapshot) {
   const folder = await getSnapshotFolder(mq, snapshot)
 
-  await migrateSnapshotFolder(folder)
+  await migrateSnapshotFolder(mq, folder)
 
   const result: { [resourceName: string]: ResourceInstance[] } = {}
 

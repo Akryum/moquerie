@@ -16,7 +16,7 @@ export async function removeResourcesFromSnapshot(mq: MoquerieInstance, options:
 
   // Delete resources
   const snapshotFolder = await getSnapshotFolder(mq, snapshot)
-  await migrateSnapshotFolder(snapshotFolder)
+  await migrateSnapshotFolder(mq, snapshotFolder)
 
   for (const resourceName in resourceIds) {
     const ids = resourceIds[resourceName]

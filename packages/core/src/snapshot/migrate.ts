@@ -2,13 +2,14 @@ import fs from 'node:fs'
 import path from 'pathe'
 import glob from 'fast-glob'
 import SuperJSON from 'superjson'
+import type { MoquerieInstance } from '../instance.js'
 
 /**
  * Migrate snapshot folder to new format with each resource type in a single file
  * @param snapshotFolder The snapshot folder to migrate
  * @returns Whether the folder was migrated
  */
-export async function migrateSnapshotFolder(snapshotFolder: string) {
+export async function migrateSnapshotFolder(mq: MoquerieInstance, snapshotFolder: string) {
   const files = await glob('*/*.json', {
     cwd: snapshotFolder,
     onlyFiles: true,
@@ -16,6 +17,10 @@ export async function migrateSnapshotFolder(snapshotFolder: string) {
 
   if (files.length === 0) {
     return false
+  }
+
+  if (mq.data.skipWrites) {
+    throw new Error('Cannot migrate snapshot folder in read-only mode')
   }
 
   const dataPerResource = new Map<string, Record<string, any>>()
