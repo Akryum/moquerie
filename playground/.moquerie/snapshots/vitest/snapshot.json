@@ -1,0 +1,26 @@
+{
+  "json": {
+    "version": "0.0.1",
+    "item": {
+      "description": "",
+      "tags": [],
+      "date": "2024-09-18T13:03:14.255Z",
+      "author": {
+        "name": "Guillaume Chau",
+        "email": "guillaume.b.chau@gmail.com",
+        "avatar": "https://avatars.githubusercontent.com/u/2798204?v=4",
+        "github": {
+          "login": "Akryum",
+          "profilePageUrl": "https://github.com/Akryum"
+        }
+      }
+    }
+  },
+  "meta": {
+    "values": {
+      "item.date": [
+        "Date"
+      ]
+    }
+  }
+}

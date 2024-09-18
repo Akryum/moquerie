@@ -25,6 +25,7 @@
     "@types/node": "^20.7.1",
     "eslint": "^8.56.0",
     "moquerie": "workspace:*",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^2.1.1"
   }
 }

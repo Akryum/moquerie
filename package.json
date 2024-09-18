@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "dev": "pnpm run -r --filter \"./packages/**\" dev",
+    "dev": "pnpm run -r --filter \"./packages/**\" --filter=!@moquerie/app --parallel --stream dev",
     "build": "pnpm run -r --filter \"./packages/**\" build",
     "release": "pnpm run lint && pnpm run build && sheep release -b main --force"
   },

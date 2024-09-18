@@ -1,0 +1,39 @@
+{
+  "json": {
+    "1nS5zGHNDOKzTEkKIsxyP": {
+      "version": "0.0.1",
+      "item": {
+        "id": "1nS5zGHNDOKzTEkKIsxyP",
+        "resourceName": "Query",
+        "createdAt": "2024-09-18T12:32:52.301Z",
+        "updatedAt": "2024-09-18T12:33:01.539Z",
+        "active": true,
+        "value": {
+          "currentUser": null,
+          "hello": "villa",
+          "manyHellosCount": "3",
+          "manyHellos": [
+            "succedo",
+            "comparo",
+            "denego"
+          ]
+        },
+        "tags": [
+          "test"
+        ],
+        "comment": "",
+        "factoryId": null
+      }
+    }
+  },
+  "meta": {
+    "values": {
+      "1nS5zGHNDOKzTEkKIsxyP.item.createdAt": [
+        "Date"
+      ],
+      "1nS5zGHNDOKzTEkKIsxyP.item.updatedAt": [
+        "Date"
+      ]
+    }
+  }
+}
