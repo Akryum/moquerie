@@ -272,6 +272,15 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(@types/node@20.16.5)(terser@5.33.0)
 
+  playgrounds/quick-rest:
+    devDependencies:
+      moquerie:
+        specifier: workspace:*
+        version: link:../../packages/moquerie
+      typescript:
+        specifier: ^5.2.2
+        version: 5.6.2
+
 packages:
 
   '@akryum/sheep@0.5.2':

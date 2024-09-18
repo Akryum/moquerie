@@ -1,0 +1,13 @@
+{
+  "name": "moquerie-playground-quick-rest",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "moquerie": "moquerie"
+  },
+  "devDependencies": {
+    "moquerie": "workspace:*",
+    "typescript": "^5.2.2"
+  }
+}

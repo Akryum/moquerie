@@ -44,7 +44,7 @@ Install the `moquerie` package:
 pnpm install moquerie
 ```
 
-Create a `moquerie.config.ts` (or `moquerie.config.js`) file in the root of your project:
+*(Optional)* Create a `moquerie.config.ts` (or `moquerie.config.js`) file in the root of your project:
 
 ```ts
 import { defineConfig } from 'moquerie/config'
@@ -57,9 +57,31 @@ export default defineConfig({
 })
 ```
 
+## Getting started
+
+### REST Quickstart
+
+*(Optional)* To quickly create a fake REST server, create a `moquerie.rest.ts` file in your project that export resource types:
+
+```ts
+// moquerie.rest.ts
+
+export interface MyObject {
+  id: string
+  title: string
+  count: number
+}
+```
+
+Moquerie will detect this file and automatically create RESTful endpoints for each resource type found within (without any additional configuration).
+
+### GraphQL Quickstart
+
 If you have a GraphQL schema, you can let moquerie scan your code files for graphql schema definitions that uses the `gql` tag.
 
 ```ts
+// moquerie.config.ts
+
 import { defineConfig } from 'moquerie/config'
 
 export default defineConfig({
@@ -85,7 +107,7 @@ You also have several options to configure your GraphQL schema:
 
 For REST you don't need additional configuration, but your need to register API Routes.
 
-## Getting started
+### Run the server
 
 Run the `moquerie` command to start the server:
 
