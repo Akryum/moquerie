@@ -68,3 +68,12 @@ export async function getSnapshotStorage(mq: MoquerieInstance) {
   storage = await storagePromise
   return storage
 }
+
+export async function getSnapshot(mq: MoquerieInstance, id: string): Promise<DatabaseSnapshot> {
+  const storage = await getSnapshotStorage(mq)
+  const snapshot = await storage.findById(id)
+  if (!snapshot) {
+    throw new Error(`Snapshot not found: ${id}`)
+  }
+  return snapshot
+}
