@@ -95,15 +95,14 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
     },
   }
 
-  if (data.watching) {
-    // Watch settings
-    const unwatchSettings = onSettingsChange((settings) => {
-      if (settings.currentBranch && settings.currentBranch !== resourceStorages.currentBranch) {
-        applySwitchToBranch(mq, settings.currentBranch)
-      }
-    })
-    onDestroy(unwatchSettings)
-  }
+  // Watch settings
+  // should always watch even if skipWrites is true
+  const unwatchSettings = onSettingsChange((settings) => {
+    if (settings.currentBranch && settings.currentBranch !== resourceStorages.currentBranch) {
+      applySwitchToBranch(mq, settings.currentBranch)
+    }
+  })
+  onDestroy(unwatchSettings)
 
   async function destroy() {
     for (const cb of data.onInstanceDestroyCallbacks) {
