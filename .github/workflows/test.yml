@@ -50,5 +50,9 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Playground tests
+        run: pnpm run test
+        working-directory: ./playground
+
       # - name: Run tests
       #   run: pnpm run test
