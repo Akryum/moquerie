@@ -30,6 +30,7 @@
   "scripts": {
     "build": "nuxt prepare && nuxt build",
     "dev": "nuxt prepare && nuxt dev --dotenv .env.playground",
+    "dev:rest": "nuxt prepare && nuxt dev --dotenv .env.playground.rest",
     "test:types": "nuxt typecheck"
   },
   "peerDependencies": {
