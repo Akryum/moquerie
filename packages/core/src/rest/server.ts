@@ -226,6 +226,19 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
 
             data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany(predicate)
 
+            // Sort
+            if (query.__sort != null) {
+              const [key, order] = query.__sort.split(':')
+              data = data.sort((a: any, b: any) => {
+                const valueA = String(get(a, key))
+                const valueB = String(get(b, key))
+                if (order === 'asc') {
+                  return valueA.localeCompare(valueB)
+                }
+                return valueB.localeCompare(valueA)
+              })
+            }
+
             // Pagination
             if (query.__page != null || query.__pageSize != null) {
               let page = 0
