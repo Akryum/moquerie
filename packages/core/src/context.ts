@@ -307,5 +307,9 @@ export async function getResolvedContext(mq: MoquerieInstance): Promise<Resolved
 }
 
 export async function startServer(mq: MoquerieInstance) {
-  await mq.getResolvedContext()
+  const ctx = await mq.getResolvedContext()
+  return {
+    ...ctx,
+    port: ctx.context.port,
+  }
 }
