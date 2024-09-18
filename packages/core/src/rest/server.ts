@@ -10,7 +10,7 @@ import { pickRandom, repeat } from '../util/random.js'
 import { getFactoryStorage } from '../factory/storage.js'
 import { generateResourceInstances } from '../resource/generateInstances.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
-import { isPlainObject } from '../util/object.js'
+import { get, isPlainObject } from '../util/object.js'
 import { type HookBeforeSendResponseContext, hooks } from '../hooks.js'
 import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
 
@@ -162,7 +162,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
 
       if (!mq.data.silent) {
         // eslint-disable-next-line no-console
-        console.log(`[Auto REST] ${req.method} ${req.path}`, req.body)
+        console.log(`[Auto REST] ${req.method} ${req.path}`, 'query:', query, 'body:', req.body)
       }
 
       if (!resourceType) {
@@ -210,7 +210,19 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
         }
         else {
           if (req.method === 'GET') {
-            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany()
+            const predicate = (data: any) => {
+              for (const key in query) {
+                if (key.startsWith('__')) {
+                  continue
+                }
+                // eslint-disable-next-line eqeqeq
+                if (get(data, key) != query[key]) {
+                  return false
+                }
+              }
+              return true
+            }
+            data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany(predicate)
           }
           if (req.method === 'POST') {
             data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].create(req.body)

@@ -140,6 +140,7 @@ export default defineConfig({
 With this configuration, moquerie will automatically create RESTful endpoints for each resource types found with:
 
 - `GET /resourceType`: list all instances
+  - You can filter the results with query parameters, for example `GET /resourceType?name=foo`
 - `POST /resourceType`: create a new instance
 - `GET /resourceType/:id`: get an instance
 - `PUT /resourceType/:id`: update an instance
