@@ -210,6 +210,7 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
         }
         else {
           if (req.method === 'GET') {
+            // Query filters
             const predicate = (data: any) => {
               for (const key in query) {
                 if (key.startsWith('__')) {
@@ -222,7 +223,21 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
               }
               return true
             }
+
             data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].findMany(predicate)
+
+            // Pagination
+            if (query.__page != null || query.__pageSize != null) {
+              let page = 0
+              if (query.__page != null) {
+                page = Number.parseInt(query.__page)
+              }
+              let pageSize = 10
+              if (query.__pageSize != null) {
+                pageSize = Number.parseInt(query.__pageSize)
+              }
+              data = data.slice(page * pageSize, (page + 1) * pageSize)
+            }
           }
           if (req.method === 'POST') {
             data = await (ctx.db as UntypedQueryManagerProxy)[resourceType.name].create(req.body)

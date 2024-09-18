@@ -141,6 +141,7 @@ With this configuration, moquerie will automatically create RESTful endpoints fo
 
 - `GET /resourceType`: list all instances
   - You can filter the results with query parameters, for example `GET /resourceType?name=foo`
+  - You can paginate with `__page` (first page is `0`) and `__pageSize` (default `10`) query parameters: `GET /resourceType?__page=1&__pageSize=10`
 - `POST /resourceType`: create a new instance
 - `GET /resourceType/:id`: get an instance
 - `PUT /resourceType/:id`: update an instance
