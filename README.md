@@ -749,6 +749,91 @@ You can stop and cleanup the moquerie instance and its server:
 await mq.destroy()
 ```
 
+## Tests
+
+In your tests you can use the Programmatic API to start the server, run scripts, call factories, and more. This ensures that your app can still make requests to the mocked API even in the test environment.
+
+1. First, create an instance with `createTestInstance`. By default it will disable disk writes and watching.
+2. Then you can use an existing snapshot saved to the repository with `useSnapshot` or use factories/scripts defined in your `.moq.ts` files.
+3. Finally you can start the server with `startServer`.
+
+After your test run, you can destroy the instance with `destroy`.
+
+```ts
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import type { MoquerieInstance } from 'moquerie'
+import { createTestInstance, startServer, useSnapshot } from 'moquerie'
+
+describe('fetch', () => {
+  let mq: MoquerieInstance
+  let port: number
+
+  beforeEach(async () => {
+    mq = await createTestInstance()
+    await useSnapshot(mq, 'vitest')
+    const result = await startServer(mq)
+    port = result.port
+  })
+
+  afterEach(async () => {
+    await mq.destroy()
+  })
+
+  it('should fetch GraphQL', async () => {
+    const response = await fetch(`http://localhost:${port}/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            hello
+          }
+        `,
+      }),
+    })
+    const data = await response.json()
+    expect(data).toEqual({
+      data: {
+        hello: 'villa',
+      },
+    })
+  })
+
+  it('should fetch REST', async () => {
+    {
+      const response = await fetch(`http://localhost:${port}/rest/my-object`)
+      const data = await response.json()
+      expect(data).toEqual({ data: [] })
+    }
+    await fetch(`http://localhost:${port}/rest/my-object`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: 'abc',
+        name: 'cat',
+        count: 42,
+      }),
+    })
+    const response = await fetch(`http://localhost:${port}/rest/my-object`)
+    const data = await response.json()
+    expect(data).toEqual({
+      data: [
+        {
+          __typename: 'MyObject',
+          id: 'abc',
+          name: 'cat',
+          count: 42,
+        },
+      ],
+    })
+  })
+})
+```
+
 ## License
 
 MIT
