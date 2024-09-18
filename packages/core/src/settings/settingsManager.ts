@@ -43,11 +43,13 @@ export async function createSettingsManager(mq: MoquerieInstance) {
 
     notifySettingsChange(currentSettings)
 
-    try {
-      await fs.promises.writeFile(file, JSON.stringify(currentSettings, null, 2))
-    }
-    catch (e) {
-      console.error(e)
+    if (!mq.data.skipWrites) {
+      try {
+        await fs.promises.writeFile(file, JSON.stringify(currentSettings, null, 2))
+      }
+      catch (e) {
+        console.error(e)
+      }
     }
   }
 
