@@ -1,20 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { MoquerieInstance } from 'moquerie'
-import { createMoquerieInstance, startServer, useSnapshot } from 'moquerie'
+import { createTestInstance, startServer, useSnapshot } from 'moquerie'
 
 describe('fetch', () => {
   let mq: MoquerieInstance
   let port: number
 
   beforeEach(async () => {
-    mq = await createMoquerieInstance({
-      cwd: process.cwd(),
-      skipWrites: true,
-      watching: false,
-    })
-
+    mq = await createTestInstance()
     await useSnapshot(mq, 'vitest')
-
     const result = await startServer(mq)
     port = result.port
   })

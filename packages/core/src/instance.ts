@@ -1,3 +1,4 @@
+import process from 'node:process'
 import type { Context, ResolvedContext } from './context.js'
 import { getContext, getResolvedContext } from './context.js'
 import { type ResourceStorages, applySwitchToBranch } from './resource/storage.js'
@@ -117,4 +118,21 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
   }
 
   return mq
+}
+
+/**
+ * Create a test instance with default options suitable for tests.
+ * - `cwd` is set to `process.cwd()`
+ * - `watching` is set to `false`
+ * - `silent` is set to `true`
+ * - `skipWrites` is set to `true`
+ */
+export function createTestInstance(overrideOptions: Partial<CreateMoquerieInstanceOptions> = {}): Promise<MoquerieInstance> {
+  return createMoquerieInstance({
+    cwd: process.cwd(),
+    skipWrites: true,
+    silent: true,
+    watching: false,
+    ...overrideOptions,
+  })
 }
