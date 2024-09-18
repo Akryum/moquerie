@@ -212,6 +212,21 @@ export async function setupRestApi(mq: MoquerieInstance, expressApp: Application
           if (req.method === 'GET') {
             // Query filters
             const predicate = (data: any) => {
+              // Text search
+              if (query.__search != null) {
+                const search = query.__search.toLowerCase()
+                for (const key in data) {
+                  if (key.match(/^(id|_id|slug)$/)) {
+                    continue
+                  }
+                  const value = get(data, key)
+                  if (typeof value === 'string' && value.toLowerCase().includes(search)) {
+                    return true
+                  }
+                }
+                return false
+              }
+
               for (const key in query) {
                 if (key.startsWith('__')) {
                   continue
