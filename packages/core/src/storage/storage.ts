@@ -71,7 +71,9 @@ export async function useStorage<TData extends { id: string }>(mq: MoquerieInsta
   const manifestFile = path.join(folder, 'manifest.json')
   const shouldWatch = options.location !== 'local' && !mq.data.skipWrites && mq.data.watching
 
-  await ensureDir(folder)
+  if (!mq.data.skipWrites) {
+    await ensureDir(folder)
+  }
 
   // Read
 
