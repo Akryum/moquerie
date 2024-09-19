@@ -26,6 +26,12 @@ Moquerie is a tool that allows you to easily create a fake GraphQL or REST API (
 - Extensible with `.moq.ts` files or with plugins
 - Typed APIs
 
+## Use Cases
+
+- Develop a frontend without needing the backend
+- Test while mocking the backend
+- Run a fake REST API for demos/workshops
+
 ## Sponsors
 
 [Become a sponsor!](https://github.com/sponsors/Akryum)
