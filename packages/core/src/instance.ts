@@ -129,7 +129,7 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
  */
 export function createTestInstance(overrideOptions: Partial<CreateMoquerieInstanceOptions> = {}): Promise<MoquerieInstance> {
   return createMoquerieInstance({
-    cwd: process.cwd(),
+    cwd: process.env.MOQUERIE_CWD ?? process.cwd(),
     skipWrites: true,
     silent: true,
     watching: false,
