@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'pathe'
+import { nanoid } from 'nanoid'
 import { getLocalDbFolder } from '../storage/path.js'
 import { copyDir, ensureDir } from '../util/fs.js'
 import type { MoquerieInstance } from '../instance.js'
@@ -41,4 +42,14 @@ export async function createBranch(mq: MoquerieInstance, options: CreateBranchOp
     const newBranchFolder = path.join(getLocalDbFolder(mq), ...resourceInstancesFolders, options.name)
     await copyDir(currentBranchFolder, newBranchFolder)
   }
+}
+
+/**
+ * Creates an empty branch with a random name.
+ */
+export async function createEmptyBranch(mq: MoquerieInstance) {
+  return createBranch(mq, {
+    name: `test-${nanoid()}`,
+    empty: true,
+  })
 }
