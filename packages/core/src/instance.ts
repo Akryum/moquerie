@@ -2,9 +2,12 @@ import process from 'node:process'
 import path from 'pathe'
 import type { Context, ResolvedContext } from './context.js'
 import { getContext, getResolvedContext } from './context.js'
-import { type ResourceStorages, applySwitchToBranch } from './resource/storage.js'
+import { type ResourceStorages, applySwitchToBranch, switchToBranch } from './resource/storage.js'
 import { onSettingsChange } from './settings/onChange.js'
 import type { Awaitable } from './util/types.js'
+import { useSnapshot } from './snapshot/importSnapshotToDatabase.js'
+import { createEmptyBranch } from './resource/branchCreate.js'
+import type { UntypedQueryManagerProxy } from './resource/queryManagerProxy.js'
 
 export interface MoquerieInstance {
   getContext: () => Promise<Context>
@@ -121,19 +124,78 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
   return mq
 }
 
+export interface AdditionalTestInstanceOptions {
+  /**
+   * Create a new branch from the snapshot.
+   */
+  snapshot?: string
+  /**
+   * Switch to an existing branch.
+   */
+  branch?: string
+  /**
+   * Create records in the database.
+   *
+   * Example:
+   *
+   * ```ts
+   * {
+   *   create: {
+   *     Query: {
+   *       hello: 'world',
+   *     },
+   *     User: [
+   *       { name: 'Alice' },
+   *       { name: 'Bob' },
+   *     ],
+   *   }
+   * }
+   */
+  create?: Record<string, Array<Record<string, any>> | Record<string, any>>
+}
+
 /**
  * Create a test instance with default options suitable for tests.
  * - `cwd` is set to `process.cwd()`
  * - `watching` is set to `false`
  * - `silent` is set to `true`
  * - `skipWrites` is set to `true`
+ *
+ * If no `snapshot` or `branch` is provided, an empty branch is created.
  */
-export function createTestInstance(overrideOptions: Partial<CreateMoquerieInstanceOptions> = {}): Promise<MoquerieInstance> {
-  return createMoquerieInstance({
+export async function createTestInstance(overrideOptions: Partial<CreateMoquerieInstanceOptions> = {}, options: AdditionalTestInstanceOptions = {}): Promise<MoquerieInstance> {
+  const instance = await createMoquerieInstance({
     cwd: process.env.MOQUERIE_CWD ? path.resolve(process.cwd(), process.env.MOQUERIE_CWD) : process.cwd(),
     skipWrites: true,
     silent: true,
     watching: false,
     ...overrideOptions,
   })
+
+  if (options.snapshot && options.branch) {
+    throw new Error('Cannot provide both snapshot and branch options')
+  }
+
+  if (options.snapshot) {
+    await useSnapshot(instance, options.snapshot)
+  }
+  else if (options.branch) {
+    await switchToBranch(instance, options.branch)
+  }
+  else {
+    await createEmptyBranch(instance)
+  }
+
+  if (options.create) {
+    const ctx = await instance.getResolvedContext()
+
+    for (const type in options.create) {
+      const items = Array.isArray(options.create[type]) ? options.create[type] : [options.create[type]]
+      for (const item of items) {
+        await (ctx.db as UntypedQueryManagerProxy)[type].create(item)
+      }
+    }
+  }
+
+  return instance
 }

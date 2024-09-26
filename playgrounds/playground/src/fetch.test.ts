@@ -7,8 +7,10 @@ describe('fetch', () => {
   let port: number
 
   beforeEach(async () => {
-    mq = await createTestInstance()
-    await useSnapshot(mq, 'vitest')
+    mq = await createTestInstance({}, {
+      snapshot: 'vitest',
+    })
+    // await useSnapshot(mq, 'vitest')
     const result = await startServer(mq)
     port = result.port
   })
