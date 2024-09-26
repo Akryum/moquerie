@@ -17,19 +17,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./config": {
       "types": "./dist/config.d.ts",
-      "import": "./dist/config.js"
+      "default": "./dist/config.js"
     },
     "./util": {
       "types": "./dist/util/index.d.ts",
-      "import": "./dist/util/index.js"
+      "default": "./dist/util/index.js"
     },
     "./*": "./*"
   },
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && tsc",

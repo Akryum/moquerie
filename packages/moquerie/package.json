@@ -17,27 +17,26 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./config": {
       "types": "./dist/config.d.ts",
-      "import": "./dist/config.js"
+      "default": "./dist/config.js"
     },
     "./config.js": {
       "types": "./dist/config.d.ts",
-      "import": "./dist/config.js"
+      "default": "./dist/config.js"
     },
     "./mocks": {
       "types": "./dist/mocks.d.ts",
-      "import": "./dist/mocks.js"
+      "default": "./dist/mocks.js"
     },
     "./mocks.js": {
       "types": "./dist/mocks.d.ts",
-      "import": "./dist/mocks.js"
+      "default": "./dist/mocks.js"
     },
     "./*": "./*"
   },
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "moquerie": "./bin.mjs"
