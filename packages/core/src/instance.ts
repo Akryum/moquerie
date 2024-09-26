@@ -1,4 +1,5 @@
 import process from 'node:process'
+import path from 'pathe'
 import type { Context, ResolvedContext } from './context.js'
 import { getContext, getResolvedContext } from './context.js'
 import { type ResourceStorages, applySwitchToBranch } from './resource/storage.js'
@@ -129,7 +130,7 @@ export async function createMoquerieInstance(options: CreateMoquerieInstanceOpti
  */
 export function createTestInstance(overrideOptions: Partial<CreateMoquerieInstanceOptions> = {}): Promise<MoquerieInstance> {
   return createMoquerieInstance({
-    cwd: process.env.MOQUERIE_CWD ?? process.cwd(),
+    cwd: process.env.MOQUERIE_CWD ? path.resolve(process.cwd(), process.env.MOQUERIE_CWD) : process.cwd(),
     skipWrites: true,
     silent: true,
     watching: false,
