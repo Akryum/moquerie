@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 import { getLocalDbFolder } from '../storage/path.js'
 import { copyDir, ensureDir } from '../util/fs.js'
 import type { MoquerieInstance } from '../instance.js'
-import { resourceInstancesFolders } from './storage.js'
+import { resourceInstancesFolders, switchToBranch } from './storage.js'
 import { getCurrentBranchFolder } from './branch.js'
 
 export interface CreateBranchOptions {
@@ -45,11 +45,15 @@ export async function createBranch(mq: MoquerieInstance, options: CreateBranchOp
 }
 
 /**
- * Creates an empty branch with a random name.
+ * Creates an empty branch with a random name and switch to it
  */
 export async function createEmptyBranch(mq: MoquerieInstance) {
-  return createBranch(mq, {
-    name: `test-${nanoid()}`,
+  const name = `test-${nanoid()}`
+
+  await createBranch(mq, {
+    name,
     empty: true,
   })
+
+  await switchToBranch(mq, name)
 }
