@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { MoquerieInstance } from 'moquerie'
-import { createTestInstance, startServer, useSnapshot } from 'moquerie'
+import { createTestInstance, startServer } from 'moquerie'
 
 describe('fetch', () => {
   let mq: MoquerieInstance
