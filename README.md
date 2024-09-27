@@ -804,7 +804,7 @@ After your test run, you can destroy the instance with `destroy`.
 ```ts
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { MoquerieInstance } from 'moquerie'
-import { createTestInstance, startServer, useSnapshot } from 'moquerie'
+import { addResolvers, createTestInstance, startServer, useSnapshot } from 'moquerie'
 
 describe('fetch', () => {
   let mq: MoquerieInstance
@@ -846,6 +846,12 @@ describe('fetch', () => {
   })
 
   it('should fetch REST', async () => {
+    // await addResolvers(mq, {
+    //   Query: {
+    //     hello: () => 'world',
+    //   },
+    // })
+
     {
       const response = await fetch(`http://localhost:${port}/rest/my-object`)
       const data = await response.json()
