@@ -1,5 +1,6 @@
+import type { MoquerieInstance } from '../instance.js'
 import { MockFileHandler } from '../mock/mockFileHandler.js'
-import type { Resolver } from '../types/resolver.js'
+import type { Resolver, ResolverBaseDefinitions } from '../types/resolver.js'
 
 /**
  * @deprecated use `ResolverStore` instead
@@ -52,6 +53,21 @@ export class ResolverStore extends MockFileHandler<Resolver> {
           file,
         })
       }
+    }
+  }
+}
+
+export async function addResolvers(mq: MoquerieInstance, resolvers: ResolverBaseDefinitions) {
+  const ctx = await mq.getResolvedContext()
+  for (const resourceName in resolvers) {
+    for (const fieldName in resolvers[resourceName]) {
+      const action = resolvers[resourceName][fieldName]
+      ctx.resolvers.items.push({
+        resourceName,
+        fieldName,
+        action,
+        file: '__added-resolver',
+      })
     }
   }
 }
