@@ -1,6 +1,39 @@
 # Changelog
 
 
+## v0.6.1
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.6.0...v0.6.1)
+
+### 🚀 Enhancements
+
+- CreateEmptyBranch ([97c5dfe](https://github.com/Akryum/moquerie/commit/97c5dfe))
+- **createTestInstance:** Add MOQUERIE_CWD env variable ([663e349](https://github.com/Akryum/moquerie/commit/663e349))
+- Switch to branch in createEmptyBranch ([b1ea872](https://github.com/Akryum/moquerie/commit/b1ea872))
+- Test options ([c6f0d67](https://github.com/Akryum/moquerie/commit/c6f0d67))
+- AddResolvers ([0bd24db](https://github.com/Akryum/moquerie/commit/0bd24db))
+- Export addResolvers ([f57f41b](https://github.com/Akryum/moquerie/commit/f57f41b))
+
+### 🩹 Fixes
+
+- Use default in exports ([784a64d](https://github.com/Akryum/moquerie/commit/784a64d))
+- Resolve path using MOQUERIE_CWD ([8412e8d](https://github.com/Akryum/moquerie/commit/8412e8d))
+
+### 📖 Documentation
+
+- Note about useSnapshot ([575f97b](https://github.com/Akryum/moquerie/commit/575f97b))
+- Use cases ([cbbe234](https://github.com/Akryum/moquerie/commit/cbbe234))
+- Add addResolvers example ([6823bba](https://github.com/Akryum/moquerie/commit/6823bba))
+
+### ✅ Tests
+
+- **lint:** Fix ([0e3eac4](https://github.com/Akryum/moquerie/commit/0e3eac4))
+- **lint:** Fix ([de20646](https://github.com/Akryum/moquerie/commit/de20646))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+
 ## v0.6.0
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.5.5...v0.6.0)
