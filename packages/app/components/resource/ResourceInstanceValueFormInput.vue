@@ -328,7 +328,7 @@ function setAllTo(value: any) {
         </template>
 
         <ResourceInstanceValueNestedForm
-          v-else
+          v-else-if="childResourceType"
           :model-value="modelValue"
           :field="field"
           :resource-type="resourceType"
