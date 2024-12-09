@@ -10,33 +10,35 @@ export function generateTsInterfaceFromResourceType(type: ResourceSchemaType): n
 
   // Generate interface declaration
   const interfaceDeclaration = builders.tsInterfaceDeclaration(builders.identifier(type.name), builders.tsInterfaceBody(
-    Object.values(type.fields).map(field =>
-      builders.tsPropertySignature(builders.identifier(field.name), builders.tsTypeAnnotation(
-        field.type === 'string'
-          ? builders.tsStringKeyword()
-          : field.type === 'number'
-            ? builders.tsNumberKeyword()
-            : field.type === 'boolean'
-              ? builders.tsBooleanKeyword()
-              : field.type === 'date'
-                ? builders.tsTypeReference(builders.identifier('Date'))
-                : field.type === 'any'
-                  ? builders.tsAnyKeyword()
-                  : field.type === 'resource'
-                    ? builders.tsTypeReference(builders.identifier(field.resourceName))
-                    : field.type === 'enum'
-                      ? builders.tsUnionType(
-                        field.values.map(value => builders.tsLiteralType(
-                          typeof value.value === 'string'
-                            ? builders.stringLiteral(value.value)
-                            : typeof value.value === 'number'
-                              ? builders.numericLiteral(value.value)
-                              : builders.booleanLiteral(value.value),
-                        )),
-                      )
-                      : builders.tsUnknownKeyword(),
-      )),
-    ),
+    Object.values(type.fields).map((field) => {
+      const typeAnnotation = field.type === 'string'
+        ? builders.tsStringKeyword()
+        : field.type === 'number'
+          ? builders.tsNumberKeyword()
+          : field.type === 'boolean'
+            ? builders.tsBooleanKeyword()
+            : field.type === 'date'
+              ? builders.tsTypeReference(builders.identifier('Date'))
+              : field.type === 'any'
+                ? builders.tsAnyKeyword()
+                : field.type === 'resource'
+                  ? builders.tsTypeReference(builders.identifier(field.resourceName))
+                  : field.type === 'enum'
+                    ? builders.tsUnionType(
+                      field.values.map(value => builders.tsLiteralType(
+                        typeof value.value === 'string'
+                          ? builders.stringLiteral(value.value)
+                          : typeof value.value === 'number'
+                            ? builders.numericLiteral(value.value)
+                            : builders.booleanLiteral(value.value),
+                      )),
+                    )
+                    : builders.tsUnknownKeyword()
+
+      return builders.tsPropertySignature(builders.identifier(field.name), builders.tsTypeAnnotation(
+        field.array ? builders.tsArrayType(typeAnnotation) : typeAnnotation,
+      ))
+    }),
   ))
   return interfaceDeclaration
 }
