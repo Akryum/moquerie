@@ -6,11 +6,16 @@ import SuperJSON from 'superjson'
 
 export default defineEventHandler(async (event) => {
   const mq = getMq()
+  const { snapshotId } = getRouterParams(event, {
+    decode: true,
+  }) as {
+    snapshotId: string
+  }
   const { id, location, description, tags } = await readBody(event)
   const storage = await getSnapshotStorage(mq)
-  const snapshot = await storage.findById(id)
+  const snapshot = await storage.findById(snapshotId)
   if (!snapshot) {
-    throw new Error(`Snapshot ${id} not found`)
+    throw new Error(`Snapshot ${snapshotId} not found`)
   }
 
   // Copy resources
@@ -23,9 +28,16 @@ export default defineEventHandler(async (event) => {
       .filter(file => fs.statSync(file).isDirectory())
   }
 
+  // Rename
+
+  if (snapshot.id !== id) {
+    await storage.remove(snapshot.id)
+  }
+
   // Update in storage
 
   Object.assign(snapshot, {
+    id,
     location,
     description,
     tags,
