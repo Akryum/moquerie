@@ -1,6 +1,6 @@
-import envinfo from 'envinfo'
 import { getLocalDbFolder, getRepositoryDbFolder, resolveConfig } from '@moquerie/core'
 import { getProjectName } from '@moquerie/core/util'
+import envinfo from 'envinfo'
 
 export default defineEventHandler(async () => {
   const mq = getMq()

@@ -1,8 +1,8 @@
-import process from 'node:process'
-import fs from 'node:fs'
-import path from 'pathe'
-import { LRUCache } from 'lru-cache'
 import type { MoquerieInstance } from '../instance.js'
+import fs from 'node:fs'
+import process from 'node:process'
+import { LRUCache } from 'lru-cache'
+import path from 'pathe'
 import { findUp } from './find-up.js'
 
 export function getDefaultCwd() {

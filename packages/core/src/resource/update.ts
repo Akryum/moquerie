@@ -1,6 +1,6 @@
-import { diff } from 'just-diff'
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceInstance } from '../types/resource.js'
+import { diff } from 'just-diff'
 import { deactiveOtherSingletonResourceInstances } from './deactivateOthers.js'
 import { findResourceInstanceById } from './find.js'
 import { createHistoryRecord } from './history.js'

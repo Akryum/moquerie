@@ -1,6 +1,6 @@
-import { nanoid } from 'nanoid'
 import type { MoquerieInstance } from '../instance.js'
 import type { HistoryRecord } from '../types/history.js'
+import { nanoid } from 'nanoid'
 import { getCurrentBranch } from './storage.js'
 
 export type CreateHistoryRecordOptions = Omit<HistoryRecord, 'id' | 'date' | 'branch'>

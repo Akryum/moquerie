@@ -1,14 +1,14 @@
-import { nanoid } from 'nanoid'
-import { faker } from '@faker-js/faker'
-import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
 import type { MoquerieInstance } from '../instance.js'
+import type { ResourceInstance, ResourceInstanceReference, ResourceInstanceValue, ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
+import { faker } from '@faker-js/faker'
+import { nanoid } from 'nanoid'
 import { type CreateInstanceOptions, createResourceInstance } from './createInstance.js'
 import { findResourceInstanceById } from './find.js'
 import { findAllResourceInstances } from './findAll.js'
 import { removeResourceInstanceById } from './remove.js'
 import { addInstanceValueTag, createResourceInstanceReference, isResourceInstanceReference } from './resourceReference.js'
-import { updateResourceInstanceById } from './update.js'
 import { getResourceInstanceStorage } from './storage.js'
+import { updateResourceInstanceById } from './update.js'
 
 type QueryManagerCreateInstanceOptions = Omit<CreateInstanceOptions, 'resourceName' | 'value' | 'save'>
 

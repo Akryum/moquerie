@@ -1,7 +1,7 @@
+import type { MoquerieInstance } from '../instance.js'
 import { type FSWatcher, watch } from 'chokidar'
 import createJITI, { type JITI } from 'jiti'
 import path from 'pathe'
-import type { MoquerieInstance } from '../instance.js'
 
 export class MockFileWatcher {
   watcher: FSWatcher | undefined

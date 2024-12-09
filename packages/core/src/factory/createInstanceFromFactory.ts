@@ -1,10 +1,10 @@
-import vm from 'node:vm'
-import fs from 'node:fs'
-import { nanoid } from 'nanoid'
-import type { DefineFactoryReturn, ResourceFactory, ResourceFactoryFn, ResourceFactoryInfo } from '../types/factory.js'
-import { createResourceInstance } from '../resource/createInstance.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
+import type { DefineFactoryReturn, ResourceFactory, ResourceFactoryFn, ResourceFactoryInfo } from '../types/factory.js'
+import fs from 'node:fs'
+import vm from 'node:vm'
+import { nanoid } from 'nanoid'
+import { createResourceInstance } from '../resource/createInstance.js'
 import { executeFactory } from './execute.js'
 
 export interface CreateInstanceFromFactoryOptions {

@@ -1,7 +1,7 @@
+import type { MoquerieInstance } from '../instance.js'
 import fs from 'node:fs'
 import path from 'pathe'
 import { getLocalDbFolder } from '../storage/path.js'
-import type { MoquerieInstance } from '../instance.js'
 import { getCurrentBranch, resourceInstancesFolders } from './storage.js'
 
 /**

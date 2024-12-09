@@ -1,10 +1,10 @@
-import path from 'pathe'
-import glob from 'fast-glob'
-import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
-import type { ResourceFactory } from '../types/factory.js'
-import type { StorageManifest } from '../storage/storage.js'
-import type { DatabaseSnapshot } from '../types/snapshot.js'
 import type { MoquerieInstance } from '../instance.js'
+import type { StorageManifest } from '../storage/storage.js'
+import type { ResourceFactory } from '../types/factory.js'
+import type { DatabaseSnapshot } from '../types/snapshot.js'
+import glob from 'fast-glob'
+import path from 'pathe'
+import { type MergedStorage, useMergedStorage } from '../storage/mergedStorage.js'
 
 let storage: MergedStorage<DatabaseSnapshot>
 let storagePromise: Promise<MergedStorage<DatabaseSnapshot>>

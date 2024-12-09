@@ -1,10 +1,10 @@
+import type { MoquerieInstance } from '../instance.js'
+import type { DatabaseSnapshot } from '../types/snapshot.js'
 import fs from 'node:fs'
 import path from 'pathe'
 import SuperJSON from 'superjson'
-import type { DatabaseSnapshot } from '../types/snapshot.js'
 import { getCurrentBranchFolder } from '../resource/branch.js'
 import { getResourceInstanceStorage } from '../resource/storage.js'
-import type { MoquerieInstance } from '../instance.js'
 import { getSnapshotFolder } from './folder.js'
 import { migrateSnapshotFolder } from './migrate.js'
 

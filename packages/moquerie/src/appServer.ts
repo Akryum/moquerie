@@ -1,5 +1,5 @@
-import { type Listener, listen } from 'listhen'
 import { handler } from '@moquerie/app'
+import { listen, type Listener } from 'listhen'
 
 export interface StartAppServerOptions {
   port?: number

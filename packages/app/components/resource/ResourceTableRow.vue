@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Menu, Tooltip, vTooltip } from 'floating-vue'
 import type { ResourceInstance, ResourceSchemaType } from '@moquerie/core'
 import type { Col } from './tableTypes.js'
+import { Menu, Tooltip, vTooltip } from 'floating-vue'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType

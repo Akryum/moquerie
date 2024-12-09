@@ -1,7 +1,7 @@
-import { nanoid } from 'nanoid'
-import { getFactoryStorage } from '@moquerie/core'
-import SuperJSON from 'superjson'
 import type { FactoryData } from '@/components/factory/formTypes.js'
+import { getFactoryStorage } from '@moquerie/core'
+import { nanoid } from 'nanoid'
+import SuperJSON from 'superjson'
 
 export default defineEventHandler<{ body: FactoryData }>(async (event) => {
   const { factoryId } = getRouterParams(event, {

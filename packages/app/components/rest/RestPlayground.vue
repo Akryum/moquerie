@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import * as monaco from 'monaco-editor'
 import { vTooltip } from 'floating-vue'
+import * as monaco from 'monaco-editor'
 
 const path = useLocalStorage('moquerie.rest.playground.path', '')
 const method = useLocalStorage('moquerie.rest.playground.method', 'GET')

@@ -1,5 +1,5 @@
-import SuperJSON from 'superjson'
 import { findResourceInstanceById } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export default defineEventHandler(async (event) => {
   const mq = getMq()

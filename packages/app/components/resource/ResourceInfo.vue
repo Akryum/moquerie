@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { vTooltip } from 'floating-vue'
 import type { ResourceSchemaType } from '@moquerie/core'
+import { vTooltip } from 'floating-vue'
 
 defineProps<{
   type: ResourceSchemaType

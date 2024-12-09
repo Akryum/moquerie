@@ -1,8 +1,8 @@
-import fs from 'node:fs'
-import path from 'pathe'
-import glob from 'fast-glob'
-import SuperJSON from 'superjson'
 import type { MoquerieInstance } from '../instance.js'
+import fs from 'node:fs'
+import glob from 'fast-glob'
+import path from 'pathe'
+import SuperJSON from 'superjson'
 
 /**
  * Migrate snapshot folder to new format with each resource type in a single file

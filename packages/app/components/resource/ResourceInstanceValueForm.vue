@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Dropdown, Tooltip } from 'floating-vue'
 import type { ResourceInstance, ResourceSchemaType } from '@moquerie/core'
+import { Dropdown, Tooltip } from 'floating-vue'
 import { isAnyOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{

@@ -1,9 +1,9 @@
-import path from 'pathe'
-import { loadTypedefs } from '@graphql-tools/load'
-import { mergeSchemas } from '@graphql-tools/schema'
 import type { Source, TypeSource } from '@graphql-tools/utils'
 import type { GraphQLSchema, IntrospectionQuery } from 'graphql'
 import type { MoquerieInstance } from '../instance.js'
+import { loadTypedefs } from '@graphql-tools/load'
+import { mergeSchemas } from '@graphql-tools/schema'
+import path from 'pathe'
 
 async function resolveGraphQLTypeDefs(mq: MoquerieInstance): Promise<Source[]> {
   const ctx = await mq.getContext()

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { DBLocation, DatabaseSnapshot } from '@moquerie/core'
-import SuperJSON from 'superjson'
+import type { DatabaseSnapshot, DBLocation } from '@moquerie/core'
 import { Dropdown } from 'floating-vue'
+import SuperJSON from 'superjson'
 
 const props = defineProps<{
   snapshot?: DatabaseSnapshot

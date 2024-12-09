@@ -18,13 +18,14 @@
     "graphql-yoga": "^4.0.4"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^3.11.2",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/introspection": "4.0.0",
     "@graphql-codegen/typescript": "4.0.1",
     "@graphql-codegen/typescript-resolvers": "4.0.1",
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.7.1",
-    "eslint": "^8.56.0",
+    "eslint": "^9.16.0",
     "moquerie": "workspace:*",
     "typescript": "^5.2.2",
     "vitest": "^2.1.1"

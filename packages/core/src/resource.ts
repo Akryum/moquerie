@@ -1,9 +1,9 @@
-import type { ResourceSchema, ResourceSchemaField, ResourceSchemaType } from './types/resource.js'
 import type { ResolvedGraphQLSchema } from './graphql/schema.js'
 import type { MoquerieInstance } from './instance.js'
 import type { SchemaTransformStore } from './resource/schemaTransformStore.js'
+import type { ResourceSchema, ResourceSchemaField, ResourceSchemaType } from './types/resource.js'
 import { hooks } from './hooks.js'
-import { type PartialResourceSchemaType, getTypesFromFile } from './resource/fromTypes.js'
+import { getTypesFromFile, type PartialResourceSchemaType } from './resource/fromTypes.js'
 
 export async function getResourceSchema(mq: MoquerieInstance, schemaTransformStore: SchemaTransformStore) {
   const ctx = await mq.getContext()

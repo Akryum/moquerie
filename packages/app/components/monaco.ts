@@ -1,9 +1,9 @@
+import configTypes from '@moquerie/core/src/types/config.js?raw'
 import * as monaco from 'monaco-editor'
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker?worker'
-import configTypes from '@moquerie/core/src/types/config.js?raw'
 
 // Language support
 

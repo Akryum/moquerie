@@ -1,5 +1,5 @@
-import { MockFileHandler } from '../mock/mockFileHandler.js'
 import type { ScriptItem, ScriptRunReport } from '../types/script.js'
+import { MockFileHandler } from '../mock/mockFileHandler.js'
 
 export class ScriptStore extends MockFileHandler<ScriptItem> {
   reports: Map<string, ScriptRunReport> = new Map()

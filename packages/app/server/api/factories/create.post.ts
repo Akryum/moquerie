@@ -1,9 +1,9 @@
+import type { ResourceFactory } from '@moquerie/core'
+import type { FactoryData } from '~/components/factory/formTypes.js'
+import { getCurrentUser, getFactoryFilename, getFactoryStorage } from '@moquerie/core'
 import { nanoid } from 'nanoid'
 import path from 'pathe'
-import { getCurrentUser, getFactoryFilename, getFactoryStorage } from '@moquerie/core'
-import type { ResourceFactory } from '@moquerie/core'
 import SuperJSON from 'superjson'
-import type { FactoryData } from '~/components/factory/formTypes.js'
 
 export default defineEventHandler(async (event) => {
   const body: FactoryData = await readBody(event)

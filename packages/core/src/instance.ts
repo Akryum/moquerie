@@ -1,13 +1,13 @@
+import type { Context, ResolvedContext } from './context.js'
+import type { UntypedQueryManagerProxy } from './resource/queryManagerProxy.js'
+import type { Awaitable } from './util/types.js'
 import process from 'node:process'
 import path from 'pathe'
-import type { Context, ResolvedContext } from './context.js'
 import { getContext, getResolvedContext } from './context.js'
-import { type ResourceStorages, applySwitchToBranch, switchToBranch } from './resource/storage.js'
-import { onSettingsChange } from './settings/onChange.js'
-import type { Awaitable } from './util/types.js'
-import { useSnapshot } from './snapshot/importSnapshotToDatabase.js'
 import { createEmptyBranch } from './resource/branchCreate.js'
-import type { UntypedQueryManagerProxy } from './resource/queryManagerProxy.js'
+import { applySwitchToBranch, type ResourceStorages, switchToBranch } from './resource/storage.js'
+import { onSettingsChange } from './settings/onChange.js'
+import { useSnapshot } from './snapshot/importSnapshotToDatabase.js'
 
 export interface MoquerieInstance {
   getContext: () => Promise<Context>

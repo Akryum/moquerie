@@ -1,11 +1,11 @@
-import vm from 'node:vm'
 import type { namedTypes } from 'ast-types'
+import type { ResourceFactory, ResourceFactoryField, ResourceFactoryFieldsMap } from '../types/factory.js'
+import type { ResourceInstanceReference } from '../types/resource.js'
+import vm from 'node:vm'
 import { getReturnNode } from '../ast/fn.js'
 import { parseCode } from '../ast/parse.js'
-import type { ResourceFactory, ResourceFactoryField, ResourceFactoryFieldsMap } from '../types/factory.js'
 import { printCode } from '../ast/print.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
-import type { ResourceInstanceReference } from '../types/resource.js'
 
 export async function deserializeFactory(code: string): Promise<Pick<ResourceFactory, 'info' | 'fields' | 'ast'>> {
   const ast = parseCode(code)

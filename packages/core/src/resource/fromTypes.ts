@@ -1,7 +1,7 @@
-import path from 'node:path'
-import ts from 'typescript'
 import type { MoquerieInstance } from '../instance.js'
 import type { ResourceSchemaField, ResourceSchemaType } from '../types/resource.js'
+import path from 'node:path'
+import ts from 'typescript'
 
 export type PartialResourceSchemaType = Omit<ResourceSchemaType, 'nonNull' | 'array' | 'inline'>
 

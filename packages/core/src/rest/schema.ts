@@ -1,7 +1,7 @@
 import type { MoquerieInstance } from '../instance.js'
+import type { ResourceSchemaType } from '../types/resource.js'
 import { getContext } from '../context.js'
 import { getTypesFromFile } from '../resource/fromTypes.js'
-import type { ResourceSchemaType } from '../types/resource.js'
 
 export async function getRestResourceSchema(mq: MoquerieInstance) {
   const ctx = await getContext(mq)

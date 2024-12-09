@@ -1,6 +1,6 @@
+import type { ESLint } from 'eslint'
 import { resolve } from 'node:path'
 import { defineConfig } from 'moquerie/config'
-import type { ESLint } from 'eslint'
 
 let eslint: ESLint
 
@@ -36,7 +36,8 @@ export default defineConfig({
         const { FlatESLint } = await import('eslint/use-at-your-own-risk')
 
         if (!eslint) {
-          const configPath = resolve(__dirname, '../eslint.config.js')
+          const configPath = resolve(__dirname, 'eslint.config.js')
+          console.log(configPath)
           eslint = new FlatESLint({
             fix: true,
             overrideConfigFile: configPath,
@@ -44,10 +45,14 @@ export default defineConfig({
           })
         }
 
+        console.log('ESLint autofixing', code)
+
         const results = await eslint.lintText(code)
         await FlatESLint.outputFixes(results)
         const [result] = results
+        console.log(result)
         if (result?.output) {
+          console.log('ESLint autofix applied', result.output)
           return result.output
         }
       },

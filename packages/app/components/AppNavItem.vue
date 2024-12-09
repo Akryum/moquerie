@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Tooltip } from 'floating-vue'
 import { NuxtLink } from '#components'
+import { Tooltip } from 'floating-vue'
 
 const props = defineProps<{
   to?: any

@@ -1,6 +1,6 @@
+import { resolveConfig } from '@moquerie/core'
 import createJITI from 'jiti'
 import path from 'pathe'
-import { resolveConfig } from '@moquerie/core'
 
 async function resolveConfigFile() {
   const mq = getMq()

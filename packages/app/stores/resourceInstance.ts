@@ -1,5 +1,5 @@
-import SuperJSON from 'superjson'
 import type { FilterActive, ResourceInstance } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export interface FetchInstancesOptions {
   resourceName: string

@@ -1,6 +1,6 @@
 import type { MoquerieInstance } from '../instance.js'
-import { MockFileHandler } from '../mock/mockFileHandler.js'
 import type { Resolver, ResolverBaseDefinitions } from '../types/resolver.js'
+import { MockFileHandler } from '../mock/mockFileHandler.js'
 
 /**
  * @deprecated use `ResolverStore` instead

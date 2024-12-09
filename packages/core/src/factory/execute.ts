@@ -1,9 +1,9 @@
-import { nanoid } from 'nanoid'
+import type { MoquerieInstance } from '../instance.js'
 import type { ResourceFactory, ResourceFactoryContext, ResourceFactoryFn } from '../types/factory.js'
 import type { Awaitable } from '../util/types.js'
+import { nanoid } from 'nanoid'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
 import { isPlainObject } from '../util/object.js'
-import type { MoquerieInstance } from '../instance.js'
 import { pickRandom, repeat } from '../util/random.js'
 import { getFaker } from './fakerGet.js'
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup generic="TItem = any">
-import { vTooltip } from 'floating-vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { vTooltip } from 'floating-vue'
 
 const props = defineProps<{
   id?: string

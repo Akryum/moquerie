@@ -1,6 +1,6 @@
 import type { MoquerieInstance } from '../instance.js'
 import type { DBLocation } from '../types/db.js'
-import { type UseStorageOptions, useStorage } from './storage.js'
+import { useStorage, type UseStorageOptions } from './storage.js'
 
 export type OverrideStorageOptions<TData> = Partial<Omit<UseStorageOptions<TData>, 'location'>>
 

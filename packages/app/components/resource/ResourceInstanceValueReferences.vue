@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
-import { Tooltip, vTooltip } from 'floating-vue'
 import type { FilterActive, ResourceInstance, ResourceInstanceReference, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import { Tooltip, vTooltip } from 'floating-vue'
+import SuperJSON from 'superjson'
 import { isReferencesOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{

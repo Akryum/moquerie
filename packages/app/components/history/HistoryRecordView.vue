@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
 import type { HistoryRecord } from '@moquerie/core'
 import { vTooltip } from 'floating-vue'
-import { diffApply } from 'just-diff-apply'
 import clone from 'just-clone'
+import { diffApply } from 'just-diff-apply'
+import SuperJSON from 'superjson'
 import { HistoryIcons } from './icons.js'
 
 const props = defineProps<{

@@ -1,11 +1,11 @@
 import type { namedTypes } from 'ast-types'
-import { builders } from 'ast-types'
-import { parseCode } from '../ast/parse.js'
-import { storageVersion } from '../storage/storage.js'
 import type { ResourceFactory, ResourceFactoryField, ResourceFactoryFieldsMap, ResourceFactoryLazyContext } from '../types/factory.js'
-import { generateAstFromObject, generateAstFromValue } from '../ast/objectToAst.js'
+import { builders } from 'ast-types'
 import { getReturnNode } from '../ast/fn.js'
+import { generateAstFromObject, generateAstFromValue } from '../ast/objectToAst.js'
+import { parseCode } from '../ast/parse.js'
 import { printCode } from '../ast/print.js'
+import { storageVersion } from '../storage/storage.js'
 
 export async function serializeFactory(factory: ResourceFactory): Promise<namedTypes.File> {
   const ast = factory.ast ?? parseCode(`import { defineFactory } from 'moquerie/mocks'

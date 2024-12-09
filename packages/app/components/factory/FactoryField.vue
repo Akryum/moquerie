@@ -1,8 +1,8 @@
 <script lang="ts">
-import { Dropdown } from 'floating-vue'
 import type { ResourceFactoryField, ResourceSchemaType } from '@moquerie/core'
-import { isAnyOpen } from '../resource/resourceInstanceValueOverlays.js'
 import type { FlatField } from './formTypes.js'
+import { Dropdown } from 'floating-vue'
+import { isAnyOpen } from '../resource/resourceInstanceValueOverlays.js'
 
 export const selectedField = ref<string | null>(null)
 

@@ -1,6 +1,6 @@
-import path from 'pathe'
-import type { DatabaseSnapshot } from '../types/snapshot.js'
 import type { MoquerieInstance } from '../instance.js'
+import type { DatabaseSnapshot } from '../types/snapshot.js'
+import path from 'pathe'
 import { getSnapshotStorage } from './storage.js'
 
 export async function getSnapshotFolder(mq: MoquerieInstance, snapshot: Pick<DatabaseSnapshot, 'id' | 'location'>) {

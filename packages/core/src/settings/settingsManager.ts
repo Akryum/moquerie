@@ -1,9 +1,9 @@
+import type { MoquerieInstance } from '../instance.js'
+import type { Settings } from '../types/settings.js'
 import fs from 'node:fs'
 import path from 'pathe'
 import { getLocalFolder } from '../storage/path.js'
 import { ensureDir } from '../util/fs.js'
-import type { Settings } from '../types/settings.js'
-import type { MoquerieInstance } from '../instance.js'
 import { notifySettingsChange } from './onChange.js'
 
 export interface SettingsManager {

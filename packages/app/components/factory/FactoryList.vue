@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useRouteQuery } from '@vueuse/router'
 import type { DBLocation, ResourceFactory } from '@moquerie/core'
+import { useRouteQuery } from '@vueuse/router'
 
 const route = useRoute()
 

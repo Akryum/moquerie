@@ -1,12 +1,12 @@
-import { nanoid } from 'nanoid'
-import { getFaker } from '../factory/fakerGet.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { ScriptContext, ScriptRunReport } from '../types/script.js'
-import { pickRandom, repeat } from '../util/random.js'
+import { nanoid } from 'nanoid'
+import { getFaker } from '../factory/fakerGet.js'
 import { getFactoryStorage } from '../factory/storage.js'
 import { generateResourceInstances } from '../resource/generateInstances.js'
 import { createResourceInstanceReference } from '../resource/resourceReference.js'
 import { createSpyProxy } from '../util/object.js'
+import { pickRandom, repeat } from '../util/random.js'
 
 export async function runScript(mq: MoquerieInstance, scriptId: string) {
   const ctx = await mq.getResolvedContext()

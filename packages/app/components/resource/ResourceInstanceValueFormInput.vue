@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Dropdown, Menu, Tooltip } from 'floating-vue'
 import type { ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import { Dropdown, Menu, Tooltip } from 'floating-vue'
 import * as monaco from 'monaco-editor'
 
 // @TODO Handle required/non-null fields

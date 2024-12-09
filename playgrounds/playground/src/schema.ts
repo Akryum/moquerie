@@ -1,7 +1,7 @@
-import { makeExecutableSchema } from '@graphql-tools/schema'
 import type { YogaInitialContext } from 'graphql-yoga'
-import type { Resolvers } from './generated/graphql.js'
 import type { Context } from './context.js'
+import type { Resolvers } from './generated/graphql.js'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 
 export const schema = makeExecutableSchema({
   typeDefs: /* GraphQL */ `

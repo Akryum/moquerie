@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ResourceFactoryField, ResourceFactoryFieldsMap, ResourceSchemaType } from '@moquerie/core'
+import type { FlatField } from './formTypes.js'
 import { set } from '@moquerie/core/util'
 import clone from 'just-clone'
 import { selectedField } from './FactoryField.vue'
-import type { FlatField } from './formTypes.js'
 
 const props = defineProps<{
   resourceType: ResourceSchemaType

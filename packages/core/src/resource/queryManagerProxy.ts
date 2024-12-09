@@ -1,5 +1,5 @@
 import type { MoquerieInstance } from '../instance.js'
-import { type QueryManager, createQueryManager } from './queryManager.js'
+import { createQueryManager, type QueryManager } from './queryManager.js'
 
 export interface QueryManagerProxy {}
 

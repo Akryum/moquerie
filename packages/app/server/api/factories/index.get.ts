@@ -1,6 +1,6 @@
-import SuperJSON from 'superjson'
-import { getFactoryStorage } from '@moquerie/core'
 import type { DBLocation, ResourceFactory } from '@moquerie/core'
+import { getFactoryStorage } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export default defineEventHandler<{ query: { resourceName: string, location?: DBLocation } }, Promise<ResourceFactory[]>>(async (event) => {
   const query = getQuery(event)

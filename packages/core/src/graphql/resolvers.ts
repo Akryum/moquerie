@@ -1,8 +1,8 @@
 import type { IResolvers, ISchemaLevelResolver } from '@graphql-tools/utils'
-import { nanoid } from 'nanoid'
-import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 import type { MoquerieInstance } from '../instance.js'
 import type { UntypedQueryManagerProxy } from '../resource/queryManagerProxy.js'
+import { nanoid } from 'nanoid'
+import { hydrateResourceInstanceReferences } from '../resource/resourceReference.js'
 import GraphQLJSON, { GraphQLJSONObject } from './json.js'
 
 export async function createGraphQLResolvers(mq: MoquerieInstance): Promise<IResolvers> {

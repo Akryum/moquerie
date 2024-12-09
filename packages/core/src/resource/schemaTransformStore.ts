@@ -1,5 +1,5 @@
-import { MockFileHandler } from '../mock/mockFileHandler.js'
 import type { SchemaTransform } from '../types/resource.js'
+import { MockFileHandler } from '../mock/mockFileHandler.js'
 
 export class SchemaTransformStore extends MockFileHandler<SchemaTransform> {
   constructor() {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { vTooltip } from 'floating-vue'
 import type { ResourceInstance } from '@moquerie/core'
+import { vTooltip } from 'floating-vue'
 
 const props = defineProps<{
   instance: ResourceInstance

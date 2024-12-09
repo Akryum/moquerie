@@ -1,5 +1,5 @@
-import { getFactoryStorage } from '@moquerie/core'
 import type { DBLocation } from '@moquerie/core'
+import { getFactoryStorage } from '@moquerie/core'
 
 export default defineEventHandler<{ query: { resourceName: string, location?: DBLocation } }, Promise<Record<DBLocation, number>>>(async (event) => {
   const query = getQuery(event)

@@ -1,6 +1,6 @@
-import { createYoga } from 'graphql-yoga'
-import { mergeSchemas } from '@graphql-tools/schema'
 import type { MoquerieInstance } from '../instance.js'
+import { mergeSchemas } from '@graphql-tools/schema'
+import { createYoga } from 'graphql-yoga'
 import { hooks } from '../hooks.js'
 import { createGraphQLResolvers } from './resolvers.js'
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs'
-import path from 'pathe'
 import { getLocalDbFolder, resourceInstancesFolders } from '@moquerie/core'
+import path from 'pathe'
 
 export default defineEventHandler(async () => {
   const folder = path.join(getLocalDbFolder(getMq()), ...resourceInstancesFolders)

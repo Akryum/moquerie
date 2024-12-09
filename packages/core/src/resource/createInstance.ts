@@ -1,9 +1,9 @@
-import { nanoid } from 'nanoid'
-import type { ResourceInstance } from '../types/resource.js'
 import type { MoquerieInstance } from '../instance.js'
-import { getResourceInstanceStorage } from './storage.js'
+import type { ResourceInstance } from '../types/resource.js'
+import { nanoid } from 'nanoid'
 import { deactiveOtherSingletonResourceInstances } from './deactivateOthers.js'
 import { createHistoryRecord } from './history.js'
+import { getResourceInstanceStorage } from './storage.js'
 
 export interface CreateInstanceOptions {
   resourceName: string

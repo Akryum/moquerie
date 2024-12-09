@@ -1,5 +1,5 @@
-import fs from 'node:fs'
 import type { MoquerieInstance } from '../instance.js'
+import fs from 'node:fs'
 import { getSnapshotFolder } from './folder.js'
 import { getSnapshotStorage } from './storage.js'
 

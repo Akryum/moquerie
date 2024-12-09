@@ -1,6 +1,6 @@
+import type { FactoryData } from '@/components/factory/formTypes.js'
 import { createInstanceFromFactory, getCurrentUser, serializeFactory } from '@moquerie/core'
 import { printCode } from '@moquerie/core/util'
-import type { FactoryData } from '@/components/factory/formTypes.js'
 
 export default defineEventHandler<{ body: FactoryData }>(async (event) => {
   const mq = getMq()

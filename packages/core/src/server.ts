@@ -1,12 +1,12 @@
-import type { Server as HTTPServer } from 'node:http'
-import { createServer as createHttpServer } from 'node:http'
 import type { Application } from 'express'
-import express from 'express'
-import cors from 'cors'
-import colors from 'picocolors'
+import type { Server as HTTPServer } from 'node:http'
 import type { Context } from './context.js'
-import type { ServerRouteInfo } from './types/server.js'
 import type { MoquerieInstance } from './instance.js'
+import type { ServerRouteInfo } from './types/server.js'
+import { createServer as createHttpServer } from 'node:http'
+import cors from 'cors'
+import express from 'express'
+import colors from 'picocolors'
 
 export interface Server {
   context: Context

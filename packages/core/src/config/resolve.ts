@@ -1,7 +1,7 @@
-import fs from 'node:fs'
-import path from 'pathe'
-import { loadConfig } from 'c12'
 import type { Config } from '../types/config.js'
+import fs from 'node:fs'
+import { loadConfig } from 'c12'
+import path from 'pathe'
 
 export async function resolveConfig(cwd: string) {
   // Auto Rest API Types

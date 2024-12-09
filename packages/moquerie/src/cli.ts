@@ -24,7 +24,6 @@ const main = defineCommand({
       open: args.open,
     })
 
-    // eslint-disable-next-line no-console
     console.log(`GUI available at ${colors.blue(server.url)}`)
   },
 })

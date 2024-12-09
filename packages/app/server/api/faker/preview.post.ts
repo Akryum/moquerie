@@ -1,5 +1,5 @@
-import SuperJSON from 'superjson'
 import { generateValueFromFaker, getFaker } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 interface Body {
   factory: string

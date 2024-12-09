@@ -1,5 +1,5 @@
-import SuperJSON from 'superjson'
 import type { DBLocation, ResourceFactory } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export const useFactoryStore = defineStore('factories', () => {
   const factories = ref<ResourceFactory[]>([])

@@ -802,9 +802,9 @@ In your tests you can use the Programmatic API to start the server, run scripts,
 After your test run, you can destroy the instance with `destroy`.
 
 ```ts
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { MoquerieInstance } from 'moquerie'
 import { addResolvers, createTestInstance, startServer, useSnapshot } from 'moquerie'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('fetch', () => {
   let mq: MoquerieInstance

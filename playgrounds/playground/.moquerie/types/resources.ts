@@ -1,14 +1,14 @@
 export interface Mutation {
-  addHello: string
+  addHello: string[]
   addSimple: Simple
-  removeHello: string
+  removeHello: string[]
   testMutation: boolean
 }
 
 export interface Query {
   currentUser: User
   hello: string
-  manyHellos: string
+  manyHellos: string[]
   manyHellosCount: number
 }
 
@@ -40,7 +40,7 @@ export interface Message {
   content: string
   from: User
   internalProp: string
-  tags: string
+  tags: string[]
   to: User
   type: 'public' | 'private'
 }
@@ -68,7 +68,7 @@ export interface MyOtherObject {
   id: string
   description: string
   notExported: MyObjectNotExported
-  objects: MyObject
+  objects: MyObject[]
   otherDescription: string
   thirdDescription: string
   deprecatedField: string
@@ -83,7 +83,7 @@ export interface User {
   avatar: Avatar
   avatarUrl: string
   email: string
-  messages: Message
+  messages: Message[]
   name: string
   customInternalField: 1 | 2 | 3
 }

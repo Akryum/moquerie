@@ -1,5 +1,5 @@
-import { getSnapshotStorage } from '@moquerie/core'
 import type { DBLocation } from '@moquerie/core'
+import { getSnapshotStorage } from '@moquerie/core'
 
 export default defineEventHandler(async () => {
   const mq = getMq()

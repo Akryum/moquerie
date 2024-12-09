@@ -1,6 +1,6 @@
 import type { ResourceSchema } from './types/resource.js'
-import { createHooks } from './util/hookable.js'
 import type { Awaitable } from './util/types.js'
+import { createHooks } from './util/hookable.js'
 
 export interface HookWriteCodeContext {
   path: string

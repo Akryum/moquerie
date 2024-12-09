@@ -1,4 +1,4 @@
-import type { DBLocation, DatabaseSnapshot } from '@moquerie/core'
+import type { DatabaseSnapshot, DBLocation } from '@moquerie/core'
 import { getSnapshotStorage } from '@moquerie/core'
 import SuperJSON from 'superjson'
 

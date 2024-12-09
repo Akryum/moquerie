@@ -1,11 +1,11 @@
+import type { MoquerieInstance } from '../instance.js'
 import fs from 'node:fs'
-import path from 'pathe'
 import { nanoid } from 'nanoid'
+import path from 'pathe'
 import { getLocalDbFolder } from '../storage/path.js'
 import { copyDir, ensureDir } from '../util/fs.js'
-import type { MoquerieInstance } from '../instance.js'
-import { resourceInstancesFolders, switchToBranch } from './storage.js'
 import { getCurrentBranchFolder } from './branch.js'
+import { resourceInstancesFolders, switchToBranch } from './storage.js'
 
 export interface CreateBranchOptions {
   /**

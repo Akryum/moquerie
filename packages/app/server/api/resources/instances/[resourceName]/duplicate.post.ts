@@ -1,7 +1,7 @@
+import type { ResourceInstance } from '@moquerie/core'
+import { deactiveOtherSingletonResourceInstances, findResourceInstanceById, getResourceInstanceStorage } from '@moquerie/core'
 import { nanoid } from 'nanoid'
 import SuperJSON from 'superjson'
-import { deactiveOtherSingletonResourceInstances, findResourceInstanceById, getResourceInstanceStorage } from '@moquerie/core'
-import type { ResourceInstance } from '@moquerie/core'
 
 export default defineEventHandler(async (event) => {
   const mq = getMq()

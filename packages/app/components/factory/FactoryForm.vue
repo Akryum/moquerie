@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Dropdown } from 'floating-vue'
 import type { ResourceFactory, ResourceSchemaType } from '@moquerie/core'
-import SuperJSON from 'superjson'
 import type { FactoryData } from './formTypes.js'
+import { Dropdown } from 'floating-vue'
+import SuperJSON from 'superjson'
 import { useTagModel } from '~/utils/form.js'
 
 const props = defineProps<{

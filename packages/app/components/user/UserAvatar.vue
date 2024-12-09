@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Menu } from 'floating-vue'
 import type { User } from '@moquerie/core'
+import { Menu } from 'floating-vue'
 
 defineProps<{
   user: User

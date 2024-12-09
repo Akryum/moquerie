@@ -1,7 +1,7 @@
-import path from 'pathe'
-import envPaths from 'env-paths'
-import { getProjectName } from '../util/env.js'
 import type { MoquerieInstance } from '../instance.js'
+import envPaths from 'env-paths'
+import path from 'pathe'
+import { getProjectName } from '../util/env.js'
 
 export function getLocalFolder(mq: MoquerieInstance) {
   const projectName = getProjectName(mq)

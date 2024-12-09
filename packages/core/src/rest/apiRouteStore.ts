@@ -1,6 +1,6 @@
+import type { ApiRoute, ApiRouteHandlerFn, ApiRouter } from '../types/index.js'
 import { type Key, pathToRegexp } from 'path-to-regexp'
 import { MockFileHandler } from '../mock/mockFileHandler.js'
-import type { ApiRoute, ApiRouteHandlerFn, ApiRouter } from '../types/index.js'
 
 export class ApiRouteStore extends MockFileHandler<ApiRoute> {
   constructor() {

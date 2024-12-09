@@ -1,7 +1,7 @@
-import os from 'node:os'
-import { LRUCache } from 'lru-cache'
-import { getGitUserInfo } from 'git-user-info'
 import type { User } from '../types/user.js'
+import os from 'node:os'
+import { getGitUserInfo } from 'git-user-info'
+import { LRUCache } from 'lru-cache'
 import { findUserOnGithub } from './findOnGithub.js'
 
 const userCache = new LRUCache<string, User>({

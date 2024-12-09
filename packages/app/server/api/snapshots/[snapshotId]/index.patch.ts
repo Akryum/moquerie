@@ -1,8 +1,8 @@
 import fs from 'node:fs'
-import path from 'pathe'
 import { getSnapshotFolder, getSnapshotStorage } from '@moquerie/core'
-import SuperJSON from 'superjson'
 import { copyDir } from '@moquerie/core/util'
+import path from 'pathe'
+import SuperJSON from 'superjson'
 
 export default defineEventHandler(async (event) => {
   const mq = getMq()

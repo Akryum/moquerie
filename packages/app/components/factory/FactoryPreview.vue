@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Dropdown } from 'floating-vue'
 import type { FactoryData } from './formTypes.js'
+import { Dropdown } from 'floating-vue'
 
 const props = defineProps<{
   factory: FactoryData

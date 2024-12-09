@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
-import { vTooltip } from 'floating-vue'
 import type { FilterActive, ResourceInstance, ResourceSchemaField, ResourceSchemaType } from '@moquerie/core'
+import { vTooltip } from 'floating-vue'
+import SuperJSON from 'superjson'
 
 const props = defineProps<{
   field: ResourceSchemaField & {

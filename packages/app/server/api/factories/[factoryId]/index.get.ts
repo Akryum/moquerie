@@ -1,6 +1,6 @@
-import SuperJSON from 'superjson'
-import { getFactoryStorage } from '@moquerie/core'
 import type { ResourceFactory } from '@moquerie/core'
+import { getFactoryStorage } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 export default defineEventHandler(async (event) => {
   const { factoryId } = getRouterParams(event, {

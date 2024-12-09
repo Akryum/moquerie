@@ -1,8 +1,8 @@
-import type { RequestLike } from '@whatwg-node/server'
 import type { Faker } from '@faker-js/faker'
+import type { RequestLike } from '@whatwg-node/server'
 import type { Key } from 'path-to-regexp'
-import type { QueryManagerProxy } from '../resource/queryManagerProxy.js'
 import type { PubSubs } from '../pubsub/createPubSub.js'
+import type { QueryManagerProxy } from '../resource/queryManagerProxy.js'
 import type { Awaitable } from '../util/types.js'
 import type { ResourceInstanceReference } from './resource.js'
 

@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@akryum/sheep": "^0.5.2",
-    "@antfu/eslint-config": "^2.6.3",
-    "eslint": "^8.57.0"
+    "@antfu/eslint-config": "^3.11.2",
+    "eslint": "^9.16.0"
   },
   "pnpm": {
     "overrides": {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import SuperJSON from 'superjson'
 import type { ResourceFactory, ScriptItem } from '@moquerie/core'
+import SuperJSON from 'superjson'
 
 const emit = defineEmits<{
   close: []

@@ -1,10 +1,10 @@
 import type { Faker } from '@faker-js/faker'
+import type { QueryManager } from '../resource/queryManager.js'
 import type { QueryManagerProxy } from '../resource/queryManagerProxy.js'
 import type { Awaitable } from '../util/types.js'
-import type { QueryManager } from '../resource/queryManager.js'
 import type { DBLocation } from './db.js'
-import type { User } from './user.js'
 import type { ResourceInstanceReference } from './resource.js'
+import type { User } from './user.js'
 
 export interface ResourceFactoryPromptChoice {
   label: string

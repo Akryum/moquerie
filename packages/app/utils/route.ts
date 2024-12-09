@@ -1,5 +1,5 @@
-import type { DBLocation } from '@moquerie/core'
 import type { LocationQuery, RouteParams, RouteRecordName } from '#vue-router'
+import type { DBLocation } from '@moquerie/core'
 
 interface SavedRoute {
   name: RouteRecordName

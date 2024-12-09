@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import * as monaco from 'monaco-editor'
 import { Dropdown, vTooltip } from 'floating-vue'
+import * as monaco from 'monaco-editor'
 import { isFakerOpen } from './resourceInstanceValueOverlays.js'
 
 const props = defineProps<{
