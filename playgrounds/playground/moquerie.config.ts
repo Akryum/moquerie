@@ -31,29 +31,31 @@ export default defineConfig({
     {
       name: 'eslint-autofix',
 
-      writeCode: async ({ code }) => {
-        // @ts-expect-error no types
-        const { FlatESLint } = await import('eslint/use-at-your-own-risk')
+      writeCode: async ({ code, path }) => {
+        const { ESLint } = await import('eslint')
 
         if (!eslint) {
           const configPath = resolve(__dirname, 'eslint.config.js')
-          console.log(configPath)
-          eslint = new FlatESLint({
-            fix: true,
+          eslint = new ESLint({
+            cwd: __dirname,
             overrideConfigFile: configPath,
+            fix: true,
             ignore: false,
           })
         }
 
-        console.log('ESLint autofixing', code)
-
-        const results = await eslint.lintText(code)
-        await FlatESLint.outputFixes(results)
+        const results = await eslint.lintText(code, {
+          filePath: path,
+        })
+        await ESLint.outputFixes(results)
         const [result] = results
-        console.log(result)
         if (result?.output) {
-          console.log('ESLint autofix applied', result.output)
           return result.output
+        }
+        else if (result?.messages?.length) {
+          for (const message of result.messages) {
+            console[message.fatal ? 'error' : 'warn'](`[ESLint] ${message.message} - ${path} (${message.line}:${message.column})`)
+          }
         }
       },
     },
