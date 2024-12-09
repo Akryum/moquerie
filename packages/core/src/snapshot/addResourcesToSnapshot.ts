@@ -28,7 +28,7 @@ export async function addResourcesToSnapshot(mq: MoquerieInstance, options: AddR
     const resourceStorage = await getResourceInstanceStorage(mq, resourceName)
 
     const ids = resourceIds[resourceName]
-    const data: Record<string, any> = SuperJSON.parse(await fs.promises.readFile(targetFile, 'utf8'))
+    const data: Record<string, any> = fs.existsSync(targetFile) ? SuperJSON.parse(await fs.promises.readFile(targetFile, 'utf8')) : {}
 
     for (const id of ids) {
       const file = resourceStorage.manifest.files[id]
