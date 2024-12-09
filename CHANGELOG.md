@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.6.2
+
+[compare changes](https://github.com/Akryum/moquerie/compare/v0.6.1...v0.6.2)
+
+### 🩹 Fixes
+
+- OnWindowFocus leak ([89e9088](https://github.com/Akryum/moquerie/commit/89e9088))
+- Add presence check for childResourceType #6 ([#6](https://github.com/Akryum/moquerie/issues/6))
+- Gen ts arrays, closes #7 ([#7](https://github.com/Akryum/moquerie/issues/7))
+- Rename snapshot, closes #3 ([#3](https://github.com/Akryum/moquerie/issues/3))
+- Check for snapshot file presence, fix #5 ([#5](https://github.com/Akryum/moquerie/issues/5))
+
+### 🏡 Chore
+
+- Update eslint ([62717f0](https://github.com/Akryum/moquerie/commit/62717f0))
+- Fix playground eslint autofix ([2819a54](https://github.com/Akryum/moquerie/commit/2819a54))
+
+### ❤️ Contributors
+
+- Guillaume Chau ([@Akryum](http://github.com/Akryum))
+- Sandeep Ramgolam ([@MrSunshyne](https://github.com/MrSunshyne))
+
 ## v0.6.1
 
 [compare changes](https://github.com/Akryum/moquerie/compare/v0.6.0...v0.6.1)
